@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "fitlifehubmobile",
-    "slug": "fitlifehubmobile",
+    "slug": "fitlifehub",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -33,6 +33,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "369508c6-e83f-4772-9e72-ff9619e626e9"
+      }
+    },
+    "owner": "macklaren"
   }
 }
