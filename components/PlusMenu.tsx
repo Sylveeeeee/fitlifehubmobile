@@ -46,11 +46,12 @@ const menuItems = [
 export default function PlusMenu({ onClose }: { onClose: () => void }) {
   return (
     <View className="bg-[#232433] rounded-t-3xl pb-8 pt-6 px-4 w-full">
-      <View className="flex-row flex-wrap justify-between">
+      <View className="flex-row flex-wrap justify-center">
         {menuItems.map((item, idx) => (
           <Pressable
             key={item.label}
             className="w-1/3 items-center mb-6"
+            style={{ paddingHorizontal: 4 }} // เพิ่มระยะห่างข้างๆแต่ละปุ่ม
             onPress={() => {
               item.onPress();
               onClose();

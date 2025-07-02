@@ -13,10 +13,10 @@ export default function BottomNavbar() {
 
   return (
     <>
-      <View className="pt-2 absolute bottom-0 left-0 right-0 h-28 bg-white border-t border-gray-200 flex-row justify-around items-start z-50">
+      <View className="pt-[12px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#ffb300] border-t border-gray-200 flex-row justify-around items-start z-50">
         <Pressable className='flex items-center' onPress={() => router.push('/')}>
           <AntDesign name="barschart" size={40} color="black" />
-          <Text className="text-gray-700 font-bold">Didcover</Text>
+          <Text className="text-gray-700 font-bold">Discover</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/diary')}>
           <MaterialCommunityIcons name="notebook" size={40} color="black" />
