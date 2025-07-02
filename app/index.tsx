@@ -1,14 +1,80 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
 
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-2xl font-bold text-blue-600">ยินดีต้อนรับสู่ FitLifeHub 🎉</Text>
-      <Text className="mt-2 text-2xl text-gray-600">แอปติดตามโภชนาการของคุณ</Text>
-      <Link href="./about" className="mt-4 text-blue-500 underline">
-        ไปที่หน้า About
-      </Link>
+    <View className="flex-1 bg-white">
+      {/* Header */}
+      <View className="w-full pt-10 pb-2 px-4 bg-[#232738] shadow-md rounded-b-[12px]">
+        <View className="flex-row items-center justify-between">
+          {/* Logo & Title */}
+          <View className="flex-row items-center">
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/ios-filled/50/ff9800/target.png',
+              }}
+              style={{ width: 40, height: 40, marginRight: 8 }}
+              resizeMode="contain"
+            />
+            <Text className="text-white text-[32px] font-extrabold">FitlifeHUB</Text>
+          </View>
+          {/* Notification & Setting */}
+          <View className="flex-row items-center space-x-4">
+            <TouchableOpacity>
+              <Image
+                source={{
+                  uri: 'https://img.icons8.com/ios-filled/50/ffffff/appointment-reminders--v1.png',
+                }}
+                style={{ width: 28, height: 28, marginRight: 12 }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                source={{
+                  uri: 'https://img.icons8.com/ios-filled/50/ffffff/settings.png',
+                }}
+                style={{ width: 28, height: 28 }}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* Tab Navbar ย้ายมาตรงนี้ */}
+        <View className="w-full h-[50px] flex-row items-center px-2 py-2 mt-2 bg-[#2e3243] rounded-[24px]">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {/* Dashboard */}
+            <TouchableOpacity className="bg-white px-5 py-2 rounded-full mr-2 shadow" activeOpacity={0.8}>
+              <Text className="text-[#232738] text-lg font-semibold">Dashboard</Text>
+            </TouchableOpacity>
+            {/* Charts */}
+            <TouchableOpacity className="px-5 py-2 mr-2" activeOpacity={0.8}>
+              <Text className="text-white text-lg font-medium">Charts</Text>
+            </TouchableOpacity>
+            {/* Divider */}
+            <View className="w-[1px] h-6 bg-gray-400 mx-1 self-center opacity-40" />
+            {/* Report */}
+            <TouchableOpacity className="px-5 py-2 mr-2" activeOpacity={0.8}>
+              <Text className="text-white text-lg font-medium">Report</Text>
+            </TouchableOpacity>
+            {/* Divider */}
+            <View className="w-[1px] h-6 bg-gray-400 mx-1 self-center opacity-40" />
+            {/* Snapshot */}
+            <TouchableOpacity className="px-5 py-2" activeOpacity={0.8}>
+              <Text className="text-white text-lg font-medium">Snapshot</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </View>
+
+      {/* เนื้อหาหลัก */}
+      <View className="flex-1 items-center justify-center bg-white">
+        <Text className="text-2xl font-bold text-blue-600">ยินดีต้อนรับสู่ FitLifeHub 🎉</Text>
+        <Text className="mt-2 text-2xl text-gray-600">แอปติดตามโภชนาการของคุณ</Text>
+        <Link href="./about" className="mt-4 text-red-500 underline">
+          About
+        </Link>
+      </View>
     </View>
   );
 }
