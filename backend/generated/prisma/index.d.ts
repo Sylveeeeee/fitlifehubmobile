@@ -1,0 +1,5845 @@
+
+/**
+ * Client
+**/
+
+import * as runtime from './runtime/library.js';
+import $Types = runtime.Types // general types
+import $Public = runtime.Types.Public
+import $Utils = runtime.Types.Utils
+import $Extensions = runtime.Types.Extensions
+import $Result = runtime.Types.Result
+
+export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+
+/**
+ * Model User
+ * 
+ */
+export type User = $Result.DefaultSelection<Prisma.$UserPayload>
+/**
+ * Model FoodEntry
+ * 
+ */
+export type FoodEntry = $Result.DefaultSelection<Prisma.$FoodEntryPayload>
+/**
+ * Model Food
+ * 
+ */
+export type Food = $Result.DefaultSelection<Prisma.$FoodPayload>
+
+/**
+ * ##  Prisma Client ʲˢ
+ *
+ * Type-safe database client for TypeScript & Node.js
+ * @example
+ * ```
+ * const prisma = new PrismaClient()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
+ * ```
+ *
+ *
+ * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ */
+export class PrismaClient<
+  ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
+  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
+> {
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
+
+    /**
+   * ##  Prisma Client ʲˢ
+   *
+   * Type-safe database client for TypeScript & Node.js
+   * @example
+   * ```
+   * const prisma = new PrismaClient()
+   * // Fetch zero or more Users
+   * const users = await prisma.user.findMany()
+   * ```
+   *
+   *
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   */
+
+  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
+  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
+
+  /**
+   * Connect with the database
+   */
+  $connect(): $Utils.JsPromise<void>;
+
+  /**
+   * Disconnect from the database
+   */
+  $disconnect(): $Utils.JsPromise<void>;
+
+  /**
+   * Add a middleware
+   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
+   * @see https://pris.ly/d/extensions
+   */
+  $use(cb: Prisma.Middleware): void
+
+/**
+   * Executes a prepared raw query and returns the number of affected rows.
+   * @example
+   * ```
+   * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
+   * ```
+   *
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   */
+  $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
+
+  /**
+   * Executes a raw query and returns the number of affected rows.
+   * Susceptible to SQL injections, see documentation.
+   * @example
+   * ```
+   * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
+   * ```
+   *
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   */
+  $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
+
+  /**
+   * Performs a prepared raw query and returns the `SELECT` data.
+   * @example
+   * ```
+   * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
+   * ```
+   *
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   */
+  $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
+
+  /**
+   * Performs a raw query and returns the `SELECT` data.
+   * Susceptible to SQL injections, see documentation.
+   * @example
+   * ```
+   * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
+   * ```
+   *
+   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   */
+  $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
+
+
+  /**
+   * Allows the running of a sequence of read/write operations that are guaranteed to either succeed or fail as a whole.
+   * @example
+   * ```
+   * const [george, bob, alice] = await prisma.$transaction([
+   *   prisma.user.create({ data: { name: 'George' } }),
+   *   prisma.user.create({ data: { name: 'Bob' } }),
+   *   prisma.user.create({ data: { name: 'Alice' } }),
+   * ])
+   * ```
+   * 
+   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   */
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+
+  $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
+
+
+  $extends: $Extensions.ExtendsHook<"extends", Prisma.TypeMapCb<ClientOptions>, ExtArgs, $Utils.Call<Prisma.TypeMapCb<ClientOptions>, {
+    extArgs: ExtArgs
+  }>>
+
+      /**
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Users
+    * const users = await prisma.user.findMany()
+    * ```
+    */
+  get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.foodEntry`: Exposes CRUD operations for the **FoodEntry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FoodEntries
+    * const foodEntries = await prisma.foodEntry.findMany()
+    * ```
+    */
+  get foodEntry(): Prisma.FoodEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.food`: Exposes CRUD operations for the **Food** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Foods
+    * const foods = await prisma.food.findMany()
+    * ```
+    */
+  get food(): Prisma.FoodDelegate<ExtArgs, ClientOptions>;
+}
+
+export namespace Prisma {
+  export import DMMF = runtime.DMMF
+
+  export type PrismaPromise<T> = $Public.PrismaPromise<T>
+
+  /**
+   * Validator
+   */
+  export import validator = runtime.Public.validator
+
+  /**
+   * Prisma Errors
+   */
+  export import PrismaClientKnownRequestError = runtime.PrismaClientKnownRequestError
+  export import PrismaClientUnknownRequestError = runtime.PrismaClientUnknownRequestError
+  export import PrismaClientRustPanicError = runtime.PrismaClientRustPanicError
+  export import PrismaClientInitializationError = runtime.PrismaClientInitializationError
+  export import PrismaClientValidationError = runtime.PrismaClientValidationError
+
+  /**
+   * Re-export of sql-template-tag
+   */
+  export import sql = runtime.sqltag
+  export import empty = runtime.empty
+  export import join = runtime.join
+  export import raw = runtime.raw
+  export import Sql = runtime.Sql
+
+
+
+  /**
+   * Decimal.js
+   */
+  export import Decimal = runtime.Decimal
+
+  export type DecimalJsLike = runtime.DecimalJsLike
+
+  /**
+   * Metrics
+   */
+  export type Metrics = runtime.Metrics
+  export type Metric<T> = runtime.Metric<T>
+  export type MetricHistogram = runtime.MetricHistogram
+  export type MetricHistogramBucket = runtime.MetricHistogramBucket
+
+  /**
+  * Extensions
+  */
+  export import Extension = $Extensions.UserArgs
+  export import getExtensionContext = runtime.Extensions.getExtensionContext
+  export import Args = $Public.Args
+  export import Payload = $Public.Payload
+  export import Result = $Public.Result
+  export import Exact = $Public.Exact
+
+  /**
+   * Prisma Client JS version: 6.9.0
+   * Query Engine version: 81e4af48011447c3cc503a190e86995b66d2a28e
+   */
+  export type PrismaVersion = {
+    client: string
+  }
+
+  export const prismaVersion: PrismaVersion
+
+  /**
+   * Utility Types
+   */
+
+
+  export import JsonObject = runtime.JsonObject
+  export import JsonArray = runtime.JsonArray
+  export import JsonValue = runtime.JsonValue
+  export import InputJsonObject = runtime.InputJsonObject
+  export import InputJsonArray = runtime.InputJsonArray
+  export import InputJsonValue = runtime.InputJsonValue
+
+  /**
+   * Types of the values used to represent different kinds of `null` values when working with JSON fields.
+   *
+   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+   */
+  namespace NullTypes {
+    /**
+    * Type of `Prisma.DbNull`.
+    *
+    * You cannot use other instances of this class. Please use the `Prisma.DbNull` value.
+    *
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class DbNull {
+      private DbNull: never
+      private constructor()
+    }
+
+    /**
+    * Type of `Prisma.JsonNull`.
+    *
+    * You cannot use other instances of this class. Please use the `Prisma.JsonNull` value.
+    *
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class JsonNull {
+      private JsonNull: never
+      private constructor()
+    }
+
+    /**
+    * Type of `Prisma.AnyNull`.
+    *
+    * You cannot use other instances of this class. Please use the `Prisma.AnyNull` value.
+    *
+    * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+    */
+    class AnyNull {
+      private AnyNull: never
+      private constructor()
+    }
+  }
+
+  /**
+   * Helper for filtering JSON entries that have `null` on the database (empty on the db)
+   *
+   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+   */
+  export const DbNull: NullTypes.DbNull
+
+  /**
+   * Helper for filtering JSON entries that have JSON `null` values (not empty on the db)
+   *
+   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+   */
+  export const JsonNull: NullTypes.JsonNull
+
+  /**
+   * Helper for filtering JSON entries that are `Prisma.DbNull` or `Prisma.JsonNull`
+   *
+   * @see https://www.prisma.io/docs/concepts/components/prisma-client/working-with-fields/working-with-json-fields#filtering-on-a-json-field
+   */
+  export const AnyNull: NullTypes.AnyNull
+
+  type SelectAndInclude = {
+    select: any
+    include: any
+  }
+
+  type SelectAndOmit = {
+    select: any
+    omit: any
+  }
+
+  /**
+   * Get the type of the value, that the Promise holds.
+   */
+  export type PromiseType<T extends PromiseLike<any>> = T extends PromiseLike<infer U> ? U : T;
+
+  /**
+   * Get the return type of a function which returns a Promise.
+   */
+  export type PromiseReturnType<T extends (...args: any) => $Utils.JsPromise<any>> = PromiseType<ReturnType<T>>
+
+  /**
+   * From T, pick a set of properties whose keys are in the union K
+   */
+  type Prisma__Pick<T, K extends keyof T> = {
+      [P in K]: T[P];
+  };
+
+
+  export type Enumerable<T> = T | Array<T>;
+
+  export type RequiredKeys<T> = {
+    [K in keyof T]-?: {} extends Prisma__Pick<T, K> ? never : K
+  }[keyof T]
+
+  export type TruthyKeys<T> = keyof {
+    [K in keyof T as T[K] extends false | undefined | null ? never : K]: K
+  }
+
+  export type TrueKeys<T> = TruthyKeys<Prisma__Pick<T, RequiredKeys<T>>>
+
+  /**
+   * Subset
+   * @desc From `T` pick properties that exist in `U`. Simple version of Intersection
+   */
+  export type Subset<T, U> = {
+    [key in keyof T]: key extends keyof U ? T[key] : never;
+  };
+
+  /**
+   * SelectSubset
+   * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
+   * Additionally, it validates, if both select and include are present. If the case, it errors.
+   */
+  export type SelectSubset<T, U> = {
+    [key in keyof T]: key extends keyof U ? T[key] : never
+  } &
+    (T extends SelectAndInclude
+      ? 'Please either choose `select` or `include`.'
+      : T extends SelectAndOmit
+        ? 'Please either choose `select` or `omit`.'
+        : {})
+
+  /**
+   * Subset + Intersection
+   * @desc From `T` pick properties that exist in `U` and intersect `K`
+   */
+  export type SubsetIntersection<T, U, K> = {
+    [key in keyof T]: key extends keyof U ? T[key] : never
+  } &
+    K
+
+  type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+
+  /**
+   * XOR is needed to have a real mutually exclusive union type
+   * https://stackoverflow.com/questions/42123407/does-typescript-support-mutually-exclusive-types
+   */
+  type XOR<T, U> =
+    T extends object ?
+    U extends object ?
+      (Without<T, U> & U) | (Without<U, T> & T)
+    : U : T
+
+
+  /**
+   * Is T a Record?
+   */
+  type IsObject<T extends any> = T extends Array<any>
+  ? False
+  : T extends Date
+  ? False
+  : T extends Uint8Array
+  ? False
+  : T extends BigInt
+  ? False
+  : T extends object
+  ? True
+  : False
+
+
+  /**
+   * If it's T[], return T
+   */
+  export type UnEnumerate<T extends unknown> = T extends Array<infer U> ? U : T
+
+  /**
+   * From ts-toolbelt
+   */
+
+  type __Either<O extends object, K extends Key> = Omit<O, K> &
+    {
+      // Merge all but K
+      [P in K]: Prisma__Pick<O, P & keyof O> // With K possibilities
+    }[K]
+
+  type EitherStrict<O extends object, K extends Key> = Strict<__Either<O, K>>
+
+  type EitherLoose<O extends object, K extends Key> = ComputeRaw<__Either<O, K>>
+
+  type _Either<
+    O extends object,
+    K extends Key,
+    strict extends Boolean
+  > = {
+    1: EitherStrict<O, K>
+    0: EitherLoose<O, K>
+  }[strict]
+
+  type Either<
+    O extends object,
+    K extends Key,
+    strict extends Boolean = 1
+  > = O extends unknown ? _Either<O, K, strict> : never
+
+  export type Union = any
+
+  type PatchUndefined<O extends object, O1 extends object> = {
+    [K in keyof O]: O[K] extends undefined ? At<O1, K> : O[K]
+  } & {}
+
+  /** Helper Types for "Merge" **/
+  export type IntersectOf<U extends Union> = (
+    U extends unknown ? (k: U) => void : never
+  ) extends (k: infer I) => void
+    ? I
+    : never
+
+  export type Overwrite<O extends object, O1 extends object> = {
+      [K in keyof O]: K extends keyof O1 ? O1[K] : O[K];
+  } & {};
+
+  type _Merge<U extends object> = IntersectOf<Overwrite<U, {
+      [K in keyof U]-?: At<U, K>;
+  }>>;
+
+  type Key = string | number | symbol;
+  type AtBasic<O extends object, K extends Key> = K extends keyof O ? O[K] : never;
+  type AtStrict<O extends object, K extends Key> = O[K & keyof O];
+  type AtLoose<O extends object, K extends Key> = O extends unknown ? AtStrict<O, K> : never;
+  export type At<O extends object, K extends Key, strict extends Boolean = 1> = {
+      1: AtStrict<O, K>;
+      0: AtLoose<O, K>;
+  }[strict];
+
+  export type ComputeRaw<A extends any> = A extends Function ? A : {
+    [K in keyof A]: A[K];
+  } & {};
+
+  export type OptionalFlat<O> = {
+    [K in keyof O]?: O[K];
+  } & {};
+
+  type _Record<K extends keyof any, T> = {
+    [P in K]: T;
+  };
+
+  // cause typescript not to expand types and preserve names
+  type NoExpand<T> = T extends unknown ? T : never;
+
+  // this type assumes the passed object is entirely optional
+  type AtLeast<O extends object, K extends string> = NoExpand<
+    O extends unknown
+    ? | (K extends keyof O ? { [P in K]: O[P] } & O : O)
+      | {[P in keyof O as P extends K ? P : never]-?: O[P]} & O
+    : never>;
+
+  type _Strict<U, _U = U> = U extends unknown ? U & OptionalFlat<_Record<Exclude<Keys<_U>, keyof U>, never>> : never;
+
+  export type Strict<U extends object> = ComputeRaw<_Strict<U>>;
+  /** End Helper Types for "Merge" **/
+
+  export type Merge<U extends object> = ComputeRaw<_Merge<Strict<U>>>;
+
+  /**
+  A [[Boolean]]
+  */
+  export type Boolean = True | False
+
+  // /**
+  // 1
+  // */
+  export type True = 1
+
+  /**
+  0
+  */
+  export type False = 0
+
+  export type Not<B extends Boolean> = {
+    0: 1
+    1: 0
+  }[B]
+
+  export type Extends<A1 extends any, A2 extends any> = [A1] extends [never]
+    ? 0 // anything `never` is false
+    : A1 extends A2
+    ? 1
+    : 0
+
+  export type Has<U extends Union, U1 extends Union> = Not<
+    Extends<Exclude<U1, U>, U1>
+  >
+
+  export type Or<B1 extends Boolean, B2 extends Boolean> = {
+    0: {
+      0: 0
+      1: 1
+    }
+    1: {
+      0: 1
+      1: 1
+    }
+  }[B1][B2]
+
+  export type Keys<U extends Union> = U extends unknown ? keyof U : never
+
+  type Cast<A, B> = A extends B ? A : B;
+
+  export const type: unique symbol;
+
+
+
+  /**
+   * Used by group by
+   */
+
+  export type GetScalarType<T, O> = O extends object ? {
+    [P in keyof T]: P extends keyof O
+      ? O[P]
+      : never
+  } : never
+
+  type FieldPaths<
+    T,
+    U = Omit<T, '_avg' | '_sum' | '_count' | '_min' | '_max'>
+  > = IsObject<T> extends True ? U : T
+
+  type GetHavingFields<T> = {
+    [K in keyof T]: Or<
+      Or<Extends<'OR', K>, Extends<'AND', K>>,
+      Extends<'NOT', K>
+    > extends True
+      ? // infer is only needed to not hit TS limit
+        // based on the brilliant idea of Pierre-Antoine Mills
+        // https://github.com/microsoft/TypeScript/issues/30188#issuecomment-478938437
+        T[K] extends infer TK
+        ? GetHavingFields<UnEnumerate<TK> extends object ? Merge<UnEnumerate<TK>> : never>
+        : never
+      : {} extends FieldPaths<T[K]>
+      ? never
+      : K
+  }[keyof T]
+
+  /**
+   * Convert tuple to union
+   */
+  type _TupleToUnion<T> = T extends (infer E)[] ? E : never
+  type TupleToUnion<K extends readonly any[]> = _TupleToUnion<K>
+  type MaybeTupleToUnion<T> = T extends any[] ? TupleToUnion<T> : T
+
+  /**
+   * Like `Pick`, but additionally can also accept an array of keys
+   */
+  type PickEnumerable<T, K extends Enumerable<keyof T> | keyof T> = Prisma__Pick<T, MaybeTupleToUnion<K>>
+
+  /**
+   * Exclude all keys with underscores
+   */
+  type ExcludeUnderscoreKeys<T extends string> = T extends `_${string}` ? never : T
+
+
+  export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>
+
+  type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>
+
+
+  export const ModelName: {
+    User: 'User',
+    FoodEntry: 'FoodEntry',
+    Food: 'Food'
+  };
+
+  export type ModelName = (typeof ModelName)[keyof typeof ModelName]
+
+
+  export type Datasources = {
+    db?: Datasource
+  }
+
+  interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
+    returns: Prisma.TypeMap<this['params']['extArgs'], ClientOptions extends { omit: infer OmitOptions } ? OmitOptions : {}>
+  }
+
+  export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> = {
+    globalOmitOptions: {
+      omit: GlobalOmitOptions
+    }
+    meta: {
+      modelProps: "user" | "foodEntry" | "food"
+      txIsolationLevel: Prisma.TransactionIsolationLevel
+    }
+    model: {
+      User: {
+        payload: Prisma.$UserPayload<ExtArgs>
+        fields: Prisma.UserFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findFirst: {
+            args: Prisma.UserFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          findMany: {
+            args: Prisma.UserFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>[]
+          }
+          create: {
+            args: Prisma.UserCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          createMany: {
+            args: Prisma.UserCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.UserDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          update: {
+            args: Prisma.UserUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.UserUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserPayload>
+          }
+          aggregate: {
+            args: Prisma.UserAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUser>
+          }
+          groupBy: {
+            args: Prisma.UserGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserCountArgs<ExtArgs>
+            result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      FoodEntry: {
+        payload: Prisma.$FoodEntryPayload<ExtArgs>
+        fields: Prisma.FoodEntryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FoodEntryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FoodEntryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          findFirst: {
+            args: Prisma.FoodEntryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FoodEntryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          findMany: {
+            args: Prisma.FoodEntryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>[]
+          }
+          create: {
+            args: Prisma.FoodEntryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          createMany: {
+            args: Prisma.FoodEntryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.FoodEntryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          update: {
+            args: Prisma.FoodEntryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          deleteMany: {
+            args: Prisma.FoodEntryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FoodEntryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FoodEntryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodEntryPayload>
+          }
+          aggregate: {
+            args: Prisma.FoodEntryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFoodEntry>
+          }
+          groupBy: {
+            args: Prisma.FoodEntryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FoodEntryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FoodEntryCountArgs<ExtArgs>
+            result: $Utils.Optional<FoodEntryCountAggregateOutputType> | number
+          }
+        }
+      }
+      Food: {
+        payload: Prisma.$FoodPayload<ExtArgs>
+        fields: Prisma.FoodFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FoodFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FoodFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          findFirst: {
+            args: Prisma.FoodFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FoodFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          findMany: {
+            args: Prisma.FoodFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>[]
+          }
+          create: {
+            args: Prisma.FoodCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          createMany: {
+            args: Prisma.FoodCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.FoodDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          update: {
+            args: Prisma.FoodUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          deleteMany: {
+            args: Prisma.FoodDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FoodUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.FoodUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FoodPayload>
+          }
+          aggregate: {
+            args: Prisma.FoodAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFood>
+          }
+          groupBy: {
+            args: Prisma.FoodGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FoodGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FoodCountArgs<ExtArgs>
+            result: $Utils.Optional<FoodCountAggregateOutputType> | number
+          }
+        }
+      }
+    }
+  } & {
+    other: {
+      payload: any
+      operations: {
+        $executeRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+        $executeRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+        $queryRaw: {
+          args: [query: TemplateStringsArray | Prisma.Sql, ...values: any[]],
+          result: any
+        }
+        $queryRawUnsafe: {
+          args: [query: string, ...values: any[]],
+          result: any
+        }
+      }
+    }
+  }
+  export const defineExtension: $Extensions.ExtendsHook<"define", Prisma.TypeMapCb, $Extensions.DefaultArgs>
+  export type DefaultPrismaClient = PrismaClient
+  export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
+  export interface PrismaClientOptions {
+    /**
+     * Overwrites the datasource url from your schema.prisma file
+     */
+    datasources?: Datasources
+    /**
+     * Overwrites the datasource url from your schema.prisma file
+     */
+    datasourceUrl?: string
+    /**
+     * @default "colorless"
+     */
+    errorFormat?: ErrorFormat
+    /**
+     * @example
+     * ```
+     * // Defaults to stdout
+     * log: ['query', 'info', 'warn', 'error']
+     * 
+     * // Emit as events
+     * log: [
+     *   { emit: 'stdout', level: 'query' },
+     *   { emit: 'stdout', level: 'info' },
+     *   { emit: 'stdout', level: 'warn' }
+     *   { emit: 'stdout', level: 'error' }
+     * ]
+     * ```
+     * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
+     */
+    log?: (LogLevel | LogDefinition)[]
+    /**
+     * The default values for transactionOptions
+     * maxWait ?= 2000
+     * timeout ?= 5000
+     */
+    transactionOptions?: {
+      maxWait?: number
+      timeout?: number
+      isolationLevel?: Prisma.TransactionIsolationLevel
+    }
+    /**
+     * Global configuration for omitting model fields by default.
+     * 
+     * @example
+     * ```
+     * const prisma = new PrismaClient({
+     *   omit: {
+     *     user: {
+     *       password: true
+     *     }
+     *   }
+     * })
+     * ```
+     */
+    omit?: Prisma.GlobalOmitConfig
+  }
+  export type GlobalOmitConfig = {
+    user?: UserOmit
+    foodEntry?: FoodEntryOmit
+    food?: FoodOmit
+  }
+
+  /* Types for Logging */
+  export type LogLevel = 'info' | 'query' | 'warn' | 'error'
+  export type LogDefinition = {
+    level: LogLevel
+    emit: 'stdout' | 'event'
+  }
+
+  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
+  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
+    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
+    : never
+
+  export type QueryEvent = {
+    timestamp: Date
+    query: string
+    params: string
+    duration: number
+    target: string
+  }
+
+  export type LogEvent = {
+    timestamp: Date
+    message: string
+    target: string
+  }
+  /* End Types for Logging */
+
+
+  export type PrismaAction =
+    | 'findUnique'
+    | 'findUniqueOrThrow'
+    | 'findMany'
+    | 'findFirst'
+    | 'findFirstOrThrow'
+    | 'create'
+    | 'createMany'
+    | 'createManyAndReturn'
+    | 'update'
+    | 'updateMany'
+    | 'updateManyAndReturn'
+    | 'upsert'
+    | 'delete'
+    | 'deleteMany'
+    | 'executeRaw'
+    | 'queryRaw'
+    | 'aggregate'
+    | 'count'
+    | 'runCommandRaw'
+    | 'findRaw'
+    | 'groupBy'
+
+  /**
+   * These options are being passed into the middleware as "params"
+   */
+  export type MiddlewareParams = {
+    model?: ModelName
+    action: PrismaAction
+    args: any
+    dataPath: string[]
+    runInTransaction: boolean
+  }
+
+  /**
+   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
+   */
+  export type Middleware<T = any> = (
+    params: MiddlewareParams,
+    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
+  ) => $Utils.JsPromise<T>
+
+  // tested in getLogLevel.test.ts
+  export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
+
+  /**
+   * `PrismaClient` proxy available in interactive transactions.
+   */
+  export type TransactionClient = Omit<Prisma.DefaultPrismaClient, runtime.ITXClientDenyList>
+
+  export type Datasource = {
+    url?: string
+  }
+
+  /**
+   * Count Types
+   */
+
+
+  /**
+   * Count Type UserCountOutputType
+   */
+
+  export type UserCountOutputType = {
+    foodEntries: number
+  }
+
+  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foodEntries?: boolean | UserCountOutputTypeCountFoodEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserCountOutputType
+     */
+    select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountFoodEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FoodEntryWhereInput
+  }
+
+
+  /**
+   * Models
+   */
+
+  /**
+   * Model User
+   */
+
+  export type AggregateUser = {
+    _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    id: number | null
+    height: number | null
+    weight: number | null
+    caloriesGoal: number | null
+    proteinGoal: number | null
+    fatGoal: number | null
+    carbsGoal: number | null
+    fiberGoal: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    id: number | null
+    height: number | null
+    weight: number | null
+    caloriesGoal: number | null
+    proteinGoal: number | null
+    fatGoal: number | null
+    carbsGoal: number | null
+    fiberGoal: number | null
+  }
+
+  export type UserMinAggregateOutputType = {
+    id: number | null
+    email: string | null
+    name: string | null
+    passwordHash: string | null
+    birthday: Date | null
+    sex: string | null
+    height: number | null
+    weight: number | null
+    caloriesGoal: number | null
+    proteinGoal: number | null
+    fatGoal: number | null
+    carbsGoal: number | null
+    fiberGoal: number | null
+    createdAt: Date | null
+  }
+
+  export type UserMaxAggregateOutputType = {
+    id: number | null
+    email: string | null
+    name: string | null
+    passwordHash: string | null
+    birthday: Date | null
+    sex: string | null
+    height: number | null
+    weight: number | null
+    caloriesGoal: number | null
+    proteinGoal: number | null
+    fatGoal: number | null
+    carbsGoal: number | null
+    fiberGoal: number | null
+    createdAt: Date | null
+  }
+
+  export type UserCountAggregateOutputType = {
+    id: number
+    email: number
+    name: number
+    passwordHash: number
+    birthday: number
+    sex: number
+    height: number
+    weight: number
+    caloriesGoal: number
+    proteinGoal: number
+    fatGoal: number
+    carbsGoal: number
+    fiberGoal: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type UserAvgAggregateInputType = {
+    id?: true
+    height?: true
+    weight?: true
+    caloriesGoal?: true
+    proteinGoal?: true
+    fatGoal?: true
+    carbsGoal?: true
+    fiberGoal?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    id?: true
+    height?: true
+    weight?: true
+    caloriesGoal?: true
+    proteinGoal?: true
+    fatGoal?: true
+    carbsGoal?: true
+    fiberGoal?: true
+  }
+
+  export type UserMinAggregateInputType = {
+    id?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    birthday?: true
+    sex?: true
+    height?: true
+    weight?: true
+    caloriesGoal?: true
+    proteinGoal?: true
+    fatGoal?: true
+    carbsGoal?: true
+    fiberGoal?: true
+    createdAt?: true
+  }
+
+  export type UserMaxAggregateInputType = {
+    id?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    birthday?: true
+    sex?: true
+    height?: true
+    weight?: true
+    caloriesGoal?: true
+    proteinGoal?: true
+    fatGoal?: true
+    carbsGoal?: true
+    fiberGoal?: true
+    createdAt?: true
+  }
+
+  export type UserCountAggregateInputType = {
+    id?: true
+    email?: true
+    name?: true
+    passwordHash?: true
+    birthday?: true
+    sex?: true
+    height?: true
+    weight?: true
+    caloriesGoal?: true
+    proteinGoal?: true
+    fatGoal?: true
+    carbsGoal?: true
+    fiberGoal?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type UserAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which User to aggregate.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Users
+    **/
+    _count?: true | UserCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type GetUserAggregateType<T extends UserAggregateArgs> = {
+        [P in keyof T & keyof AggregateUser]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUser[P]>
+      : GetScalarType<T[P], AggregateUser[P]>
+  }
+
+
+
+
+  export type UserGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithAggregationInput | UserOrderByWithAggregationInput[]
+    by: UserScalarFieldEnum[] | UserScalarFieldEnum
+    having?: UserScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
+    _min?: UserMinAggregateInputType
+    _max?: UserMaxAggregateInputType
+  }
+
+  export type UserGroupByOutputType = {
+    id: number
+    email: string
+    name: string | null
+    passwordHash: string
+    birthday: Date | null
+    sex: string | null
+    height: number | null
+    weight: number | null
+    caloriesGoal: number | null
+    proteinGoal: number | null
+    fatGoal: number | null
+    carbsGoal: number | null
+    fiberGoal: number | null
+    createdAt: Date
+    _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
+    _min: UserMinAggregateOutputType | null
+    _max: UserMaxAggregateOutputType | null
+  }
+
+  type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserGroupByOutputType[P]>
+            : GetScalarType<T[P], UserGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    birthday?: boolean
+    sex?: boolean
+    height?: boolean
+    weight?: boolean
+    caloriesGoal?: boolean
+    proteinGoal?: boolean
+    fatGoal?: boolean
+    carbsGoal?: boolean
+    fiberGoal?: boolean
+    createdAt?: boolean
+    foodEntries?: boolean | User$foodEntriesArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["user"]>
+
+
+
+  export type UserSelectScalar = {
+    id?: boolean
+    email?: boolean
+    name?: boolean
+    passwordHash?: boolean
+    birthday?: boolean
+    sex?: boolean
+    height?: boolean
+    weight?: boolean
+    caloriesGoal?: boolean
+    proteinGoal?: boolean
+    fatGoal?: boolean
+    carbsGoal?: boolean
+    fiberGoal?: boolean
+    createdAt?: boolean
+  }
+
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "name" | "passwordHash" | "birthday" | "sex" | "height" | "weight" | "caloriesGoal" | "proteinGoal" | "fatGoal" | "carbsGoal" | "fiberGoal" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foodEntries?: boolean | User$foodEntriesArgs<ExtArgs>
+    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "User"
+    objects: {
+      foodEntries: Prisma.$FoodEntryPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      email: string
+      name: string | null
+      passwordHash: string
+      birthday: Date | null
+      sex: string | null
+      height: number | null
+      weight: number | null
+      caloriesGoal: number | null
+      proteinGoal: number | null
+      fatGoal: number | null
+      carbsGoal: number | null
+      fiberGoal: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["user"]>
+    composites: {}
+  }
+
+  type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = $Result.GetResult<Prisma.$UserPayload, S>
+
+  type UserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserCountAggregateInputType | true
+    }
+
+  export interface UserDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['User'], meta: { name: 'User' } }
+    /**
+     * Find zero or one User that matches the filter.
+     * @param {UserFindUniqueArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserFindUniqueArgs>(args: SelectSubset<T, UserFindUniqueArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one User that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserFindUniqueOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserFindUniqueOrThrowArgs>(args: SelectSubset<T, UserFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserFindFirstArgs>(args?: SelectSubset<T, UserFindFirstArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first User that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindFirstOrThrowArgs} args - Arguments to find a User
+     * @example
+     * // Get one User
+     * const user = await prisma.user.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserFindFirstOrThrowArgs>(args?: SelectSubset<T, UserFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Users that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Users
+     * const users = await prisma.user.findMany()
+     * 
+     * // Get first 10 Users
+     * const users = await prisma.user.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserFindManyArgs>(args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a User.
+     * @param {UserCreateArgs} args - Arguments to create a User.
+     * @example
+     * // Create one User
+     * const User = await prisma.user.create({
+     *   data: {
+     *     // ... data to create a User
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserCreateArgs>(args: SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Users.
+     * @param {UserCreateManyArgs} args - Arguments to create many Users.
+     * @example
+     * // Create many Users
+     * const user = await prisma.user.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserCreateManyArgs>(args?: SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a User.
+     * @param {UserDeleteArgs} args - Arguments to delete one User.
+     * @example
+     * // Delete one User
+     * const User = await prisma.user.delete({
+     *   where: {
+     *     // ... filter to delete one User
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDeleteArgs>(args: SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one User.
+     * @param {UserUpdateArgs} args - Arguments to update one User.
+     * @example
+     * // Update one User
+     * const user = await prisma.user.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserUpdateArgs>(args: SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Users.
+     * @param {UserDeleteManyArgs} args - Arguments to filter Users to delete.
+     * @example
+     * // Delete a few Users
+     * const { count } = await prisma.user.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDeleteManyArgs>(args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Users
+     * const user = await prisma.user.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserUpdateManyArgs>(args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one User.
+     * @param {UserUpsertArgs} args - Arguments to update or create a User.
+     * @example
+     * // Update or create a User
+     * const user = await prisma.user.upsert({
+     *   create: {
+     *     // ... data to create a User
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the User we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserUpsertArgs>(args: SelectSubset<T, UserUpsertArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Users.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserCountArgs} args - Arguments to filter Users to count.
+     * @example
+     * // Count the number of Users
+     * const count = await prisma.user.count({
+     *   where: {
+     *     // ... the filter for the Users we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserCountArgs>(
+      args?: Subset<T, UserCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserAggregateArgs>(args: Subset<T, UserAggregateArgs>): Prisma.PrismaPromise<GetUserAggregateType<T>>
+
+    /**
+     * Group by User.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserGroupByArgs['orderBy'] }
+        : { orderBy?: UserGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the User model
+   */
+  readonly fields: UserFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for User.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    foodEntries<T extends User$foodEntriesArgs<ExtArgs> = {}>(args?: Subset<T, User$foodEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the User model
+   */
+  interface UserFieldRefs {
+    readonly id: FieldRef<"User", 'Int'>
+    readonly email: FieldRef<"User", 'String'>
+    readonly name: FieldRef<"User", 'String'>
+    readonly passwordHash: FieldRef<"User", 'String'>
+    readonly birthday: FieldRef<"User", 'DateTime'>
+    readonly sex: FieldRef<"User", 'String'>
+    readonly height: FieldRef<"User", 'Float'>
+    readonly weight: FieldRef<"User", 'Float'>
+    readonly caloriesGoal: FieldRef<"User", 'Int'>
+    readonly proteinGoal: FieldRef<"User", 'Float'>
+    readonly fatGoal: FieldRef<"User", 'Float'>
+    readonly carbsGoal: FieldRef<"User", 'Float'>
+    readonly fiberGoal: FieldRef<"User", 'Float'>
+    readonly createdAt: FieldRef<"User", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * User findUnique
+   */
+  export type UserFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findUniqueOrThrow
+   */
+  export type UserFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User findFirst
+   */
+  export type UserFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findFirstOrThrow
+   */
+  export type UserFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which User to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Users.
+     */
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User findMany
+   */
+  export type UserFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter, which Users to fetch.
+     */
+    where?: UserWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Users to fetch.
+     */
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Users.
+     */
+    cursor?: UserWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Users from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Users.
+     */
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * User create
+   */
+  export type UserCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to create a User.
+     */
+    data: XOR<UserCreateInput, UserUncheckedCreateInput>
+  }
+
+  /**
+   * User createMany
+   */
+  export type UserCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Users.
+     */
+    data: UserCreateManyInput | UserCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * User update
+   */
+  export type UserUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The data needed to update a User.
+     */
+    data: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+    /**
+     * Choose, which User to update.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User updateMany
+   */
+  export type UserUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Users.
+     */
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyInput>
+    /**
+     * Filter which Users to update
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * User upsert
+   */
+  export type UserUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * The filter to search for the User to update in case it exists.
+     */
+    where: UserWhereUniqueInput
+    /**
+     * In case the User found by the `where` argument doesn't exist, create a new User with this data.
+     */
+    create: XOR<UserCreateInput, UserUncheckedCreateInput>
+    /**
+     * In case the User was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserUpdateInput, UserUncheckedUpdateInput>
+  }
+
+  /**
+   * User delete
+   */
+  export type UserDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    /**
+     * Filter which User to delete.
+     */
+    where: UserWhereUniqueInput
+  }
+
+  /**
+   * User deleteMany
+   */
+  export type UserDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Users to delete
+     */
+    where?: UserWhereInput
+    /**
+     * Limit how many Users to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * User.foodEntries
+   */
+  export type User$foodEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    where?: FoodEntryWhereInput
+    orderBy?: FoodEntryOrderByWithRelationInput | FoodEntryOrderByWithRelationInput[]
+    cursor?: FoodEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FoodEntryScalarFieldEnum | FoodEntryScalarFieldEnum[]
+  }
+
+  /**
+   * User without action
+   */
+  export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FoodEntry
+   */
+
+  export type AggregateFoodEntry = {
+    _count: FoodEntryCountAggregateOutputType | null
+    _avg: FoodEntryAvgAggregateOutputType | null
+    _sum: FoodEntrySumAggregateOutputType | null
+    _min: FoodEntryMinAggregateOutputType | null
+    _max: FoodEntryMaxAggregateOutputType | null
+  }
+
+  export type FoodEntryAvgAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+  }
+
+  export type FoodEntrySumAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+  }
+
+  export type FoodEntryMinAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    name: string | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+    date: Date | null
+    createdAt: Date | null
+  }
+
+  export type FoodEntryMaxAggregateOutputType = {
+    id: number | null
+    userId: number | null
+    name: string | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+    date: Date | null
+    createdAt: Date | null
+  }
+
+  export type FoodEntryCountAggregateOutputType = {
+    id: number
+    userId: number
+    name: number
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber: number
+    date: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FoodEntryAvgAggregateInputType = {
+    id?: true
+    userId?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+  }
+
+  export type FoodEntrySumAggregateInputType = {
+    id?: true
+    userId?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+  }
+
+  export type FoodEntryMinAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    date?: true
+    createdAt?: true
+  }
+
+  export type FoodEntryMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    date?: true
+    createdAt?: true
+  }
+
+  export type FoodEntryCountAggregateInputType = {
+    id?: true
+    userId?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    date?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FoodEntryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FoodEntry to aggregate.
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FoodEntries to fetch.
+     */
+    orderBy?: FoodEntryOrderByWithRelationInput | FoodEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FoodEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FoodEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FoodEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FoodEntries
+    **/
+    _count?: true | FoodEntryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FoodEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FoodEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FoodEntryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FoodEntryMaxAggregateInputType
+  }
+
+  export type GetFoodEntryAggregateType<T extends FoodEntryAggregateArgs> = {
+        [P in keyof T & keyof AggregateFoodEntry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFoodEntry[P]>
+      : GetScalarType<T[P], AggregateFoodEntry[P]>
+  }
+
+
+
+
+  export type FoodEntryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FoodEntryWhereInput
+    orderBy?: FoodEntryOrderByWithAggregationInput | FoodEntryOrderByWithAggregationInput[]
+    by: FoodEntryScalarFieldEnum[] | FoodEntryScalarFieldEnum
+    having?: FoodEntryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FoodEntryCountAggregateInputType | true
+    _avg?: FoodEntryAvgAggregateInputType
+    _sum?: FoodEntrySumAggregateInputType
+    _min?: FoodEntryMinAggregateInputType
+    _max?: FoodEntryMaxAggregateInputType
+  }
+
+  export type FoodEntryGroupByOutputType = {
+    id: number
+    userId: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber: number | null
+    date: Date
+    createdAt: Date
+    _count: FoodEntryCountAggregateOutputType | null
+    _avg: FoodEntryAvgAggregateOutputType | null
+    _sum: FoodEntrySumAggregateOutputType | null
+    _min: FoodEntryMinAggregateOutputType | null
+    _max: FoodEntryMaxAggregateOutputType | null
+  }
+
+  type GetFoodEntryGroupByPayload<T extends FoodEntryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FoodEntryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FoodEntryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FoodEntryGroupByOutputType[P]>
+            : GetScalarType<T[P], FoodEntryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FoodEntrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    calories?: boolean
+    protein?: boolean
+    fat?: boolean
+    carbs?: boolean
+    fiber?: boolean
+    date?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foodEntry"]>
+
+
+
+  export type FoodEntrySelectScalar = {
+    id?: boolean
+    userId?: boolean
+    name?: boolean
+    calories?: boolean
+    protein?: boolean
+    fat?: boolean
+    carbs?: boolean
+    fiber?: boolean
+    date?: boolean
+    createdAt?: boolean
+  }
+
+  export type FoodEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "calories" | "protein" | "fat" | "carbs" | "fiber" | "date" | "createdAt", ExtArgs["result"]["foodEntry"]>
+  export type FoodEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $FoodEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FoodEntry"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: number
+      name: string
+      calories: number
+      protein: number
+      fat: number
+      carbs: number
+      fiber: number | null
+      date: Date
+      createdAt: Date
+    }, ExtArgs["result"]["foodEntry"]>
+    composites: {}
+  }
+
+  type FoodEntryGetPayload<S extends boolean | null | undefined | FoodEntryDefaultArgs> = $Result.GetResult<Prisma.$FoodEntryPayload, S>
+
+  type FoodEntryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FoodEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FoodEntryCountAggregateInputType | true
+    }
+
+  export interface FoodEntryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FoodEntry'], meta: { name: 'FoodEntry' } }
+    /**
+     * Find zero or one FoodEntry that matches the filter.
+     * @param {FoodEntryFindUniqueArgs} args - Arguments to find a FoodEntry
+     * @example
+     * // Get one FoodEntry
+     * const foodEntry = await prisma.foodEntry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FoodEntryFindUniqueArgs>(args: SelectSubset<T, FoodEntryFindUniqueArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FoodEntry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FoodEntryFindUniqueOrThrowArgs} args - Arguments to find a FoodEntry
+     * @example
+     * // Get one FoodEntry
+     * const foodEntry = await prisma.foodEntry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FoodEntryFindUniqueOrThrowArgs>(args: SelectSubset<T, FoodEntryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FoodEntry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryFindFirstArgs} args - Arguments to find a FoodEntry
+     * @example
+     * // Get one FoodEntry
+     * const foodEntry = await prisma.foodEntry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FoodEntryFindFirstArgs>(args?: SelectSubset<T, FoodEntryFindFirstArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FoodEntry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryFindFirstOrThrowArgs} args - Arguments to find a FoodEntry
+     * @example
+     * // Get one FoodEntry
+     * const foodEntry = await prisma.foodEntry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FoodEntryFindFirstOrThrowArgs>(args?: SelectSubset<T, FoodEntryFindFirstOrThrowArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FoodEntries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FoodEntries
+     * const foodEntries = await prisma.foodEntry.findMany()
+     * 
+     * // Get first 10 FoodEntries
+     * const foodEntries = await prisma.foodEntry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const foodEntryWithIdOnly = await prisma.foodEntry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FoodEntryFindManyArgs>(args?: SelectSubset<T, FoodEntryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FoodEntry.
+     * @param {FoodEntryCreateArgs} args - Arguments to create a FoodEntry.
+     * @example
+     * // Create one FoodEntry
+     * const FoodEntry = await prisma.foodEntry.create({
+     *   data: {
+     *     // ... data to create a FoodEntry
+     *   }
+     * })
+     * 
+     */
+    create<T extends FoodEntryCreateArgs>(args: SelectSubset<T, FoodEntryCreateArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FoodEntries.
+     * @param {FoodEntryCreateManyArgs} args - Arguments to create many FoodEntries.
+     * @example
+     * // Create many FoodEntries
+     * const foodEntry = await prisma.foodEntry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FoodEntryCreateManyArgs>(args?: SelectSubset<T, FoodEntryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a FoodEntry.
+     * @param {FoodEntryDeleteArgs} args - Arguments to delete one FoodEntry.
+     * @example
+     * // Delete one FoodEntry
+     * const FoodEntry = await prisma.foodEntry.delete({
+     *   where: {
+     *     // ... filter to delete one FoodEntry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FoodEntryDeleteArgs>(args: SelectSubset<T, FoodEntryDeleteArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FoodEntry.
+     * @param {FoodEntryUpdateArgs} args - Arguments to update one FoodEntry.
+     * @example
+     * // Update one FoodEntry
+     * const foodEntry = await prisma.foodEntry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FoodEntryUpdateArgs>(args: SelectSubset<T, FoodEntryUpdateArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FoodEntries.
+     * @param {FoodEntryDeleteManyArgs} args - Arguments to filter FoodEntries to delete.
+     * @example
+     * // Delete a few FoodEntries
+     * const { count } = await prisma.foodEntry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FoodEntryDeleteManyArgs>(args?: SelectSubset<T, FoodEntryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FoodEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FoodEntries
+     * const foodEntry = await prisma.foodEntry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FoodEntryUpdateManyArgs>(args: SelectSubset<T, FoodEntryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one FoodEntry.
+     * @param {FoodEntryUpsertArgs} args - Arguments to update or create a FoodEntry.
+     * @example
+     * // Update or create a FoodEntry
+     * const foodEntry = await prisma.foodEntry.upsert({
+     *   create: {
+     *     // ... data to create a FoodEntry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FoodEntry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FoodEntryUpsertArgs>(args: SelectSubset<T, FoodEntryUpsertArgs<ExtArgs>>): Prisma__FoodEntryClient<$Result.GetResult<Prisma.$FoodEntryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FoodEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryCountArgs} args - Arguments to filter FoodEntries to count.
+     * @example
+     * // Count the number of FoodEntries
+     * const count = await prisma.foodEntry.count({
+     *   where: {
+     *     // ... the filter for the FoodEntries we want to count
+     *   }
+     * })
+    **/
+    count<T extends FoodEntryCountArgs>(
+      args?: Subset<T, FoodEntryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FoodEntryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FoodEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FoodEntryAggregateArgs>(args: Subset<T, FoodEntryAggregateArgs>): Prisma.PrismaPromise<GetFoodEntryAggregateType<T>>
+
+    /**
+     * Group by FoodEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodEntryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FoodEntryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FoodEntryGroupByArgs['orderBy'] }
+        : { orderBy?: FoodEntryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FoodEntryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFoodEntryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FoodEntry model
+   */
+  readonly fields: FoodEntryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FoodEntry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FoodEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FoodEntry model
+   */
+  interface FoodEntryFieldRefs {
+    readonly id: FieldRef<"FoodEntry", 'Int'>
+    readonly userId: FieldRef<"FoodEntry", 'Int'>
+    readonly name: FieldRef<"FoodEntry", 'String'>
+    readonly calories: FieldRef<"FoodEntry", 'Int'>
+    readonly protein: FieldRef<"FoodEntry", 'Float'>
+    readonly fat: FieldRef<"FoodEntry", 'Float'>
+    readonly carbs: FieldRef<"FoodEntry", 'Float'>
+    readonly fiber: FieldRef<"FoodEntry", 'Float'>
+    readonly date: FieldRef<"FoodEntry", 'DateTime'>
+    readonly createdAt: FieldRef<"FoodEntry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FoodEntry findUnique
+   */
+  export type FoodEntryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which FoodEntry to fetch.
+     */
+    where: FoodEntryWhereUniqueInput
+  }
+
+  /**
+   * FoodEntry findUniqueOrThrow
+   */
+  export type FoodEntryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which FoodEntry to fetch.
+     */
+    where: FoodEntryWhereUniqueInput
+  }
+
+  /**
+   * FoodEntry findFirst
+   */
+  export type FoodEntryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which FoodEntry to fetch.
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FoodEntries to fetch.
+     */
+    orderBy?: FoodEntryOrderByWithRelationInput | FoodEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FoodEntries.
+     */
+    cursor?: FoodEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FoodEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FoodEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FoodEntries.
+     */
+    distinct?: FoodEntryScalarFieldEnum | FoodEntryScalarFieldEnum[]
+  }
+
+  /**
+   * FoodEntry findFirstOrThrow
+   */
+  export type FoodEntryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which FoodEntry to fetch.
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FoodEntries to fetch.
+     */
+    orderBy?: FoodEntryOrderByWithRelationInput | FoodEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FoodEntries.
+     */
+    cursor?: FoodEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FoodEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FoodEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FoodEntries.
+     */
+    distinct?: FoodEntryScalarFieldEnum | FoodEntryScalarFieldEnum[]
+  }
+
+  /**
+   * FoodEntry findMany
+   */
+  export type FoodEntryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which FoodEntries to fetch.
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FoodEntries to fetch.
+     */
+    orderBy?: FoodEntryOrderByWithRelationInput | FoodEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FoodEntries.
+     */
+    cursor?: FoodEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FoodEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FoodEntries.
+     */
+    skip?: number
+    distinct?: FoodEntryScalarFieldEnum | FoodEntryScalarFieldEnum[]
+  }
+
+  /**
+   * FoodEntry create
+   */
+  export type FoodEntryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FoodEntry.
+     */
+    data: XOR<FoodEntryCreateInput, FoodEntryUncheckedCreateInput>
+  }
+
+  /**
+   * FoodEntry createMany
+   */
+  export type FoodEntryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FoodEntries.
+     */
+    data: FoodEntryCreateManyInput | FoodEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FoodEntry update
+   */
+  export type FoodEntryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FoodEntry.
+     */
+    data: XOR<FoodEntryUpdateInput, FoodEntryUncheckedUpdateInput>
+    /**
+     * Choose, which FoodEntry to update.
+     */
+    where: FoodEntryWhereUniqueInput
+  }
+
+  /**
+   * FoodEntry updateMany
+   */
+  export type FoodEntryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FoodEntries.
+     */
+    data: XOR<FoodEntryUpdateManyMutationInput, FoodEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which FoodEntries to update
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * Limit how many FoodEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FoodEntry upsert
+   */
+  export type FoodEntryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FoodEntry to update in case it exists.
+     */
+    where: FoodEntryWhereUniqueInput
+    /**
+     * In case the FoodEntry found by the `where` argument doesn't exist, create a new FoodEntry with this data.
+     */
+    create: XOR<FoodEntryCreateInput, FoodEntryUncheckedCreateInput>
+    /**
+     * In case the FoodEntry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FoodEntryUpdateInput, FoodEntryUncheckedUpdateInput>
+  }
+
+  /**
+   * FoodEntry delete
+   */
+  export type FoodEntryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+    /**
+     * Filter which FoodEntry to delete.
+     */
+    where: FoodEntryWhereUniqueInput
+  }
+
+  /**
+   * FoodEntry deleteMany
+   */
+  export type FoodEntryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FoodEntries to delete
+     */
+    where?: FoodEntryWhereInput
+    /**
+     * Limit how many FoodEntries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FoodEntry without action
+   */
+  export type FoodEntryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FoodEntry
+     */
+    select?: FoodEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FoodEntry
+     */
+    omit?: FoodEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FoodEntryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Food
+   */
+
+  export type AggregateFood = {
+    _count: FoodCountAggregateOutputType | null
+    _avg: FoodAvgAggregateOutputType | null
+    _sum: FoodSumAggregateOutputType | null
+    _min: FoodMinAggregateOutputType | null
+    _max: FoodMaxAggregateOutputType | null
+  }
+
+  export type FoodAvgAggregateOutputType = {
+    id: number | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+  }
+
+  export type FoodSumAggregateOutputType = {
+    id: number | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+  }
+
+  export type FoodMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+    createdAt: Date | null
+  }
+
+  export type FoodMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    calories: number | null
+    protein: number | null
+    fat: number | null
+    carbs: number | null
+    fiber: number | null
+    createdAt: Date | null
+  }
+
+  export type FoodCountAggregateOutputType = {
+    id: number
+    name: number
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type FoodAvgAggregateInputType = {
+    id?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+  }
+
+  export type FoodSumAggregateInputType = {
+    id?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+  }
+
+  export type FoodMinAggregateInputType = {
+    id?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    createdAt?: true
+  }
+
+  export type FoodMaxAggregateInputType = {
+    id?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    createdAt?: true
+  }
+
+  export type FoodCountAggregateInputType = {
+    id?: true
+    name?: true
+    calories?: true
+    protein?: true
+    fat?: true
+    carbs?: true
+    fiber?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type FoodAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Food to aggregate.
+     */
+    where?: FoodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Foods to fetch.
+     */
+    orderBy?: FoodOrderByWithRelationInput | FoodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FoodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Foods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Foods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Foods
+    **/
+    _count?: true | FoodCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FoodAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FoodSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FoodMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FoodMaxAggregateInputType
+  }
+
+  export type GetFoodAggregateType<T extends FoodAggregateArgs> = {
+        [P in keyof T & keyof AggregateFood]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFood[P]>
+      : GetScalarType<T[P], AggregateFood[P]>
+  }
+
+
+
+
+  export type FoodGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FoodWhereInput
+    orderBy?: FoodOrderByWithAggregationInput | FoodOrderByWithAggregationInput[]
+    by: FoodScalarFieldEnum[] | FoodScalarFieldEnum
+    having?: FoodScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FoodCountAggregateInputType | true
+    _avg?: FoodAvgAggregateInputType
+    _sum?: FoodSumAggregateInputType
+    _min?: FoodMinAggregateInputType
+    _max?: FoodMaxAggregateInputType
+  }
+
+  export type FoodGroupByOutputType = {
+    id: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber: number | null
+    createdAt: Date
+    _count: FoodCountAggregateOutputType | null
+    _avg: FoodAvgAggregateOutputType | null
+    _sum: FoodSumAggregateOutputType | null
+    _min: FoodMinAggregateOutputType | null
+    _max: FoodMaxAggregateOutputType | null
+  }
+
+  type GetFoodGroupByPayload<T extends FoodGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FoodGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FoodGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FoodGroupByOutputType[P]>
+            : GetScalarType<T[P], FoodGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FoodSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    calories?: boolean
+    protein?: boolean
+    fat?: boolean
+    carbs?: boolean
+    fiber?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["food"]>
+
+
+
+  export type FoodSelectScalar = {
+    id?: boolean
+    name?: boolean
+    calories?: boolean
+    protein?: boolean
+    fat?: boolean
+    carbs?: boolean
+    fiber?: boolean
+    createdAt?: boolean
+  }
+
+  export type FoodOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "calories" | "protein" | "fat" | "carbs" | "fiber" | "createdAt", ExtArgs["result"]["food"]>
+
+  export type $FoodPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Food"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      calories: number
+      protein: number
+      fat: number
+      carbs: number
+      fiber: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["food"]>
+    composites: {}
+  }
+
+  type FoodGetPayload<S extends boolean | null | undefined | FoodDefaultArgs> = $Result.GetResult<Prisma.$FoodPayload, S>
+
+  type FoodCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FoodFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FoodCountAggregateInputType | true
+    }
+
+  export interface FoodDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Food'], meta: { name: 'Food' } }
+    /**
+     * Find zero or one Food that matches the filter.
+     * @param {FoodFindUniqueArgs} args - Arguments to find a Food
+     * @example
+     * // Get one Food
+     * const food = await prisma.food.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FoodFindUniqueArgs>(args: SelectSubset<T, FoodFindUniqueArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Food that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FoodFindUniqueOrThrowArgs} args - Arguments to find a Food
+     * @example
+     * // Get one Food
+     * const food = await prisma.food.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FoodFindUniqueOrThrowArgs>(args: SelectSubset<T, FoodFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Food that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodFindFirstArgs} args - Arguments to find a Food
+     * @example
+     * // Get one Food
+     * const food = await prisma.food.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FoodFindFirstArgs>(args?: SelectSubset<T, FoodFindFirstArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Food that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodFindFirstOrThrowArgs} args - Arguments to find a Food
+     * @example
+     * // Get one Food
+     * const food = await prisma.food.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FoodFindFirstOrThrowArgs>(args?: SelectSubset<T, FoodFindFirstOrThrowArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Foods that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Foods
+     * const foods = await prisma.food.findMany()
+     * 
+     * // Get first 10 Foods
+     * const foods = await prisma.food.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const foodWithIdOnly = await prisma.food.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FoodFindManyArgs>(args?: SelectSubset<T, FoodFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Food.
+     * @param {FoodCreateArgs} args - Arguments to create a Food.
+     * @example
+     * // Create one Food
+     * const Food = await prisma.food.create({
+     *   data: {
+     *     // ... data to create a Food
+     *   }
+     * })
+     * 
+     */
+    create<T extends FoodCreateArgs>(args: SelectSubset<T, FoodCreateArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Foods.
+     * @param {FoodCreateManyArgs} args - Arguments to create many Foods.
+     * @example
+     * // Create many Foods
+     * const food = await prisma.food.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FoodCreateManyArgs>(args?: SelectSubset<T, FoodCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Food.
+     * @param {FoodDeleteArgs} args - Arguments to delete one Food.
+     * @example
+     * // Delete one Food
+     * const Food = await prisma.food.delete({
+     *   where: {
+     *     // ... filter to delete one Food
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FoodDeleteArgs>(args: SelectSubset<T, FoodDeleteArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Food.
+     * @param {FoodUpdateArgs} args - Arguments to update one Food.
+     * @example
+     * // Update one Food
+     * const food = await prisma.food.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FoodUpdateArgs>(args: SelectSubset<T, FoodUpdateArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Foods.
+     * @param {FoodDeleteManyArgs} args - Arguments to filter Foods to delete.
+     * @example
+     * // Delete a few Foods
+     * const { count } = await prisma.food.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FoodDeleteManyArgs>(args?: SelectSubset<T, FoodDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Foods.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Foods
+     * const food = await prisma.food.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FoodUpdateManyArgs>(args: SelectSubset<T, FoodUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Food.
+     * @param {FoodUpsertArgs} args - Arguments to update or create a Food.
+     * @example
+     * // Update or create a Food
+     * const food = await prisma.food.upsert({
+     *   create: {
+     *     // ... data to create a Food
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Food we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FoodUpsertArgs>(args: SelectSubset<T, FoodUpsertArgs<ExtArgs>>): Prisma__FoodClient<$Result.GetResult<Prisma.$FoodPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Foods.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodCountArgs} args - Arguments to filter Foods to count.
+     * @example
+     * // Count the number of Foods
+     * const count = await prisma.food.count({
+     *   where: {
+     *     // ... the filter for the Foods we want to count
+     *   }
+     * })
+    **/
+    count<T extends FoodCountArgs>(
+      args?: Subset<T, FoodCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FoodCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Food.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FoodAggregateArgs>(args: Subset<T, FoodAggregateArgs>): Prisma.PrismaPromise<GetFoodAggregateType<T>>
+
+    /**
+     * Group by Food.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FoodGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FoodGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FoodGroupByArgs['orderBy'] }
+        : { orderBy?: FoodGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FoodGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFoodGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Food model
+   */
+  readonly fields: FoodFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Food.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FoodClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Food model
+   */
+  interface FoodFieldRefs {
+    readonly id: FieldRef<"Food", 'Int'>
+    readonly name: FieldRef<"Food", 'String'>
+    readonly calories: FieldRef<"Food", 'Int'>
+    readonly protein: FieldRef<"Food", 'Float'>
+    readonly fat: FieldRef<"Food", 'Float'>
+    readonly carbs: FieldRef<"Food", 'Float'>
+    readonly fiber: FieldRef<"Food", 'Float'>
+    readonly createdAt: FieldRef<"Food", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Food findUnique
+   */
+  export type FoodFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter, which Food to fetch.
+     */
+    where: FoodWhereUniqueInput
+  }
+
+  /**
+   * Food findUniqueOrThrow
+   */
+  export type FoodFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter, which Food to fetch.
+     */
+    where: FoodWhereUniqueInput
+  }
+
+  /**
+   * Food findFirst
+   */
+  export type FoodFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter, which Food to fetch.
+     */
+    where?: FoodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Foods to fetch.
+     */
+    orderBy?: FoodOrderByWithRelationInput | FoodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Foods.
+     */
+    cursor?: FoodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Foods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Foods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Foods.
+     */
+    distinct?: FoodScalarFieldEnum | FoodScalarFieldEnum[]
+  }
+
+  /**
+   * Food findFirstOrThrow
+   */
+  export type FoodFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter, which Food to fetch.
+     */
+    where?: FoodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Foods to fetch.
+     */
+    orderBy?: FoodOrderByWithRelationInput | FoodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Foods.
+     */
+    cursor?: FoodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Foods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Foods.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Foods.
+     */
+    distinct?: FoodScalarFieldEnum | FoodScalarFieldEnum[]
+  }
+
+  /**
+   * Food findMany
+   */
+  export type FoodFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter, which Foods to fetch.
+     */
+    where?: FoodWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Foods to fetch.
+     */
+    orderBy?: FoodOrderByWithRelationInput | FoodOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Foods.
+     */
+    cursor?: FoodWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Foods from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Foods.
+     */
+    skip?: number
+    distinct?: FoodScalarFieldEnum | FoodScalarFieldEnum[]
+  }
+
+  /**
+   * Food create
+   */
+  export type FoodCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Food.
+     */
+    data: XOR<FoodCreateInput, FoodUncheckedCreateInput>
+  }
+
+  /**
+   * Food createMany
+   */
+  export type FoodCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Foods.
+     */
+    data: FoodCreateManyInput | FoodCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Food update
+   */
+  export type FoodUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Food.
+     */
+    data: XOR<FoodUpdateInput, FoodUncheckedUpdateInput>
+    /**
+     * Choose, which Food to update.
+     */
+    where: FoodWhereUniqueInput
+  }
+
+  /**
+   * Food updateMany
+   */
+  export type FoodUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Foods.
+     */
+    data: XOR<FoodUpdateManyMutationInput, FoodUncheckedUpdateManyInput>
+    /**
+     * Filter which Foods to update
+     */
+    where?: FoodWhereInput
+    /**
+     * Limit how many Foods to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Food upsert
+   */
+  export type FoodUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Food to update in case it exists.
+     */
+    where: FoodWhereUniqueInput
+    /**
+     * In case the Food found by the `where` argument doesn't exist, create a new Food with this data.
+     */
+    create: XOR<FoodCreateInput, FoodUncheckedCreateInput>
+    /**
+     * In case the Food was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FoodUpdateInput, FoodUncheckedUpdateInput>
+  }
+
+  /**
+   * Food delete
+   */
+  export type FoodDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+    /**
+     * Filter which Food to delete.
+     */
+    where: FoodWhereUniqueInput
+  }
+
+  /**
+   * Food deleteMany
+   */
+  export type FoodDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Foods to delete
+     */
+    where?: FoodWhereInput
+    /**
+     * Limit how many Foods to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Food without action
+   */
+  export type FoodDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Food
+     */
+    select?: FoodSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Food
+     */
+    omit?: FoodOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Enums
+   */
+
+  export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
+    Serializable: 'Serializable'
+  };
+
+  export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+  export const UserScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    name: 'name',
+    passwordHash: 'passwordHash',
+    birthday: 'birthday',
+    sex: 'sex',
+    height: 'height',
+    weight: 'weight',
+    caloriesGoal: 'caloriesGoal',
+    proteinGoal: 'proteinGoal',
+    fatGoal: 'fatGoal',
+    carbsGoal: 'carbsGoal',
+    fiberGoal: 'fiberGoal',
+    createdAt: 'createdAt'
+  };
+
+  export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+  export const FoodEntryScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    name: 'name',
+    calories: 'calories',
+    protein: 'protein',
+    fat: 'fat',
+    carbs: 'carbs',
+    fiber: 'fiber',
+    date: 'date',
+    createdAt: 'createdAt'
+  };
+
+  export type FoodEntryScalarFieldEnum = (typeof FoodEntryScalarFieldEnum)[keyof typeof FoodEntryScalarFieldEnum]
+
+
+  export const FoodScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    calories: 'calories',
+    protein: 'protein',
+    fat: 'fat',
+    carbs: 'carbs',
+    fiber: 'fiber',
+    createdAt: 'createdAt'
+  };
+
+  export type FoodScalarFieldEnum = (typeof FoodScalarFieldEnum)[keyof typeof FoodScalarFieldEnum]
+
+
+  export const SortOrder: {
+    asc: 'asc',
+    desc: 'desc'
+  };
+
+  export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const UserOrderByRelevanceFieldEnum: {
+    email: 'email',
+    name: 'name',
+    passwordHash: 'passwordHash',
+    sex: 'sex'
+  };
+
+  export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
+
+
+  export const FoodEntryOrderByRelevanceFieldEnum: {
+    name: 'name'
+  };
+
+  export type FoodEntryOrderByRelevanceFieldEnum = (typeof FoodEntryOrderByRelevanceFieldEnum)[keyof typeof FoodEntryOrderByRelevanceFieldEnum]
+
+
+  export const FoodOrderByRelevanceFieldEnum: {
+    name: 'name'
+  };
+
+  export type FoodOrderByRelevanceFieldEnum = (typeof FoodOrderByRelevanceFieldEnum)[keyof typeof FoodOrderByRelevanceFieldEnum]
+
+
+  /**
+   * Field references
+   */
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'String'
+   */
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+  /**
+   * Deep Input Types
+   */
+
+
+  export type UserWhereInput = {
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    id?: IntFilter<"User"> | number
+    email?: StringFilter<"User"> | string
+    name?: StringNullableFilter<"User"> | string | null
+    passwordHash?: StringFilter<"User"> | string
+    birthday?: DateTimeNullableFilter<"User"> | Date | string | null
+    sex?: StringNullableFilter<"User"> | string | null
+    height?: FloatNullableFilter<"User"> | number | null
+    weight?: FloatNullableFilter<"User"> | number | null
+    caloriesGoal?: IntNullableFilter<"User"> | number | null
+    proteinGoal?: FloatNullableFilter<"User"> | number | null
+    fatGoal?: FloatNullableFilter<"User"> | number | null
+    carbsGoal?: FloatNullableFilter<"User"> | number | null
+    fiberGoal?: FloatNullableFilter<"User"> | number | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    foodEntries?: FoodEntryListRelationFilter
+  }
+
+  export type UserOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    name?: SortOrderInput | SortOrder
+    passwordHash?: SortOrder
+    birthday?: SortOrderInput | SortOrder
+    sex?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
+    caloriesGoal?: SortOrderInput | SortOrder
+    proteinGoal?: SortOrderInput | SortOrder
+    fatGoal?: SortOrderInput | SortOrder
+    carbsGoal?: SortOrderInput | SortOrder
+    fiberGoal?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    foodEntries?: FoodEntryOrderByRelationAggregateInput
+    _relevance?: UserOrderByRelevanceInput
+  }
+
+  export type UserWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    email?: string
+    AND?: UserWhereInput | UserWhereInput[]
+    OR?: UserWhereInput[]
+    NOT?: UserWhereInput | UserWhereInput[]
+    name?: StringNullableFilter<"User"> | string | null
+    passwordHash?: StringFilter<"User"> | string
+    birthday?: DateTimeNullableFilter<"User"> | Date | string | null
+    sex?: StringNullableFilter<"User"> | string | null
+    height?: FloatNullableFilter<"User"> | number | null
+    weight?: FloatNullableFilter<"User"> | number | null
+    caloriesGoal?: IntNullableFilter<"User"> | number | null
+    proteinGoal?: FloatNullableFilter<"User"> | number | null
+    fatGoal?: FloatNullableFilter<"User"> | number | null
+    carbsGoal?: FloatNullableFilter<"User"> | number | null
+    fiberGoal?: FloatNullableFilter<"User"> | number | null
+    createdAt?: DateTimeFilter<"User"> | Date | string
+    foodEntries?: FoodEntryListRelationFilter
+  }, "id" | "email">
+
+  export type UserOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    name?: SortOrderInput | SortOrder
+    passwordHash?: SortOrder
+    birthday?: SortOrderInput | SortOrder
+    sex?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    weight?: SortOrderInput | SortOrder
+    caloriesGoal?: SortOrderInput | SortOrder
+    proteinGoal?: SortOrderInput | SortOrder
+    fatGoal?: SortOrderInput | SortOrder
+    carbsGoal?: SortOrderInput | SortOrder
+    fiberGoal?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
+    _max?: UserMaxOrderByAggregateInput
+    _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
+  }
+
+  export type UserScalarWhereWithAggregatesInput = {
+    AND?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    OR?: UserScalarWhereWithAggregatesInput[]
+    NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"User"> | number
+    email?: StringWithAggregatesFilter<"User"> | string
+    name?: StringNullableWithAggregatesFilter<"User"> | string | null
+    passwordHash?: StringWithAggregatesFilter<"User"> | string
+    birthday?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    sex?: StringNullableWithAggregatesFilter<"User"> | string | null
+    height?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    weight?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    caloriesGoal?: IntNullableWithAggregatesFilter<"User"> | number | null
+    proteinGoal?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    fatGoal?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    carbsGoal?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    fiberGoal?: FloatNullableWithAggregatesFilter<"User"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type FoodEntryWhereInput = {
+    AND?: FoodEntryWhereInput | FoodEntryWhereInput[]
+    OR?: FoodEntryWhereInput[]
+    NOT?: FoodEntryWhereInput | FoodEntryWhereInput[]
+    id?: IntFilter<"FoodEntry"> | number
+    userId?: IntFilter<"FoodEntry"> | number
+    name?: StringFilter<"FoodEntry"> | string
+    calories?: IntFilter<"FoodEntry"> | number
+    protein?: FloatFilter<"FoodEntry"> | number
+    fat?: FloatFilter<"FoodEntry"> | number
+    carbs?: FloatFilter<"FoodEntry"> | number
+    fiber?: FloatNullableFilter<"FoodEntry"> | number | null
+    date?: DateTimeFilter<"FoodEntry"> | Date | string
+    createdAt?: DateTimeFilter<"FoodEntry"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type FoodEntryOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrderInput | SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    _relevance?: FoodEntryOrderByRelevanceInput
+  }
+
+  export type FoodEntryWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: FoodEntryWhereInput | FoodEntryWhereInput[]
+    OR?: FoodEntryWhereInput[]
+    NOT?: FoodEntryWhereInput | FoodEntryWhereInput[]
+    userId?: IntFilter<"FoodEntry"> | number
+    name?: StringFilter<"FoodEntry"> | string
+    calories?: IntFilter<"FoodEntry"> | number
+    protein?: FloatFilter<"FoodEntry"> | number
+    fat?: FloatFilter<"FoodEntry"> | number
+    carbs?: FloatFilter<"FoodEntry"> | number
+    fiber?: FloatNullableFilter<"FoodEntry"> | number | null
+    date?: DateTimeFilter<"FoodEntry"> | Date | string
+    createdAt?: DateTimeFilter<"FoodEntry"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type FoodEntryOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrderInput | SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+    _count?: FoodEntryCountOrderByAggregateInput
+    _avg?: FoodEntryAvgOrderByAggregateInput
+    _max?: FoodEntryMaxOrderByAggregateInput
+    _min?: FoodEntryMinOrderByAggregateInput
+    _sum?: FoodEntrySumOrderByAggregateInput
+  }
+
+  export type FoodEntryScalarWhereWithAggregatesInput = {
+    AND?: FoodEntryScalarWhereWithAggregatesInput | FoodEntryScalarWhereWithAggregatesInput[]
+    OR?: FoodEntryScalarWhereWithAggregatesInput[]
+    NOT?: FoodEntryScalarWhereWithAggregatesInput | FoodEntryScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"FoodEntry"> | number
+    userId?: IntWithAggregatesFilter<"FoodEntry"> | number
+    name?: StringWithAggregatesFilter<"FoodEntry"> | string
+    calories?: IntWithAggregatesFilter<"FoodEntry"> | number
+    protein?: FloatWithAggregatesFilter<"FoodEntry"> | number
+    fat?: FloatWithAggregatesFilter<"FoodEntry"> | number
+    carbs?: FloatWithAggregatesFilter<"FoodEntry"> | number
+    fiber?: FloatNullableWithAggregatesFilter<"FoodEntry"> | number | null
+    date?: DateTimeWithAggregatesFilter<"FoodEntry"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"FoodEntry"> | Date | string
+  }
+
+  export type FoodWhereInput = {
+    AND?: FoodWhereInput | FoodWhereInput[]
+    OR?: FoodWhereInput[]
+    NOT?: FoodWhereInput | FoodWhereInput[]
+    id?: IntFilter<"Food"> | number
+    name?: StringFilter<"Food"> | string
+    calories?: IntFilter<"Food"> | number
+    protein?: FloatFilter<"Food"> | number
+    fat?: FloatFilter<"Food"> | number
+    carbs?: FloatFilter<"Food"> | number
+    fiber?: FloatNullableFilter<"Food"> | number | null
+    createdAt?: DateTimeFilter<"Food"> | Date | string
+  }
+
+  export type FoodOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _relevance?: FoodOrderByRelevanceInput
+  }
+
+  export type FoodWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: FoodWhereInput | FoodWhereInput[]
+    OR?: FoodWhereInput[]
+    NOT?: FoodWhereInput | FoodWhereInput[]
+    name?: StringFilter<"Food"> | string
+    calories?: IntFilter<"Food"> | number
+    protein?: FloatFilter<"Food"> | number
+    fat?: FloatFilter<"Food"> | number
+    carbs?: FloatFilter<"Food"> | number
+    fiber?: FloatNullableFilter<"Food"> | number | null
+    createdAt?: DateTimeFilter<"Food"> | Date | string
+  }, "id">
+
+  export type FoodOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: FoodCountOrderByAggregateInput
+    _avg?: FoodAvgOrderByAggregateInput
+    _max?: FoodMaxOrderByAggregateInput
+    _min?: FoodMinOrderByAggregateInput
+    _sum?: FoodSumOrderByAggregateInput
+  }
+
+  export type FoodScalarWhereWithAggregatesInput = {
+    AND?: FoodScalarWhereWithAggregatesInput | FoodScalarWhereWithAggregatesInput[]
+    OR?: FoodScalarWhereWithAggregatesInput[]
+    NOT?: FoodScalarWhereWithAggregatesInput | FoodScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Food"> | number
+    name?: StringWithAggregatesFilter<"Food"> | string
+    calories?: IntWithAggregatesFilter<"Food"> | number
+    protein?: FloatWithAggregatesFilter<"Food"> | number
+    fat?: FloatWithAggregatesFilter<"Food"> | number
+    carbs?: FloatWithAggregatesFilter<"Food"> | number
+    fiber?: FloatNullableWithAggregatesFilter<"Food"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"Food"> | Date | string
+  }
+
+  export type UserCreateInput = {
+    email: string
+    name?: string | null
+    passwordHash: string
+    birthday?: Date | string | null
+    sex?: string | null
+    height?: number | null
+    weight?: number | null
+    caloriesGoal?: number | null
+    proteinGoal?: number | null
+    fatGoal?: number | null
+    carbsGoal?: number | null
+    fiberGoal?: number | null
+    createdAt?: Date | string
+    foodEntries?: FoodEntryCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateInput = {
+    id?: number
+    email: string
+    name?: string | null
+    passwordHash: string
+    birthday?: Date | string | null
+    sex?: string | null
+    height?: number | null
+    weight?: number | null
+    caloriesGoal?: number | null
+    proteinGoal?: number | null
+    fatGoal?: number | null
+    carbsGoal?: number | null
+    fiberGoal?: number | null
+    createdAt?: Date | string
+    foodEntries?: FoodEntryUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUpdateInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    foodEntries?: FoodEntryUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    foodEntries?: FoodEntryUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateManyInput = {
+    id?: number
+    email: string
+    name?: string | null
+    passwordHash: string
+    birthday?: Date | string | null
+    sex?: string | null
+    height?: number | null
+    weight?: number | null
+    caloriesGoal?: number | null
+    proteinGoal?: number | null
+    fatGoal?: number | null
+    carbsGoal?: number | null
+    fiberGoal?: number | null
+    createdAt?: Date | string
+  }
+
+  export type UserUpdateManyMutationInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryCreateInput = {
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutFoodEntriesInput
+  }
+
+  export type FoodEntryUncheckedCreateInput = {
+    id?: number
+    userId: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FoodEntryUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutFoodEntriesNestedInput
+  }
+
+  export type FoodEntryUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryCreateManyInput = {
+    id?: number
+    userId: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FoodEntryUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodCreateInput = {
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    createdAt?: Date | string
+  }
+
+  export type FoodUncheckedCreateInput = {
+    id?: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    createdAt?: Date | string
+  }
+
+  export type FoodUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodCreateManyInput = {
+    id?: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    createdAt?: Date | string
+  }
+
+  export type FoodUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type StringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type FoodEntryListRelationFilter = {
+    every?: FoodEntryWhereInput
+    some?: FoodEntryWhereInput
+    none?: FoodEntryWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type FoodEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserOrderByRelevanceInput = {
+    fields: UserOrderByRelevanceFieldEnum | UserOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type UserCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    birthday?: SortOrder
+    sex?: SortOrder
+    height?: SortOrder
+    weight?: SortOrder
+    caloriesGoal?: SortOrder
+    proteinGoal?: SortOrder
+    fatGoal?: SortOrder
+    carbsGoal?: SortOrder
+    fiberGoal?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    id?: SortOrder
+    height?: SortOrder
+    weight?: SortOrder
+    caloriesGoal?: SortOrder
+    proteinGoal?: SortOrder
+    fatGoal?: SortOrder
+    carbsGoal?: SortOrder
+    fiberGoal?: SortOrder
+  }
+
+  export type UserMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    birthday?: SortOrder
+    sex?: SortOrder
+    height?: SortOrder
+    weight?: SortOrder
+    caloriesGoal?: SortOrder
+    proteinGoal?: SortOrder
+    fatGoal?: SortOrder
+    carbsGoal?: SortOrder
+    fiberGoal?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    name?: SortOrder
+    passwordHash?: SortOrder
+    birthday?: SortOrder
+    sex?: SortOrder
+    height?: SortOrder
+    weight?: SortOrder
+    caloriesGoal?: SortOrder
+    proteinGoal?: SortOrder
+    fatGoal?: SortOrder
+    carbsGoal?: SortOrder
+    fiberGoal?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    id?: SortOrder
+    height?: SortOrder
+    weight?: SortOrder
+    caloriesGoal?: SortOrder
+    proteinGoal?: SortOrder
+    fatGoal?: SortOrder
+    carbsGoal?: SortOrder
+    fiberGoal?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type FoodEntryOrderByRelevanceInput = {
+    fields: FoodEntryOrderByRelevanceFieldEnum | FoodEntryOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type FoodEntryCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodEntryAvgOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+  }
+
+  export type FoodEntryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodEntryMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    date?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodEntrySumOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type FoodOrderByRelevanceInput = {
+    fields: FoodOrderByRelevanceFieldEnum | FoodOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type FoodCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodAvgOrderByAggregateInput = {
+    id?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+  }
+
+  export type FoodMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type FoodSumOrderByAggregateInput = {
+    id?: SortOrder
+    calories?: SortOrder
+    protein?: SortOrder
+    fat?: SortOrder
+    carbs?: SortOrder
+    fiber?: SortOrder
+  }
+
+  export type FoodEntryCreateNestedManyWithoutUserInput = {
+    create?: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput> | FoodEntryCreateWithoutUserInput[] | FoodEntryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FoodEntryCreateOrConnectWithoutUserInput | FoodEntryCreateOrConnectWithoutUserInput[]
+    createMany?: FoodEntryCreateManyUserInputEnvelope
+    connect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+  }
+
+  export type FoodEntryUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput> | FoodEntryCreateWithoutUserInput[] | FoodEntryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FoodEntryCreateOrConnectWithoutUserInput | FoodEntryCreateOrConnectWithoutUserInput[]
+    createMany?: FoodEntryCreateManyUserInputEnvelope
+    connect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+  }
+
+  export type StringFieldUpdateOperationsInput = {
+    set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type FoodEntryUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput> | FoodEntryCreateWithoutUserInput[] | FoodEntryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FoodEntryCreateOrConnectWithoutUserInput | FoodEntryCreateOrConnectWithoutUserInput[]
+    upsert?: FoodEntryUpsertWithWhereUniqueWithoutUserInput | FoodEntryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FoodEntryCreateManyUserInputEnvelope
+    set?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    disconnect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    delete?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    connect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    update?: FoodEntryUpdateWithWhereUniqueWithoutUserInput | FoodEntryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FoodEntryUpdateManyWithWhereWithoutUserInput | FoodEntryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FoodEntryScalarWhereInput | FoodEntryScalarWhereInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type FoodEntryUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput> | FoodEntryCreateWithoutUserInput[] | FoodEntryUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FoodEntryCreateOrConnectWithoutUserInput | FoodEntryCreateOrConnectWithoutUserInput[]
+    upsert?: FoodEntryUpsertWithWhereUniqueWithoutUserInput | FoodEntryUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FoodEntryCreateManyUserInputEnvelope
+    set?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    disconnect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    delete?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    connect?: FoodEntryWhereUniqueInput | FoodEntryWhereUniqueInput[]
+    update?: FoodEntryUpdateWithWhereUniqueWithoutUserInput | FoodEntryUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FoodEntryUpdateManyWithWhereWithoutUserInput | FoodEntryUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FoodEntryScalarWhereInput | FoodEntryScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutFoodEntriesInput = {
+    create?: XOR<UserCreateWithoutFoodEntriesInput, UserUncheckedCreateWithoutFoodEntriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFoodEntriesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutFoodEntriesNestedInput = {
+    create?: XOR<UserCreateWithoutFoodEntriesInput, UserUncheckedCreateWithoutFoodEntriesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutFoodEntriesInput
+    upsert?: UserUpsertWithoutFoodEntriesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutFoodEntriesInput, UserUpdateWithoutFoodEntriesInput>, UserUncheckedUpdateWithoutFoodEntriesInput>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    search?: string
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type FoodEntryCreateWithoutUserInput = {
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FoodEntryUncheckedCreateWithoutUserInput = {
+    id?: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FoodEntryCreateOrConnectWithoutUserInput = {
+    where: FoodEntryWhereUniqueInput
+    create: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput>
+  }
+
+  export type FoodEntryCreateManyUserInputEnvelope = {
+    data: FoodEntryCreateManyUserInput | FoodEntryCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FoodEntryUpsertWithWhereUniqueWithoutUserInput = {
+    where: FoodEntryWhereUniqueInput
+    update: XOR<FoodEntryUpdateWithoutUserInput, FoodEntryUncheckedUpdateWithoutUserInput>
+    create: XOR<FoodEntryCreateWithoutUserInput, FoodEntryUncheckedCreateWithoutUserInput>
+  }
+
+  export type FoodEntryUpdateWithWhereUniqueWithoutUserInput = {
+    where: FoodEntryWhereUniqueInput
+    data: XOR<FoodEntryUpdateWithoutUserInput, FoodEntryUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FoodEntryUpdateManyWithWhereWithoutUserInput = {
+    where: FoodEntryScalarWhereInput
+    data: XOR<FoodEntryUpdateManyMutationInput, FoodEntryUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FoodEntryScalarWhereInput = {
+    AND?: FoodEntryScalarWhereInput | FoodEntryScalarWhereInput[]
+    OR?: FoodEntryScalarWhereInput[]
+    NOT?: FoodEntryScalarWhereInput | FoodEntryScalarWhereInput[]
+    id?: IntFilter<"FoodEntry"> | number
+    userId?: IntFilter<"FoodEntry"> | number
+    name?: StringFilter<"FoodEntry"> | string
+    calories?: IntFilter<"FoodEntry"> | number
+    protein?: FloatFilter<"FoodEntry"> | number
+    fat?: FloatFilter<"FoodEntry"> | number
+    carbs?: FloatFilter<"FoodEntry"> | number
+    fiber?: FloatNullableFilter<"FoodEntry"> | number | null
+    date?: DateTimeFilter<"FoodEntry"> | Date | string
+    createdAt?: DateTimeFilter<"FoodEntry"> | Date | string
+  }
+
+  export type UserCreateWithoutFoodEntriesInput = {
+    email: string
+    name?: string | null
+    passwordHash: string
+    birthday?: Date | string | null
+    sex?: string | null
+    height?: number | null
+    weight?: number | null
+    caloriesGoal?: number | null
+    proteinGoal?: number | null
+    fatGoal?: number | null
+    carbsGoal?: number | null
+    fiberGoal?: number | null
+    createdAt?: Date | string
+  }
+
+  export type UserUncheckedCreateWithoutFoodEntriesInput = {
+    id?: number
+    email: string
+    name?: string | null
+    passwordHash: string
+    birthday?: Date | string | null
+    sex?: string | null
+    height?: number | null
+    weight?: number | null
+    caloriesGoal?: number | null
+    proteinGoal?: number | null
+    fatGoal?: number | null
+    carbsGoal?: number | null
+    fiberGoal?: number | null
+    createdAt?: Date | string
+  }
+
+  export type UserCreateOrConnectWithoutFoodEntriesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutFoodEntriesInput, UserUncheckedCreateWithoutFoodEntriesInput>
+  }
+
+  export type UserUpsertWithoutFoodEntriesInput = {
+    update: XOR<UserUpdateWithoutFoodEntriesInput, UserUncheckedUpdateWithoutFoodEntriesInput>
+    create: XOR<UserCreateWithoutFoodEntriesInput, UserUncheckedCreateWithoutFoodEntriesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutFoodEntriesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutFoodEntriesInput, UserUncheckedUpdateWithoutFoodEntriesInput>
+  }
+
+  export type UserUpdateWithoutFoodEntriesInput = {
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUncheckedUpdateWithoutFoodEntriesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    email?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    birthday?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    sex?: NullableStringFieldUpdateOperationsInput | string | null
+    height?: NullableFloatFieldUpdateOperationsInput | number | null
+    weight?: NullableFloatFieldUpdateOperationsInput | number | null
+    caloriesGoal?: NullableIntFieldUpdateOperationsInput | number | null
+    proteinGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fatGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    carbsGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    fiberGoal?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryCreateManyUserInput = {
+    id?: number
+    name: string
+    calories: number
+    protein: number
+    fat: number
+    carbs: number
+    fiber?: number | null
+    date: Date | string
+    createdAt?: Date | string
+  }
+
+  export type FoodEntryUpdateWithoutUserInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FoodEntryUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    calories?: IntFieldUpdateOperationsInput | number
+    protein?: FloatFieldUpdateOperationsInput | number
+    fat?: FloatFieldUpdateOperationsInput | number
+    carbs?: FloatFieldUpdateOperationsInput | number
+    fiber?: NullableFloatFieldUpdateOperationsInput | number | null
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+
+
+  /**
+   * Batch Payload for updateMany & deleteMany & createMany
+   */
+
+  export type BatchPayload = {
+    count: number
+  }
+
+  /**
+   * DMMF
+   */
+  export const dmmf: runtime.BaseDMMF
+}

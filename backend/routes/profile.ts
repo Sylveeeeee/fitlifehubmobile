@@ -111,4 +111,57 @@ router.put('/goal', authenticateToken, async (req: AuthRequest, res) => {
   }
 });
 
+// GET /api/profile/me
+router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
+  const userId = req.user?.userId;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        sex: true,
+        birthday: true,
+        height: true,
+        weight: true,
+        caloriesGoal: true,
+        proteinGoal: true,
+        fatGoal: true,
+        carbsGoal: true,
+        fiberGoal: true,
+      },
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// PUT /api/profile/me
+router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
+  const userId = req.user?.userId;
+  const { name, sex, birthday, height, weight } = req.body;
+  if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { name, sex, birthday, height, weight },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        sex: true,
+        birthday: true,
+        height: true,
+        weight: true,
+      },
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 export default router;
