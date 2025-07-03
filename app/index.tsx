@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
+import WaterCount  from '../components/watercount';
 
 export default function Index() {
   return (
@@ -68,12 +69,9 @@ export default function Index() {
       </View>
 
       {/* เนื้อหาหลัก */}
-      <View className="flex-1 items-center justify-center bg-[#fff8e1]">
-        <Text className="text-2xl font-bold text-[#ffb300]">ยินดีต้อนรับสู่ FitLifeHub 🎉</Text>
-        <Text className="mt-2 text-2xl text-[#232738]">แอปติดตามโภชนาการของคุณ</Text>
-        <Link href="./about" className="mt-4 text-[#ffb300] underline">
-          About
-        </Link>
+      <View className="flex-1 items-center bg-[#fff8e1]">
+        <WaterCount />
+
       </View>
     </View>
   );
