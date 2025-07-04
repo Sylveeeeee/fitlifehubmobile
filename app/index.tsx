@@ -3,6 +3,7 @@ import { Link } from 'expo-router';
 import WaterCount  from '../components/watercount';
 
 export default function Index() {
+  
   return (
     <View className="flex-1 bg-[#fff8e1]">
       {/* Header */}

@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, SafeAreaView, Modal, TextInput } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { useRegister } from './RegisterContext'; // เพิ่มบรรทัดนี้
 
 
-export default function RegisterScreen() {
+export default function RegisterStep1({ navigation }: { navigation: any }) {
+  const { registerData, setRegisterData } = useRegister(); // ใช้ context
   const [profile, setProfile] = useState({
     sex: '',
     birthday: '',
@@ -31,23 +33,9 @@ export default function RegisterScreen() {
   const [weightUnit, setWeightUnit] = useState<'kg' | 'lb'>((profile.weightUnit as 'kg' | 'lb') || 'kg');
   const [tempSex, setTempSex] = useState(profile.sex || 'male');
   // ฟังก์ชันส่งข้อมูลไป backend
-  const handleNext = async () => {
-    // ตัวอย่าง: สมมติว่ามี token แล้ว
-    const token = ''; // TODO: Replace with actual token retrieval logic
-    await fetch('http://192.168.1.10:4000/api/profile/me', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, // ใส่ token จริง
-      },
-      body: JSON.stringify({
-        sex: profile.sex,
-        birthday: profile.birthday,
-        height: Number(profile.height),
-        weight: Number(profile.weight),
-      }),
-    });
-    // ไป step ถัดไป
+  const handleNext = () => {
+    setRegisterData({ ...registerData, ...profile }); // รวมข้อมูลกับ context
+    navigation.navigate('step2-activity'); // ไปหน้า step2
   };
 
   return (
@@ -85,7 +73,7 @@ export default function RegisterScreen() {
           <Text className="text-gray-900 text-lg font-bold">NEXT</Text>
         </Pressable>
       </View>
-      // Modal: Sex
+      {/* // Modal: Sex */}
 <Modal visible={modal === 'sex'} transparent animationType="slide">
   <View className="flex-1 justify-center items-center bg-black/50">
     <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
@@ -101,7 +89,6 @@ export default function RegisterScreen() {
         <Picker.Item label="Breastfeeding" value="breastfeeding" />
       </Picker>
       <Text className="text-xs text-gray-300 mt-4 mb-6 text-center">
-        *Until nutrition guidelines for transgender individuals are established, we recommend selecting the gender that has been transitioned to OR your gender at birth and working with your healthcare team to make personalized adjustments.
       </Text>
       <View className="flex-row justify-between">
         <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
@@ -120,7 +107,7 @@ export default function RegisterScreen() {
     </View>
   </View>
 </Modal>
-// Modal: Birthday (ใช้ date picker library จะดีที่สุด แต่ตัวอย่างนี้ใช้ picker 3 ช่อง)
+{/* // Modal: Birthday (ใช้ date picker library จะดีที่สุด แต่ตัวอย่างนี้ใช้ picker 3 ช่อง) */}
 <Modal visible={modal === 'birthday'} transparent animationType="slide">
   <View className="flex-1 justify-center items-center bg-black/50">
     <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
@@ -173,7 +160,7 @@ export default function RegisterScreen() {
   </View>
 </Modal>
 
-// Modal: Height
+{/* // Modal: Height */}
 <Modal visible={modal === 'height'} transparent animationType="slide">
   <View className="flex-1 justify-center items-center bg-black/50">
     <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
@@ -223,7 +210,7 @@ export default function RegisterScreen() {
   </View>
 </Modal>
 
-// Modal: Weight
+{/* // Modal: Weight */}
 <Modal visible={modal === 'weight'} transparent animationType="slide">
   <View className="flex-1 justify-center items-center bg-black/50">
     <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
