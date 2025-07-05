@@ -137,30 +137,6 @@ exports.Prisma.UserScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.FoodEntryScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  name: 'name',
-  calories: 'calories',
-  protein: 'protein',
-  fat: 'fat',
-  carbs: 'carbs',
-  fiber: 'fiber',
-  date: 'date',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.FoodScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  calories: 'calories',
-  protein: 'protein',
-  fat: 'fat',
-  carbs: 'carbs',
-  fiber: 'fiber',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -178,19 +154,9 @@ exports.Prisma.UserOrderByRelevanceFieldEnum = {
   sex: 'sex'
 };
 
-exports.Prisma.FoodEntryOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
-exports.Prisma.FoodOrderByRelevanceFieldEnum = {
-  name: 'name'
-};
-
 
 exports.Prisma.ModelName = {
-  User: 'User',
-  FoodEntry: 'FoodEntry',
-  Food: 'Food'
+  User: 'User'
 };
 
 /**

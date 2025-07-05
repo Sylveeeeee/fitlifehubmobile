@@ -7,12 +7,18 @@ import RegisterStep4 from './step4-goal-rate';
 import RegisterStep5 from './step5-goal-overview';
 import RegisterStep6 from './step6-account';
 import RegisterStep7 from './step7-terms';
+import Dashbord from '../index';
 
 import { RegisterProvider } from './RegisterContext';
 
 const Stack = createStackNavigator();
 
-export default function RegisterStack() {
+type RegisterStackProps = {
+  onRegisterSuccess?: () => void;
+};
+
+export default function RegisterStack({ onRegisterSuccess }: RegisterStackProps) {
+  
   return (
     <RegisterProvider>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -22,8 +28,12 @@ export default function RegisterStack() {
         <Stack.Screen name="step4-goal-rate" component={RegisterStep4} />        
         <Stack.Screen name="step5-goal-overview" component={RegisterStep5} />
         <Stack.Screen name="step6-account" component={RegisterStep6} />
-        <Stack.Screen name="step7-terms" component={RegisterStep7} />        
-        
+        <Stack.Screen
+          name="step7-terms"
+          // ส่ง prop onRegisterSuccess ไป RegisterStep7
+          children={props => <RegisterStep7 {...props} onRegisterSuccess={onRegisterSuccess} />}
+        />        
+        <Stack.Screen name="index" component={Dashbord} />
       </Stack.Navigator>
     </RegisterProvider>
   );

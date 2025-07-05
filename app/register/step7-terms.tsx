@@ -1,13 +1,63 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, ScrollView, SafeAreaView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRegister } from './RegisterContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function RegisterStep7() {
+
+export default function RegisterStep7({ navigation, onRegisterSuccess }: { navigation: any, onRegisterSuccess?: () => void }) {
   const [checked, setChecked] = useState([false, false, false, false]);
+  const { registerData } = useRegister();
+  const canContinue = checked[1]; // ต้องติ๊ก "I agree to the Cronometer Terms of Service."
+
+  const handleContinue = async () => {
+  if (!canContinue) return;
+  try {
+    // 1. สมัครสมาชิก
+    const res = await fetch('http://localhost:3000/api/profile/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: registerData.email,
+        password: registerData.password,
+        name: registerData.firstName || registerData.name,
+      }),
+    });
+    const result = await res.json();
+    if (!res.ok) {
+      Alert.alert('Error', result.error || 'Registration failed');
+      return;
+    }
+    // 2. เก็บ token
+    const token = result.token;
+    await AsyncStorage.setItem('token', token);
+    // 3. อัปเดตข้อมูลส่วนตัว
+    await fetch('http://localhost:3000/api/profile/me', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: registerData.firstName,
+        sex: registerData.sex,
+        birthday: registerData.birthday ? new Date(registerData.birthday).toISOString() : null, // แปลงเป็น ISO string
+        height: registerData.height ? Number(registerData.height) : null, // แปลงเป็น number
+        weight: registerData.weight ? Number(registerData.weight) : null, // แปลงเป็น number
+      }),
+    });
+
+    // เรียก onRegisterSuccess เพื่อแจ้ง _layout.tsx ว่าสมัครเสร็จ
+    if (onRegisterSuccess) onRegisterSuccess();
+    // 4. ไปหน้า Dashboard
+    navigation.navigate('index');
+  } catch (e) {
+    Alert.alert('Error', 'Registration failed. Please try again.');
+  }
+};
 
   return (
     <SafeAreaView className="flex-1 bg-[#181929]">
-      {/* Header & Progress ... */}
       <Text className="text-3xl font-extrabold text-white text-center mb-2">Terms of Service</Text>
       <ScrollView className="mx-4 mb-8 bg-[#232433] rounded-2xl px-4 py-6">
         <Text className="text-white mb-4">
@@ -39,9 +89,13 @@ export default function RegisterStep7() {
       </ScrollView>
       {/* Continue Button */}
       <View className="px-8">
-        <View className="bg-gray-600 rounded-full py-3 items-center opacity-60">
-          <Text className="text-gray-300 text-lg font-bold">CONTINUE</Text>
-        </View>
+        <Pressable
+          className={`rounded-full py-3 items-center mb-2 ${canContinue ? 'bg-[#ffb300]' : 'bg-gray-600 opacity-60'}`}
+          disabled={!canContinue}
+          onPress={handleContinue}
+        >
+          <Text className="text-gray-900 text-lg font-bold">CONTINUE</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );

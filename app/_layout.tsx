@@ -1,25 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Stack, usePathname } from 'expo-router';
 import BottomNavbar from '../components/BottomNavbar';
-import RegisterStack from './register/RegisterStack'; // เพิ่ม import
+import RegisterStack from './register/RegisterStack';
 import "../global.css";
 import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RootLayout() {
   const pathname = usePathname();
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
+
+  // ตรวจสอบ token ใน AsyncStorage
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem('token');
+      setIsRegistered(!!token);
+    };
+    checkToken();
+  }, []);
+
+  // ยังไม่รู้สถานะ (รอโหลด)
+  if (isRegistered === null) return null;
 
   if (!isRegistered) {
-    // แสดง flow สมัครสมาชิก
+    // ยังไม่ได้ login/register
     return (
       <>
-        <RegisterStack />
+        <RegisterStack onRegisterSuccess={() => setIsRegistered(true)} />
         <StatusBar style="auto" />
       </>
     );
   }
 
-  // แสดง navigation ปกติ
+  // login/register แล้ว
   return (
     <>
       <Stack screenOptions={{ headerShown: false }} />

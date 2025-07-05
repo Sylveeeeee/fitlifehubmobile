@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../backend/generated/prisma"
+  output   = "./generated/prisma"
 }
 
 datasource db {
@@ -15,8 +15,8 @@ datasource db {
 }
 
 model User {
-  id           Int         @id @default(autoincrement())
-  email        String      @unique
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
   name         String?
   passwordHash String
   birthday     DateTime?
@@ -28,31 +28,5 @@ model User {
   fatGoal      Float?
   carbsGoal    Float?
   fiberGoal    Float?
-  createdAt    DateTime    @default(now())
-  foodEntries  FoodEntry[]
-}
-
-model FoodEntry {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  name      String
-  calories  Int
-  protein   Float
-  fat       Float
-  carbs     Float
-  fiber     Float?
-  date      DateTime
-  createdAt DateTime @default(now())
-}
-
-model Food {
-  id        Int      @id @default(autoincrement())
-  name      String
-  calories  Int
-  protein   Float
-  fat       Float
-  carbs     Float
-  fiber     Float?
-  createdAt DateTime @default(now())
+  createdAt    DateTime  @default(now())
 }
