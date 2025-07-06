@@ -1,60 +1,83 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView, SafeAreaView, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useRegister } from './RegisterContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { storeToken } from '@/utils/tokenStorage.native';
+import { API_URL } from '@/config';
 
-
-export default function RegisterStep7({ navigation, onRegisterSuccess }: { navigation: any, onRegisterSuccess?: () => void }) {
+export default function RegisterStep7({
+  onRegisterSuccess,
+}: {
+  onRegisterSuccess?: () => void;
+}) {
   const [checked, setChecked] = useState([false, false, false, false]);
+  const [loading, setLoading] = useState(false);
   const { registerData } = useRegister();
-  const canContinue = checked[1]; // ต้องติ๊ก "I agree to the Cronometer Terms of Service."
+
+  const canContinue = checked[1]; // ต้องติ๊ก Terms
 
   const handleContinue = async () => {
-  if (!canContinue) return;
-  try {
-    // 1. สมัครสมาชิก
-    const res = await fetch('http://localhost:3000/api/profile/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: registerData.email,
-        password: registerData.password,
-        name: registerData.firstName || registerData.name,
-      }),
-    });
-    const result = await res.json();
-    if (!res.ok) {
-      Alert.alert('Error', result.error || 'Registration failed');
-      return;
-    }
-    // 2. เก็บ token
-    const token = result.token;
-    await AsyncStorage.setItem('token', token);
-    // 3. อัปเดตข้อมูลส่วนตัว
-    await fetch('http://localhost:3000/api/profile/me', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: registerData.firstName,
-        sex: registerData.sex,
-        birthday: registerData.birthday ? new Date(registerData.birthday).toISOString() : null, // แปลงเป็น ISO string
-        height: registerData.height ? Number(registerData.height) : null, // แปลงเป็น number
-        weight: registerData.weight ? Number(registerData.weight) : null, // แปลงเป็น number
-      }),
-    });
+    if (!canContinue || loading) return;
 
-    // เรียก onRegisterSuccess เพื่อแจ้ง _layout.tsx ว่าสมัครเสร็จ
-    if (onRegisterSuccess) onRegisterSuccess();
-    // 4. ไปหน้า Dashboard
-    navigation.navigate('index');
-  } catch (e) {
-    Alert.alert('Error', 'Registration failed. Please try again.');
-  }
-};
+    setLoading(true);
+
+    try {
+      // 1. สมัครสมาชิก
+      const res = await fetch(`${API_URL}/api/profile/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: registerData.email,
+          password: registerData.password,
+          name: registerData.firstName || registerData.name,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        Alert.alert('Error', result.error || 'Registration failed');
+        return;
+      }
+
+      const token = result.token;
+
+      // 2. เก็บ token
+      await storeToken(token);
+
+      // 3. อัปเดตโปรไฟล์
+      await fetch(`${API_URL}/api/profile/me`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: registerData.firstName,
+          sex: registerData.sex,
+          birthday: registerData.birthday
+            ? new Date(registerData.birthday).toISOString()
+            : null,
+          height: registerData.height
+            ? Number(registerData.height)
+            : null,
+          weight: registerData.weight
+            ? Number(registerData.weight)
+            : null,
+        }),
+      });
+
+      // 4. แจ้งว่าเสร็จ
+      if (onRegisterSuccess) onRegisterSuccess();
+
+      // 5. เปลี่ยนหน้าไปยัง Home แบบไม่ย้อนกลับ
+      router.replace('/');
+    } catch (e) {
+      Alert.alert('Error', 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-[#181929]">

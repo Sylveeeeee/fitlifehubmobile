@@ -7,7 +7,7 @@ import RegisterStep4 from './step4-goal-rate';
 import RegisterStep5 from './step5-goal-overview';
 import RegisterStep6 from './step6-account';
 import RegisterStep7 from './step7-terms';
-import Dashbord from '../index';
+import Dashbord from '../../(tabs)/index';
 
 import { RegisterProvider } from './RegisterContext';
 

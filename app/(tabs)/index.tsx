@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
-import WaterCount  from '../components/watercount';
+import WaterCount  from '../../components/watercount';
 
 export default function Index() {
   
