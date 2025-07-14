@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getToken, removeToken } from '@/utils/tokenStorage.native';
 import { router } from 'expo-router';
+import { API_URL } from '@/config';
 
 export default function Account() {
   const [user, setUser] = useState<any>(null);
@@ -13,7 +14,7 @@ export default function Account() {
         const token = await getToken();
         if (!token) return;
 
-        const res = await fetch('http://localhost:3000/api/profile/me', {
+        const res = await fetch(`${API_URL}/api/profile/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +49,7 @@ export default function Account() {
           <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
         <Text className="flex-1 text-center text-2xl font-extrabold text-white">Account</Text>
-        <View style={{ width: 28 }} /> {/* spacer */}
+        <View style={{ width: 28 }} /> 
       </View>
 
       <ScrollView className="px-2">
@@ -89,10 +90,15 @@ export default function Account() {
         </TouchableOpacity>
 
         {/* Subscription */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Subscription: Free</Text>
-          <Text className="text-[#2ec4b6] font-bold mr-2">UPGRADE</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
+        <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 mb-2">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-white text-base font-bold">Subscription</Text>
+            <View className="flex-row items-center space-x-2">
+              <Text className="text-[#2ec4b6] font-bold">Free</Text>
+              <Text className="text-[#ff7a1a] font-bold">UPGRADE</Text>
+              <Ionicons name="chevron-forward" size={20} color="#fff" />
+            </View>
+          </View>
         </TouchableOpacity>
 
         {/* Notifications */}

@@ -114,10 +114,14 @@ export default function RegisterStep7({
       <View className="px-8">
         <Pressable
           className={`rounded-full py-3 items-center mb-2 ${canContinue ? 'bg-[#ffb300]' : 'bg-gray-600 opacity-60'}`}
-          disabled={!canContinue}
+          disabled={!canContinue || loading}
           onPress={handleContinue}
         >
-          <Text className="text-gray-900 text-lg font-bold">CONTINUE</Text>
+          {loading ? (
+            <Text className="text-gray-900 text-lg font-bold">Registering...</Text>
+          ) : (
+            <Text className="text-gray-900 text-lg font-bold">CONTINUE</Text>
+          )}
         </Pressable>
       </View>
     </SafeAreaView>

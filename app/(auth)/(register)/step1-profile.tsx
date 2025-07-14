@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, SafeAreaView, Modal, TextInput } from 'react-native';
+import { View, Text, Pressable, SafeAreaView, Modal, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useRegister } from './RegisterContext'; // เพิ่มบรรทัดนี้
@@ -74,190 +74,202 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
         </Pressable>
       </View>
       {/* // Modal: Sex */}
-<Modal visible={modal === 'sex'} transparent animationType="slide">
-  <View className="flex-1 justify-center items-center bg-black/50">
-    <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
-      <Text className="text-white text-xl font-bold mb-4 text-center">Sex</Text>
-      <Picker
-        selectedValue={tempSex}
-        onValueChange={setTempSex}
-        style={{ color: 'white', backgroundColor: '#232433' }}
-      >
-        <Picker.Item label="Male" value="male" />
-        <Picker.Item label="Female" value="female" />
-        <Picker.Item label="Pregnant" value="pregnant" />
-        <Picker.Item label="Breastfeeding" value="breastfeeding" />
-      </Picker>
-      <Text className="text-xs text-gray-300 mt-4 mb-6 text-center">
-      </Text>
-      <View className="flex-row justify-between">
-        <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
-          <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
-        </Pressable>
-        <Pressable
-          className="flex-1 items-center"
-          onPress={() => {
-            setProfile(p => ({ ...p, sex: tempSex }));
-            setModal(null);
-          }}
-        >
-          <Text className="text-[#38b2ac] font-bold">SAVE</Text>
-        </Pressable>
-      </View>
-    </View>
-  </View>
-</Modal>
-{/* // Modal: Birthday (ใช้ date picker library จะดีที่สุด แต่ตัวอย่างนี้ใช้ picker 3 ช่อง) */}
-<Modal visible={modal === 'birthday'} transparent animationType="slide">
-  <View className="flex-1 justify-center items-center bg-black/50">
-    <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
-      <Text className="text-white text-xl font-bold mb-4 text-center">Birthday</Text>
-      <View className="flex-row justify-center">
-        <Picker
-          selectedValue={birthMonth}
-          onValueChange={setBirthMonth}
-          style={{ width: 120, color: 'white', backgroundColor: '#232433' }}
-        >
-          {months.map((m, i) => <Picker.Item key={i} label={m} value={i + 1} />)}
-        </Picker>
-        <Picker
-          selectedValue={birthDay}
-          onValueChange={setBirthDay}
-          style={{ width: 80, color: 'white', backgroundColor: '#232433' }}
-        >
-          {Array.from({ length: 31 }, (_, i) => (
-            <Picker.Item key={i} label={String(i + 1)} value={i + 1} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={birthYear}
-          onValueChange={setBirthYear}
-          style={{ width: 100, color: 'white', backgroundColor: '#232433' }}
-        >
-          {Array.from({ length: 100 }, (_, i) => (
-            <Picker.Item key={i} label={String(2024 - i)} value={2024 - i} />
-          ))}
-        </Picker>
-      </View>
-      <View className="flex-row justify-between mt-6">
-        <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
-          <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
-        </Pressable>
-        <Pressable
-  className="flex-1 items-center"
-  onPress={() => {
-    setProfile(p => ({
-      ...p,
-      birthday: `${birthYear}-${String(birthMonth).padStart(2, '0')}-${String(birthDay).padStart(2, '0')}`,
-    }));
-    setModal(null);
-  }}
->
-  <Text className="text-[#38b2ac] font-bold">SAVE</Text>
-</Pressable>
-      </View>
-    </View>
-  </View>
-</Modal>
+      <Modal visible={modal === 'sex'} transparent animationType="slide">
+        <TouchableWithoutFeedback onPress={() => setModal(null)}>
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <TouchableWithoutFeedback onPress={() => { }}>
+              <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
+                <Text className="text-white text-xl font-bold mb-4 text-center">Sex</Text>
+                <Picker
+                  selectedValue={tempSex}
+                  onValueChange={setTempSex}
+                  style={{ color: 'white', backgroundColor: '#232433' }}
+                >
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
+                  <Picker.Item label="Pregnant" value="pregnant" />
+                  <Picker.Item label="Breastfeeding" value="breastfeeding" />
+                </Picker>
+                <Text className="text-xs text-gray-300 mt-4 mb-6 text-center">
+                </Text>
+                <View className="flex-row justify-between">
+                  <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
+                    <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
+                  </Pressable>
+                  <Pressable
+                    className="flex-1 items-center"
+                    onPress={() => {
+                      setProfile(p => ({ ...p, sex: tempSex }));
+                      setModal(null);
+                    }}
+                  >
+                    <Text className="text-[#38b2ac] font-bold">SAVE</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      {/* // Modal: Birthday (ใช้ date picker library จะดีที่สุด แต่ตัวอย่างนี้ใช้ picker 3 ช่อง) */}
+      <Modal visible={modal === 'birthday'} transparent animationType="slide">
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
+            <Text className="text-white text-xl font-bold mb-4 text-center">Birthday</Text>
+            <View className="flex-row justify-center ">
+              <Picker 
+                selectedValue={birthMonth}
+                onValueChange={setBirthMonth}
+                style={{ width: 140,  color: 'white', backgroundColor: '#232433' }}
+                itemStyle={{ fontSize: 16, color: 'white' }}
+              >
+                {months.map((m, i) => <Picker.Item key={i} label={m} value={i + 1} />)}
+              </Picker>
+              <Picker
+                selectedValue={birthDay}
+                onValueChange={setBirthDay}
+                style={{ width: 79, fontSize: 10 , color: 'white', backgroundColor: '#232433' }}
+                itemStyle={{ fontSize: 16, color: 'white' }}
+              >
+                {Array.from({ length: 31 }, (_, i) => (
+                  <Picker.Item key={i} label={String(i + 1)} value={i + 1} />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={birthYear}
+                onValueChange={setBirthYear}
+                style={{ width: 109,fontSize: 16 , color: 'white', backgroundColor: '#232433' }}
+                itemStyle={{ fontSize: 16, color: 'white' }}
+              >
+                {Array.from({ length: 100 }, (_, i) => (
+                  <Picker.Item key={i} label={String(2024 - i)} value={2024 - i} />
+                ))}
+              </Picker>
+            </View>
+            <View className="flex-row justify-between mt-6">
+              <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
+                <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
+              </Pressable>
+              <Pressable
+                className="flex-1 items-center"
+                onPress={() => {
+                  setProfile(p => ({
+                    ...p,
+                    birthday: `${birthYear}-${String(birthMonth).padStart(2, '0')}-${String(birthDay).padStart(2, '0')}`,
+                  }));
+                  setModal(null);
+                }}
+              >
+                <Text className="text-[#38b2ac] font-bold">SAVE</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
-{/* // Modal: Height */}
-<Modal visible={modal === 'height'} transparent animationType="slide">
-  <View className="flex-1 justify-center items-center bg-black/50">
-    <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
-      <Text className="text-white text-xl font-bold mb-4 text-center">Height</Text>
-      <View className="flex-row justify-center items-center">
-        <Picker
-          selectedValue={tempHeight}
-          onValueChange={setTempHeight}
-          style={{ width: 120, color: 'white', backgroundColor: '#232433' }}
-        >
-          {Array.from({ length: 121 }, (_, i) => (
-            <Picker.Item key={i} label={String(100 + i)} value={String(100 + i)} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={heightUnit}
-          onValueChange={setHeightUnit}
-          style={{ width: 100, color: 'white', backgroundColor: '#232433' }}
-        >
-          <Picker.Item label="cm" value="cm" />
-          <Picker.Item label="in" value="in" />
-        </Picker>
-      </View>
-      <View className="flex-row justify-between mt-6">
-        <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
-          <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
-        </Pressable>
-        <Pressable
-        className="flex-1 items-center"
-        onPress={() => {
-            let heightValue = tempHeight;
-            if (heightUnit === 'in') {
-            heightValue = (parseFloat(tempHeight) * 2.54).toFixed(1); // แปลง inch เป็น cm
-            }
-            setProfile(p => ({
-            ...p,
-            height: heightValue,
-            heightUnit,
-            }));
-            setModal(null);
-        }}
-        >
-        <Text className="text-[#38b2ac] font-bold">SAVE</Text>
-        </Pressable>
-      </View>
-    </View>
-  </View>
-</Modal>
+      {/* // Modal: Height */}
+      <Modal visible={modal === 'height'} transparent animationType="slide">
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
+            <Text className="text-white text-xl font-bold mb-4 text-center">Height</Text>
+            <View className="flex-row justify-center items-center">
+              <Picker
+                selectedValue={tempHeight}
+                onValueChange={setTempHeight}
+                style={{ width: 120, color: 'white', backgroundColor: '#232433' }}
+              >
+                {Array.from({ length: 121 }, (_, i) => (
+                  <Picker.Item key={i} label={String(100 + i)} value={String(100 + i)} />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={heightUnit}
+                onValueChange={setHeightUnit}
+                style={{ width: 100, color: 'white', backgroundColor: '#232433' }}
+              >
+                <Picker.Item label="cm" value="cm" />
+                <Picker.Item label="in" value="in" />
+              </Picker>
+            </View>
+            <View className="flex-row justify-between mt-6">
+              <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
+                <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
+              </Pressable>
+              <Pressable
+                className="flex-1 items-center"
+                onPress={() => {
+                  let heightValue = tempHeight;
+                  if (heightUnit === 'in') {
+                    heightValue = (parseFloat(tempHeight) * 2.54).toFixed(1); // แปลง inch เป็น cm
+                  }
+                  setProfile(p => ({
+                    ...p,
+                    height: heightValue,
+                    heightUnit,
+                  }));
+                  setModal(null);
+                }}
+              >
+                <Text className="text-[#38b2ac] font-bold">SAVE</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
-{/* // Modal: Weight */}
-<Modal visible={modal === 'weight'} transparent animationType="slide">
-  <View className="flex-1 justify-center items-center bg-black/50">
-    <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
-      <Text className="text-white text-xl font-bold mb-4 text-center">Weight</Text>
-      <View className="flex-row justify-center items-center">
-        <Picker
-          selectedValue={weightUnit}
-          onValueChange={setWeightUnit}
-          style={{ width: 120, color: 'white', backgroundColor: '#232433' }}
-        >
-          <Picker.Item label="Kilograms" value="kg" />
-          <Picker.Item label="Pounds" value="lb" />
-        </Picker>
-        <TextInput
-          className="border border-gray-300 rounded px-3 py-2 ml-2 w-24 text-white bg-[#232433]"
-          placeholder={weightUnit === 'kg' ? '60' : '132'}
-          value={tempWeight}
-          onChangeText={setTempWeight}
-          keyboardType="numeric"
-        />
-        <Text className="text-white ml-2">{weightUnit}</Text>
-      </View>
-      <View className="flex-row justify-between mt-6">
-        <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
-          <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
-        </Pressable>
-        <Pressable
-  className="flex-1 items-center"
-  onPress={() => {
-    let weightValue = tempWeight;
-    if (weightUnit === 'lb') {
-      weightValue = (parseFloat(tempWeight) * 0.453592).toFixed(1); // แปลง lb เป็น kg
-    }
-    setProfile(p => ({
-      ...p,
-      weight: weightValue,
-      weightUnit,
-    }));
-    setModal(null);
-  }}
->
-  <Text className="text-[#38b2ac] font-bold">SAVE</Text>
-</Pressable>
-      </View>
-    </View>
-  </View>
-</Modal>
+      {/* // Modal: Weight */}
+      <Modal visible={modal === 'weight'} transparent animationType="slide">
+        <TouchableWithoutFeedback onPress={() =>{ setModal(null);}}>
+          <View className="flex-1 justify-center items-center bg-black/50">
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+              <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
+                <Text className="text-white text-xl font-bold mb-4 text-center">Weight</Text>
+                <View className="flex-row justify-center items-center">
+                  <Picker
+                    selectedValue={weightUnit}
+                    onValueChange={setWeightUnit}
+                    style={{ width: 140, color: 'white', backgroundColor: '#232433' }}
+                    itemStyle={{ fontSize: 16, color: 'white' }}
+                  >
+                    <Picker.Item label="Kilograms" value="kg" />
+                    <Picker.Item label="Pounds" value="lb" />
+                  </Picker>
+                  <TextInput
+                    className="border border-gray-300 rounded px-3 py-2 ml-2 w-24 text-white bg-[#232433]"
+                    placeholder={weightUnit === 'kg' ? '60' : '132'}
+                    value={tempWeight}
+                    onChangeText={setTempWeight}
+                    keyboardType="numeric"
+                  />
+                  <Text className="text-white ml-2">{weightUnit}</Text>
+                </View>
+                <View className="flex-row justify-between mt-6">
+                  <Pressable className="flex-1 items-center" onPress={() => setModal(null)}>
+                    <Text className="text-[#38b2ac] font-bold">CANCEL</Text>
+                  </Pressable>
+                  <Pressable
+                    className="flex-1 items-center"
+                    onPress={() => {
+                      let weightValue = tempWeight;
+                      if (weightUnit === 'lb') {
+                        weightValue = (parseFloat(tempWeight) * 0.453592).toFixed(1); // แปลง lb เป็น kg
+                      }
+                      setProfile(p => ({
+                        ...p,
+                        weight: weightValue,
+                        weightUnit,
+                      }));
+                      setModal(null);
+                    }}
+                  >
+                    <Text className="text-[#38b2ac] font-bold">SAVE</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 }

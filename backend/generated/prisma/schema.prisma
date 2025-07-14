@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "./generated/prisma"
@@ -29,4 +23,31 @@ model User {
   carbsGoal    Float?
   fiberGoal    Float?
   createdAt    DateTime  @default(now())
+
+  foodEntries FoodEntry[]
+}
+
+model Food {
+  id        Int      @id @default(autoincrement())
+  foodName  String
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
+  category  String?
+  createdAt DateTime @default(now())
+
+  entries FoodEntry[] // ความสัมพันธ์ไปยัง entry ของผู้ใช้
+}
+
+model FoodEntry {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  foodId   Int
+  quantity Float // จำนวนที่กิน เช่น 1.5 serving
+  mealType String // Breakfast / Lunch / Dinner / Snack
+  date     DateTime
+
+  user User @relation(fields: [userId], references: [id])
+  food Food @relation(fields: [foodId], references: [id])
 }

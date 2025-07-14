@@ -4,7 +4,10 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts",
-    "dev": "nodemon --watch ./ --ext ts --exec \"npx ts-node index.ts\""  },
+    "dev": "nodemon --watch ./ --ext ts --exec \"npx ts-node index.ts\"",
+    "convert-food": "ts-node scripts/convert-food.ts",
+    "seed": "ts-node prisma/seed.ts"
+  },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5"
