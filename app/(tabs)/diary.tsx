@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getToken } from '@/utils/tokenStorage.native';
+import { API_URL } from '@/config';
 
 const { width } = Dimensions.get('window');
 
@@ -18,6 +20,30 @@ export default function DiaryScreen() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [mealData, setMealData] = useState(initialMealData);
+  const [targets, setTargets] = useState({
+    calories: 0,
+    protein: 0,
+    fat: 0,
+    carbs: 0,
+  })
+  useEffect(() => {
+    const fetchTargets = async () => {
+      const token = await getToken();
+      const res = await fetch(`${API_URL}/api/profile/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const user = await res.json();
+      setTargets({
+        calories: user.caloriesGoal,
+        protein: user.proteinGoal,
+        fat: user.fatGoal,
+        carbs: user.carbsGoal,
+      });
+    };
+    fetchTargets();
+  }, []);
 
   const toggleMeal = (meal: string) => {
     setExpanded(expanded === meal ? null : meal);
@@ -29,16 +55,16 @@ export default function DiaryScreen() {
       data: [
         { label: 'Consumed', value: 0 },
         { label: 'Expenditure', value: 2108 },
-        { label: 'Remaining', value: 2108 },
+        { label: 'Remaining', value:`${targets.calories}` },
       ],
     },
     {
       type: 'targets',
       data: [
-        { label: 'Energy', value: '0.0 / 2107.6 kcal', percent: 0 },
-        { label: 'Protein', value: '0.0 / 131.7 g', percent: 0 },
-        { label: 'Net Carbs', value: '0.0 / 237.1 g', percent: 0 },
-        { label: 'Fat', value: '0.0 / 70.3 g', percent: 0 },
+        { label: 'Energy', value: `0 / ${targets.calories} kcal`, percent: 0 },
+        { label: 'Protein', value: ` 0 / ${targets.protein} g`, percent: 0 },
+        { label: 'Net Carbs', value:` 0 / ${targets.carbs} g` , percent: 0 },
+        { label: 'Fat', value: ` 0 / ${targets.fat} g`, percent: 0 },
       ],
     },
   ];
@@ -109,13 +135,13 @@ export default function DiaryScreen() {
         />
       </View>
 
-      {/* Water */}
-      <TouchableOpacity className="px-6 py-4 border-b border-gray-700">
-        <Text className="text-white font-semibold">Water  0 / 64 fl oz</Text>
-      </TouchableOpacity>
 
       {/* Meal Sections */}
+      <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center mb-4 ">
+        <Text className="text-white font-semibold">Water  0 / 64 fl oz</Text>
+      </TouchableOpacity>
       <ScrollView className="flex-1 px-4 pb-6">
+      {/* Water */}
         {meals.map((meal, idx) => (
           <View key={idx} className="mb-2">
             <TouchableOpacity
@@ -153,12 +179,12 @@ export default function DiaryScreen() {
                 tab === 'Discover'
                   ? 'bar-chart'
                   : tab === 'Diary'
-                  ? 'book'
-                  : tab === 'Add'
-                  ? 'add-circle'
-                  : tab === 'Foods'
-                  ? 'nutrition'
-                  : 'ellipsis-horizontal'
+                    ? 'book'
+                    : tab === 'Add'
+                      ? 'add-circle'
+                      : tab === 'Foods'
+                        ? 'nutrition'
+                        : 'ellipsis-horizontal'
               }
               size={tab === 'Add' ? 36 : 24}
               color={tab === 'Diary' ? '#ff7a1a' : '#fff'}

@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  name          String?
+  passwordHash  String
+  birthday      DateTime?
+  sex           String?
+  height        Float?
+  weight        Float?
+  bodyFat       Float?
+  caloriesGoal  Int?
+  proteinGoal   Float?
+  fatGoal       Float?
+  carbsGoal     Float?
+  activityLevel String?
+  goalRate      Int?
+  goalWeight    Float?
+  createdAt     DateTime  @default(now())
+
+  foodEntries FoodEntry[]
+}
+
+model Food {
+  id        Int      @id @default(autoincrement())
+  foodName  String
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
+  category  String?
+  createdAt DateTime @default(now())
+
+  entries FoodEntry[] // ความสัมพันธ์ไปยัง entry ของผู้ใช้
+}
+
+model FoodEntry {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  foodId   Int
+  quantity Float // จำนวนที่กิน เช่น 1.5 serving
+  mealType String // Breakfast / Lunch / Dinner / Snack
+  date     DateTime
+
+  user User @relation(fields: [userId], references: [id])
+  food Food @relation(fields: [foodId], references: [id])
+}

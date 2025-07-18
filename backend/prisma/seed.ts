@@ -1,5 +1,5 @@
 // prisma/seed.ts
-import { PrismaClient } from '../generated/prisma'; // เส้นทางที่คุณใช้
+import { PrismaClient } from '@prisma/client'; // เส้นทางที่คุณใช้
 import fs from 'fs';
 import path from 'path';
 

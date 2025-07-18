@@ -32,7 +32,7 @@ export default function RegisterStep7({
           name: registerData.firstName || registerData.name,
         }),
       });
-
+      console.error('Response:', registerData);
       const result = await res.json();
 
       if (!res.ok) {
@@ -63,6 +63,27 @@ export default function RegisterStep7({
             : null,
           weight: registerData.weight
             ? Number(registerData.weight)
+            : null,
+          bodyFat: registerData.bodyFat
+            ? Number(registerData.bodyFat)
+            : null,
+          activityLevel: registerData.activityLevel,
+          goalRate: registerData.goalRate,
+          goalType: registerData.goalType, 
+          goalWeight: registerData.goalWeight
+            ? Number(registerData.goalWeight)
+            : null, 
+          caloriesGoal: registerData.caloriesGoal
+            ? Number(registerData.caloriesGoal)
+            : null,
+          proteinGoal: registerData.proteinGoal
+            ? Number(registerData.proteinGoal)
+            : null,
+          carbsGoal: registerData.carbsGoal
+            ? Number(registerData.carbsGoal)
+            : null,
+          fatGoal: registerData.fatGoal
+            ? Number(registerData.fatGoal)
             : null,
         }),
       });

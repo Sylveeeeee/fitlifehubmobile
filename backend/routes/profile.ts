@@ -85,7 +85,7 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
         proteinGoal: true,
         fatGoal: true,
         carbsGoal: true,
-        fiberGoal: true,
+        bodyFat: true,
       },
     });
     res.json(user);
@@ -97,12 +97,12 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
 // PUT /api/profile/me
 router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
   const userId = req.user?.userId;
-  const { name, sex, birthday, height, weight } = req.body;
+  const { name, sex, birthday, height, weight, bodyFat, activityLevel, goalRate, goalType, goalWeight, caloriesGoal, proteinGoal, carbsGoal, fatGoal  } = req.body;
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
   try {
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { name, sex, birthday, height, weight },
+      data: { name, sex, birthday, height, weight, bodyFat, activityLevel, goalRate, goalWeight, caloriesGoal, proteinGoal, carbsGoal, fatGoal },
       select: {
         id: true,
         email: true,
@@ -111,6 +111,14 @@ router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
         birthday: true,
         height: true,
         weight: true,
+        bodyFat: true,
+        activityLevel: true,
+        goalRate: true,
+        goalWeight: true,
+        caloriesGoal: true,
+        proteinGoal: true,
+        carbsGoal: true,
+        fatGoal: true,
       },
     });
     res.json(user);
@@ -132,7 +140,6 @@ router.get('/goal', authenticateToken, async (req: AuthRequest, res) => {
         proteinGoal: true,
         fatGoal: true,
         carbsGoal: true,
-        fiberGoal: true,
       },
     });
     res.json(user);
@@ -149,13 +156,12 @@ router.put('/goal', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { caloriesGoal, proteinGoal, fatGoal, carbsGoal, fiberGoal },
+      data: { caloriesGoal, proteinGoal, fatGoal, carbsGoal,  },
       select: {
         caloriesGoal: true,
         proteinGoal: true,
         fatGoal: true,
         carbsGoal: true,
-        fiberGoal: true,
       },
     });
     res.json(user);

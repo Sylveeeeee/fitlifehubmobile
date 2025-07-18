@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons, MaterialIcons, FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { getToken } from '@/utils/tokenStorage.native';
+import { API_URL } from '@/config';
 
 
 const menu = [
   { label: 'Account', icon: <Ionicons name="settings-outline" size={22} color="#fff" />, route: '/Account' },
-  { label: 'Profile', icon: <Ionicons name="person-outline" size={22} color="#fff" />, route: '/profile' },
+  { label: 'Profile', icon: <Ionicons name="person-outline" size={22} color="#fff" />, route: '/Profile' },
   { label: 'Targets', icon: <Ionicons name="radio-button-on-outline" size={22} color="#fff" />, route: '/targets' },
   { label: 'Fasting', icon: <MaterialIcons name="timer" size={22} color="#fff" />, route: '/fasting' },
   { label: 'Display', icon: <Ionicons name="phone-portrait-outline" size={22} color="#fff" />, route: '/display' },
@@ -19,13 +21,41 @@ const menu = [
 
 export default function MoreScreen() {
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const token = await getToken();
+          if (!token) return;
+  
+          const res = await fetch(`${API_URL}/api/profile/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+  
+          const data = await res.json();
+          if (res.ok) {
+            setUser(data);
+          } else {
+            setUser(null);
+          }
+        } catch (e) {
+          console.error('Error fetching user:', e);
+          setUser(null);
+        }
+      };
+  
+      fetchUser();
+    }, []);
 
   return (
     <View className="flex-1 bg-[#23243a]">
       {/* Header */}
       <View className="pt-12 pb-4 px-6">
         <Text className="text-3xl font-extrabold text-white mb-1">More</Text>
-        <Text className="text-base text-gray-300 mb-4">maccklaren@gmail.com</Text>
+        <Text className="text-base text-gray-300 mb-4">{user?.email || '-'}</Text>
         <View className="bg-[#2e3047] rounded-xl px-4 py-2 mb-4">
           <TextInput
             placeholder="Search..."

@@ -17,11 +17,14 @@ model User {
   sex          String?
   height       Float?
   weight       Float?
+  bodyFat      Float?
   caloriesGoal Int?
   proteinGoal  Float?
   fatGoal      Float?
   carbsGoal    Float?
-  fiberGoal    Float?
+  activityLevel String?
+  goalRate     Int?
+  goalWeight   Float?
   createdAt    DateTime  @default(now())
 
   foodEntries FoodEntry[]
