@@ -50,8 +50,8 @@ export default function LoginScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-950 px-6 py-10 justify-center">
       <View className="mb-10">
-        <Text className="text-4xl text-white font-bold">Eat smarter.</Text>
-        <Text className="text-4xl text-white font-bold">Live better.</Text>
+        <Text className="text-4xl text-white font-bold mx-[40px]">Healthy with -</Text>
+        <Text className="text-4xl text-orange-300 font-bold mx-[90px]">- FITLIFEHUB</Text>
       </View>
 
       <View className="space-y-4">
@@ -62,7 +62,7 @@ export default function LoginScreen() {
           placeholderTextColor="#aaa"
           keyboardType="email-address"
           autoCapitalize="none"
-          className="border border-gray-600 text-white rounded-lg px-4 py-3"
+          className="border border-gray-600 text-white rounded-lg px-4 py-3 mx-[20px]"
         />
 
         <TextInput
@@ -71,11 +71,11 @@ export default function LoginScreen() {
           onChangeText={setPassword}
           placeholderTextColor="#aaa"
           secureTextEntry
-          className="border border-gray-600 text-white rounded-lg px-4 py-3"
+          className="border border-gray-600 text-white rounded-lg px-4 py-3 mt-[10px] mx-[20px]"
         />
 
         <TouchableOpacity
-          className="bg-orange-300 py-3 rounded-full items-center"
+          className="bg-orange-300 py-3 rounded-full items-center mt-[12px] mx-[20px]"
           onPress={handleLogin}
           disabled={loading}
         >
@@ -85,7 +85,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity>
-          <Text className="text-center text-teal-500 font-medium mt-2">
+          <Text className="text-center text-teal-500 font-medium mt-[10px]">
             Forgot your password?
           </Text>
         </TouchableOpacity>
