@@ -26,8 +26,8 @@ export default function RegisterStep2({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#181929]">
-      <Text className="text-3xl font-extrabold text-white text-center mb-2">Set an Activity Level</Text>
+    <SafeAreaView className="flex-1 bg-gray-950">
+      <Text className="text-3xl font-extrabold text-white text-center mb-2 mt-[100px]">Set an Activity Level</Text>
       <Text className="text-center text-gray-300 mb-6 px-8">
         We recommend selecting a baseline level that best describes your day-to-day life.
       </Text>

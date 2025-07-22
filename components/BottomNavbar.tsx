@@ -13,25 +13,25 @@ export default function BottomNavbar() {
 
   return (
     <>
-      <View className="pt-[12px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#ffb300] flex-row justify-around items-start z-50">
+      <View className="pt-[12px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50">
         <Pressable className='flex items-center' onPress={() => router.push('/')}>
-          <AntDesign name="barschart" size={28} color="black" />
-          <Text className="text-gray-700 font-bold">Discover</Text>
+          <AntDesign name="barschart" size={28} color="#ffb300" />
+          <Text className="text-[#ffb300] font-bold">Discover</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/diary')}>
-          <MaterialCommunityIcons name="notebook" size={28} color="black" />
-          <Text className="text-gray-700 font-bold">Diary</Text>
+          <MaterialCommunityIcons name="notebook" size={28} color="#ffb300" />
+          <Text className="text-[#ffb300] font-bold">Diary</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => setModalVisible(true)}>
-          <AntDesign name="pluscircle" size={40} color="black" />
+          <AntDesign name="pluscircle" size={40} color="#ffb300" />
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/foods')}>
-          <FontAwesome5 name="apple-alt" size={28} color="black" />
-          <Text className="text-gray-700 font-bold">Foods</Text>
+          <FontAwesome5 name="apple-alt" size={28} color="#ffb300" />
+          <Text className="text-[#ffb300] font-bold">Foods</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/more')}>
-          <Feather className='bg-black rounded-full' name="more-horizontal" size={28} color="white" />
-          <Text className="text-gray-700 font-bold">More</Text>
+          <Feather className='bg-[#ffb300] rounded-full' name="more-horizontal" size={28} color="white" />
+          <Text className="text-[#ffb300] font-bold">More</Text>
         </Pressable>
       </View>
       <Modal

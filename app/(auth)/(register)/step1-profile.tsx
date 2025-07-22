@@ -39,9 +39,9 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#181929]">
+    <SafeAreaView className="flex-1 bg-gray-950">
       {/* ...header, progress, title... */}
-      <View className="bg-[#232433] rounded-2xl px-3 py-2 mx-4 mb-8">
+      <View className="bg-gray-950 rounded-2xl px-3 py-2 mx-4 mb-8 mt-[200px]">
         <ProfileItem
           icon={<Ionicons name="male-female-outline" size={24} color="#ffb300" />}
           label={`Your sex${profile.sex ? ': ' + profile.sex : ''}`}

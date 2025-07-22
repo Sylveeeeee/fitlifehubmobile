@@ -6,9 +6,9 @@ import EnergyHistory from '@/components/EnergyHistory';
 export default function Index() {
   
   return (
-    <View className="flex-1 bg-[#fff8e1]">
+    <View className="flex-1  bg-[#15161f]">
       {/* Header */}
-      <View className="w-full pt-[40px] pb-2 px-4 bg-[#ffb300]  rounded-b-[20px] ">
+      <View className="w-full pt-[40px] pb-2 px-4 bg-[#232433]  rounded-b-[20px] ">
         <View className="flex-row items-center justify-between">
           {/* Logo & Title */}
           <View className="flex-row items-center">
@@ -17,7 +17,7 @@ export default function Index() {
               style={{ width: 60, height: 60, marginRight: 8, }}
               resizeMode="contain"
             />
-            <Text className="text-[#232738] text-[32px] font-extrabold ">FITLIFE HUB</Text>
+            <Text className="text-[#ffb300] text-[32px] font-extrabold ">FITLIFE HUB</Text>
           </View>
           {/* Notification & Setting */}
           <View className="flex-row items-center space-x-4">
@@ -26,7 +26,7 @@ export default function Index() {
                 source={{
                   uri: 'https://img.icons8.com/ios-filled/50/232738/appointment-reminders--v1.png',
                 }}
-                style={{ width: 28, height: 28, marginRight: 12 }}
+                style={{ width: 28, height: 28, marginRight: 12, tintColor: '#ffb300' }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -35,7 +35,7 @@ export default function Index() {
                 source={{
                   uri: 'https://img.icons8.com/ios-filled/50/232738/settings.png',
                 }}
-                style={{ width: 28, height: 28 }}
+                style={{ width: 28, height: 28, tintColor: '#ffb300'}}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -69,7 +69,7 @@ export default function Index() {
       </View>
 
       {/* เนื้อหาหลัก */}
-      <View className="flex-1 items-center bg-[#fff8e1]">
+      <View className="flex-1 items-center  bg-[#15161f]">
         <WaterCount />
         <EnergyHistory />
 
