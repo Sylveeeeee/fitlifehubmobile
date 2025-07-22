@@ -15,22 +15,22 @@ export default function BottomNavbar() {
     <>
       <View className="pt-[12px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#ffb300] flex-row justify-around items-start z-50">
         <Pressable className='flex items-center' onPress={() => router.push('/')}>
-          <AntDesign name="barschart" size={40} color="black" />
+          <AntDesign name="barschart" size={28} color="black" />
           <Text className="text-gray-700 font-bold">Discover</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/diary')}>
-          <MaterialCommunityIcons name="notebook" size={40} color="black" />
+          <MaterialCommunityIcons name="notebook" size={28} color="black" />
           <Text className="text-gray-700 font-bold">Diary</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => setModalVisible(true)}>
-          <AntDesign name="pluscircle" size={60} color="black" />
+          <AntDesign name="pluscircle" size={40} color="black" />
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/foods')}>
-          <FontAwesome5 name="apple-alt" size={40} color="black" />
+          <FontAwesome5 name="apple-alt" size={28} color="black" />
           <Text className="text-gray-700 font-bold">Foods</Text>
         </Pressable>
         <Pressable className='flex items-center' onPress={() => router.push('/more')}>
-          <Feather className='bg-black rounded-full p-[1px]' name="more-horizontal" size={40} color="white" />
+          <Feather className='bg-black rounded-full' name="more-horizontal" size={28} color="white" />
           <Text className="text-gray-700 font-bold">More</Text>
         </Pressable>
       </View>
