@@ -8,6 +8,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { API_URL } from '@/config';
+import { useRouter } from 'expo-router';
+
+const router = useRouter();
 
 interface FoodItem {
   id: number;
@@ -22,7 +25,7 @@ export default function FoodSearchScreen() {
 
   const fetchFoods = async () => {
     setLoading(true);
-    
+
     try {
       const res = await fetch(`${API_URL}/api/foods?search=${encodeURIComponent(query)}`);
       const data = await res.json();
@@ -32,12 +35,16 @@ export default function FoodSearchScreen() {
     } finally {
       setLoading(false);
     }
-    
+
   };
-console.log('API Response:', foods);
+  console.log('API Response:', foods);
 
   useEffect(() => {
+    fetchFoods(); // โหลดครั้งแรก
+
     if (query.length >= 2) {
+      fetchFoods();
+    } else if (query === '') {
       fetchFoods();
     } else {
       setFoods([]);
@@ -61,7 +68,7 @@ console.log('API Response:', foods);
           data={foods}
           keyExtractor={(item) => `${item.id}`}
           renderItem={({ item }) => (
-            <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 mb-2">
+            <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 mb-2" onPress={() => router.push({ pathname: '/foods/[id]', params: { id: `${item.id}` } })}>
               <View className="flex-row justify-between">
                 <View>
                   <Text className="text-white font-semibold">{item.foodName}</Text>
