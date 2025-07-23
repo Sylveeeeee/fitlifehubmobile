@@ -5,14 +5,10 @@ import BottomNavbar from '@/components/BottomNavbar';
 import "@/global.css";
 
 export default function RootLayout() {
-  const pathname = usePathname();
-  // เงื่อนไข: ถ้าอยู่หน้า foods/[id] จะไม่แสดง BottomNavbar
-  const showNavbar = !(pathname.startsWith('/(tabs)/foods/[id]') && pathname !== '/(tabs)/foods/[id]');
-
   return (
     <>
       <Stack screenOptions={{ headerShown: false }} />
-      {showNavbar && <BottomNavbar />}
+      <BottomNavbar />
       <StatusBar style="auto" />
     </>
   );
