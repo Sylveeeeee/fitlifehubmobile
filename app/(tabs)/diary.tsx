@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, FlatList, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  FlatList,
+  Dimensions,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useEnergy } from '@/context/EnergyContext';
+import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่ม
 
 const { width } = Dimensions.get('window');
 
@@ -20,7 +28,15 @@ export default function DiaryScreen() {
   const meals = ['Uncategorized', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const { totals, setTotals } = useEnergy() as { totals: { calories: number; protein: number; fat: number; carbs: number }, setTotals: React.Dispatch<React.SetStateAction<{ calories: number; protein: number; fat: number; carbs: number }>> };
+  const {
+    totals,
+    setTotals,
+  } = useEnergy() as {
+    totals: { calories: number; protein: number; fat: number; carbs: number };
+    setTotals: React.Dispatch<
+      React.SetStateAction<{ calories: number; protein: number; fat: number; carbs: number }>
+    >;
+  };
   const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
 
   type MealType = 'Uncategorized' | 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
@@ -32,7 +48,6 @@ export default function DiaryScreen() {
     Dinner: [],
     Snacks: [],
   });
-
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -53,14 +68,17 @@ export default function DiaryScreen() {
     fetchTargets();
   }, []);
 
-  const addFood = (meal: MealType, food: { name: string, calories: number, protein: number, fat: number, carbs: number }) => {
+  const addFood = (
+    meal: MealType,
+    food: { name: string; calories: number; protein: number; fat: number; carbs: number }
+  ) => {
     const updatedMealData = {
       ...mealData,
       [meal]: [...mealData[meal], food],
     };
     setMealData(updatedMealData);
 
-    setTotals(prev => ({
+    setTotals((prev) => ({
       calories: prev.calories + food.calories,
       protein: prev.protein + food.protein,
       fat: prev.fat + food.fat,
@@ -104,8 +122,6 @@ export default function DiaryScreen() {
     },
   ];
 
-
-
   const pieData = [
     { value: totals.protein, color: '#4FD1C5' },
     { value: totals.carbs, color: '#63B3ED' },
@@ -117,19 +133,24 @@ export default function DiaryScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#1a1b2e]">
+    <SafeAreaView className="flex-1 bg-[#15161f]">
       {/* Header */}
-      <View className="flex-row items-center justify-between px-6 pt-12 pb-4">
+      <View className="flex-row items-center justify-between px-6 pb-4">
+        {/* ลบ pt-12 เพราะ SafeAreaView จัดให้ */}
         <Text className="text-white text-base font-semibold">✔</Text>
         <Text className="text-white text-xl font-bold">Today</Text>
         <View className="flex-row items-center space-x-4">
-          <TouchableOpacity onPress={() => addFood('Lunch', {
-            name: 'Grilled Chicken',
-            calories: 250,
-            protein: 30,
-            fat: 8,
-            carbs: 0,
-          })}>
+          <TouchableOpacity
+            onPress={() =>
+              addFood('Lunch', {
+                name: 'Grilled Chicken',
+                calories: 250,
+                protein: 30,
+                fat: 8,
+                carbs: 0,
+              })
+            }
+          >
             <Ionicons name="add" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity>
@@ -154,7 +175,9 @@ export default function DiaryScreen() {
             <View style={{ width }} className="px-6 py-2">
               {item.type === 'energy' ? (
                 <View>
-                  <Text className="text-gray-400 font-semibold text-xs mb-1">ENERGY SUMMARY</Text>
+                  <Text className="text-gray-400 font-semibold text-xs mb-1">
+                    ENERGY SUMMARY
+                  </Text>
                   <View className="flex-row justify-center">
                     <AnimatedCircularProgress
                       size={140}
@@ -169,7 +192,9 @@ export default function DiaryScreen() {
                         <View className="items-center">
                           <Text className="text-white font-bold text-xl">{totals.calories}</Text>
                           <Text className="text-gray-400 text-sm">kcal</Text>
-                          <Text className="text-gray-500 text-xs mt-1">of {targets.calories} kcal</Text>
+                          <Text className="text-gray-500 text-xs mt-1">
+                            of {targets.calories} kcal
+                          </Text>
                         </View>
                       )}
                     </AnimatedCircularProgress>
@@ -203,7 +228,7 @@ export default function DiaryScreen() {
 
       {/* Water & Meals */}
       <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center my-4 mx-4">
-        <Text className="text-white font-semibold">Water  0 / 64 fl oz</Text>
+        <Text className="text-white font-semibold">Water 0 / 64 fl oz</Text>
       </TouchableOpacity>
 
       <ScrollView className="flex-1 px-4 pb-6">
@@ -228,7 +253,9 @@ export default function DiaryScreen() {
                     <Text className="text-gray-400">No entries</Text>
                   ) : (
                     mealData[typedMeal].map((item, index) => (
-                      <Text key={index} className="text-white">{item.name}</Text>
+                      <Text key={index} className="text-white">
+                        {item.name}
+                      </Text>
                     ))
                   )}
                 </View>
@@ -247,12 +274,12 @@ export default function DiaryScreen() {
                 tab === 'Discover'
                   ? 'bar-chart'
                   : tab === 'Diary'
-                    ? 'book'
-                    : tab === 'Add'
-                      ? 'add-circle'
-                      : tab === 'Foods'
-                        ? 'nutrition'
-                        : 'ellipsis-horizontal'
+                  ? 'book'
+                  : tab === 'Add'
+                  ? 'add-circle'
+                  : tab === 'Foods'
+                  ? 'nutrition'
+                  : 'ellipsis-horizontal'
               }
               size={tab === 'Add' ? 36 : 24}
               color={tab === 'Diary' ? '#ff7a1a' : '#fff'}
@@ -261,6 +288,6 @@ export default function DiaryScreen() {
           </TouchableOpacity>
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
