@@ -1,80 +1,92 @@
-import { View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native';
 import { Link } from 'expo-router';
-import WaterCount  from '../../components/watercount';
+import WaterCount from '../../components/watercount';
 import EnergyHistory from '@/components/EnergyHistory';
+import { useState } from 'react';
 
 export default function Index() {
-  
+  const [activeTab, setActiveTab] = useState('Dashboard');
+
   return (
-    <View className="flex-1  bg-[#15161f]">
-      {/* Header */}
-      <View className="w-full pt-[40px] pb-2 px-4 bg-[#232433]  rounded-b-[20px] ">
-        <View className="flex-row items-center justify-between">
-          {/* Logo & Title */}
+    <View className="flex-1 bg-[#15161f]">
+      {/* StatusBar สีเข้ม */}
+      <StatusBar barStyle="light-content" backgroundColor="#232433" />
+
+      {/* Header แบบชิด Notch จริง ๆ */}
+      <View className="w-full pb-2 px-4 bg-[#232433] rounded-b-[20px] pt-[50px]">
+        <View className="flex-row items-center justify-between mt-2">
           <View className="flex-row items-center">
             <Image
               source={require('../../assets/logo.png')}
-              style={{ width: 60, height: 60, marginRight: 8, }}
+              style={{ width: 60, height: 60, marginRight: 8 }}
               resizeMode="contain"
             />
-            <Text className="text-[#ffb300] text-[32px] font-extrabold ">FITLIFE HUB</Text>
+            <Text className="text-[#ffb300] text-[32px] font-extrabold">FITLIFE HUB</Text>
           </View>
-          {/* Notification & Setting */}
+
           <View className="flex-row items-center space-x-4">
             <TouchableOpacity>
               <Image
-                source={{
-                  uri: 'https://img.icons8.com/ios-filled/50/232738/appointment-reminders--v1.png',
-                }}
+                source={{ uri: 'https://img.icons8.com/ios-filled/50/232738/appointment-reminders--v1.png' }}
                 style={{ width: 28, height: 28, marginRight: 12, tintColor: '#ffb300' }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <TouchableOpacity>
               <Image
-                source={{
-                  uri: 'https://img.icons8.com/ios-filled/50/232738/settings.png',
-                }}
-                style={{ width: 28, height: 28, tintColor: '#ffb300'}}
+                source={{ uri: 'https://img.icons8.com/ios-filled/50/232738/settings.png' }}
+                style={{ width: 28, height: 28, tintColor: '#ffb300' }}
                 resizeMode="contain"
               />
             </TouchableOpacity>
           </View>
         </View>
+
         {/* Tab Navbar */}
         <View className="w-full h-[38px] flex-row items-center px-1 py-1 mt-2 bg-white rounded-[16px]">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {/* Dashboard */}
-            <TouchableOpacity className="bg-[#ffb300] px-3 py-1 rounded-full mr-1 " activeOpacity={0.8}>
-              <Text className="text-white text-base font-semibold">Dashboard</Text>
-            </TouchableOpacity>
-            {/* Charts */}
-            <TouchableOpacity className="px-3 py-1 mr-1" activeOpacity={0.8}>
-              <Text className="text-[#232738] text-base font-medium">Charts</Text>
-            </TouchableOpacity>
-            {/* Divider */}
-            <View className="w-[1px] h-5 bg-gray-300 mx-1 self-center opacity-40" />
-            {/* Report */}
-            <TouchableOpacity className="px-3 py-1 mr-1" activeOpacity={0.8}>
-              <Text className="text-[#232738] text-base font-medium">Report</Text>
-            </TouchableOpacity>
-            {/* Divider */}
-            <View className="w-[1px] h-5 bg-gray-300 mx-1 self-center opacity-40" />
-            {/* Snapshot */}
-            <TouchableOpacity className="px-3 py-1" activeOpacity={0.8}>
-              <Text className="text-[#232738] text-base font-medium">Snapshot</Text>
-            </TouchableOpacity>
+            {['Dashboard', 'Charts', 'Report', 'Snapshot'].map((tab, index) => (
+              <View key={tab} className="flex-row items-center">
+                <TouchableOpacity
+                  className={`px-3 py-1 rounded-full mr-1 ${activeTab === tab ? 'bg-[#ffb300]' : ''}`}
+                  activeOpacity={0.8}
+                  onPress={() => setActiveTab(tab)}
+                >
+                  <Text
+                    className={`text-base ${
+                      activeTab === tab ? 'text-white font-semibold' : 'text-[#232738] font-medium'
+                    }`}
+                  >
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+                {index < 3 && <View className="w-[1px] h-5 bg-gray-300 mx-1 self-center opacity-40" />}
+              </View>
+            ))}
           </ScrollView>
         </View>
       </View>
 
-      {/* เนื้อหาหลัก */}
-      <View className="flex-1 items-center  bg-[#15161f]">
-        <WaterCount />
-        <EnergyHistory />
-
-      </View>
-      
+      {/* เนื้อหาข้างล่าง scroll ได้ และไม่ถูกบีบโดย SafeArea */}
+      <ScrollView className="flex-1 bg-[#15161f]" contentContainerStyle={{ paddingBottom: 40 }}>
+        <View className="items-center px-4 pt-4">
+          {activeTab === 'Dashboard' && (
+            <>
+              <WaterCount />
+              <EnergyHistory />
+            </>
+          )}
+          {activeTab === 'Charts' && (
+            <Text className="text-white mt-10 text-lg">Charts content here...</Text>
+          )}
+          {activeTab === 'Report' && (
+            <Text className="text-white mt-10 text-lg">Report content here...</Text>
+          )}
+          {activeTab === 'Snapshot' && (
+            <Text className="text-white mt-10 text-lg">Snapshot content here...</Text>
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 }

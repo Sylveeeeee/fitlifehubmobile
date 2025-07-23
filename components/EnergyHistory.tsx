@@ -3,7 +3,7 @@ import { Feather } from '@expo/vector-icons';
 
 export default function EnergyHistory() {
   return (
-    <View className="w-[92%] self-center my-3 bg-[#232433] rounded-2xl p-4 shadow-lg border-2 border-[#22b6ff] items-center" style={{ minHeight: 260 }}>
+    <View className="w-[92%] self-center my-3 bg-[#232433] rounded-2xl p-4 shadow-lg items-center" style={{ minHeight: 260 }}>
       {/* Header */}
       <View className="flex-row items-center justify-between mb-2 w-full">
         <Text className="text-white text-lg font-bold">Energy History (kcal)</Text>
