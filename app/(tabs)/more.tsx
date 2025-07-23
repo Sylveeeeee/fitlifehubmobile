@@ -1,88 +1,202 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
-import { Ionicons, MaterialIcons, FontAwesome5, Feather, Entypo } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import {
+  Ionicons,
+  MaterialIcons,
+  FontAwesome5,
+  Feather,
+  Entypo,
+} from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 
+type MenuItem = {
+  label: string;
+  icon: React.ReactNode;
+  route:
+    | '/Account'
+    | '/Profile'
+    | '/targets'
+    | '/fasting'
+    | '/display'
+    | '/connect'
+    | '/sharing'
+    | '/referrals'
+    | '/support'
+    | '/about';
+};
 
-const menu = [
-  { label: 'Account', icon: <Ionicons name="settings-outline" size={22} color="#fff" />, route: '/Account' },
-  { label: 'Profile', icon: <Ionicons name="person-outline" size={22} color="#fff" />, route: '/Profile' },
-  { label: 'Targets', icon: <Ionicons name="radio-button-on-outline" size={22} color="#fff" />, route: '/targets' },
-  { label: 'Fasting', icon: <MaterialIcons name="timer" size={22} color="#fff" />, route: '/fasting' },
-  { label: 'Display', icon: <Ionicons name="phone-portrait-outline" size={22} color="#fff" />, route: '/display' },
-  { label: 'Connect Apps & Devices', icon: <Feather name="refresh-cw" size={22} color="#fff" />, route: '/connect' },
-  { label: 'Sharing', icon: <Feather name="share-2" size={22} color="#fff" />, route: '/sharing' },
-  { label: 'Referrals', icon: <FontAwesome5 name="user-friends" size={22} color="#fff" />, route: '/referrals' },
-  { label: 'Support', icon: <Entypo name="help-with-circle" size={22} color="#fff" />, route: '/support' },
-  { label: 'About', icon: <Ionicons name="information-circle-outline" size={22} color="#fff" />, route: '/about' },
+const fullMenu: MenuItem[] = [
+  {
+    label: 'Account',
+    icon: <Ionicons name="settings-outline" size={22} color="#fff" />,
+    route: '/Account',
+  },
+  {
+    label: 'Profile',
+    icon: <Ionicons name="person-outline" size={22} color="#fff" />,
+    route: '/Profile',
+  },
+  {
+    label: 'Targets',
+    icon: <Ionicons name="radio-button-on-outline" size={22} color="#fff" />,
+    route: '/targets',
+  },
+  {
+    label: 'Fasting',
+    icon: <MaterialIcons name="timer" size={22} color="#fff" />,
+    route: '/fasting',
+  },
+  {
+    label: 'Display',
+    icon: <Ionicons name="phone-portrait-outline" size={22} color="#fff" />,
+    route: '/display',
+  },
+  {
+    label: 'Connect Apps & Devices',
+    icon: <Feather name="refresh-cw" size={22} color="#fff" />,
+    route: '/connect',
+  },
+  {
+    label: 'Sharing',
+    icon: <Feather name="share-2" size={22} color="#fff" />,
+    route: '/sharing',
+  },
+  {
+    label: 'Referrals',
+    icon: <FontAwesome5 name="user-friends" size={22} color="#fff" />,
+    route: '/referrals',
+  },
+  {
+    label: 'Support',
+    icon: <Entypo name="help-with-circle" size={22} color="#fff" />,
+    route: '/support',
+  },
+  {
+    label: 'About',
+    icon: (
+      <Ionicons name="information-circle-outline" size={22} color="#fff" />
+    ),
+    route: '/about',
+  },
 ];
 
 export default function MoreScreen() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  
-    useEffect(() => {
-      const fetchUser = async () => {
-        try {
-          const token = await getToken();
-          if (!token) return;
-  
-          const res = await fetch(`${API_URL}/api/profile/me`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-  
-          const data = await res.json();
-          if (res.ok) {
-            setUser(data);
-          } else {
-            setUser(null);
-          }
-        } catch (e) {
-          console.error('Error fetching user:', e);
+  const [searchText, setSearchText] = useState('');
+  const [filteredMenu, setFilteredMenu] = useState<MenuItem[]>(fullMenu);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await getToken();
+        if (!token) return;
+
+        const res = await fetch(`${API_URL}/api/profile/me`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setUser(data);
+        } else {
           setUser(null);
         }
-      };
-  
-      fetchUser();
-    }, []);
+      } catch (e) {
+        console.error('Error fetching user:', e);
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (searchText.trim() === '') {
+      setFilteredMenu(fullMenu);
+    } else {
+      const lower = searchText.toLowerCase();
+      setFilteredMenu(
+        fullMenu.filter((item) =>
+          item.label.toLowerCase().includes(lower)
+        )
+      );
+    }
+  }, [searchText]);
 
   return (
-    <View className="flex-1 bg-[#23243a]">
-      {/* Header */}
-      <View className="pt-12 pb-4 px-6">
-        <Text className="text-3xl font-extrabold text-white mb-1">More</Text>
-        <Text className="text-base text-gray-300 mb-4">{user?.email || '-'}</Text>
-        <View className="bg-[#2e3047] rounded-xl px-4 py-2 mb-4">
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#15161f' }}>
+      <View style={{ paddingTop: 48, paddingBottom: 16, paddingHorizontal: 24 }}>
+        <Text style={{ fontSize: 30, fontWeight: '800', color: 'white', marginBottom: 4 }}>
+          More
+        </Text>
+        <Text style={{ fontSize: 16, color: '#ccc', marginBottom: 16 }}>
+          {user?.email || '-'}
+        </Text>
+        <View
+          style={{
+            backgroundColor: '#2e3047',
+            borderRadius: 12,
+            paddingHorizontal: 16,
+            paddingVertical: 8,
+            marginBottom: 16,
+          }}
+        >
           <TextInput
             placeholder="Search..."
             placeholderTextColor="#888"
-            className="text-white"
-            style={{ fontSize: 16 }}
+            style={{ color: 'white', fontSize: 16 }}
+            value={searchText}
+            onChangeText={setSearchText}
           />
         </View>
       </View>
 
-      {/* Menu */}
-      <ScrollView className="px-2">
-        {menu.map((item) => (
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 8 }}>
+        {filteredMenu.map((item) => (
           <TouchableOpacity
             key={item.label}
-            className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2"
             activeOpacity={0.7}
-            onPress={() => router.push(item.route as any)}
+            onPress={() => router.push(item.route as any)} // 👈 ปิด TypeScript error ชั่วคราว
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: '#292b40',
+              borderRadius: 12,
+              paddingVertical: 16,
+              paddingHorizontal: 16,
+              marginBottom: 12,
+            }}
           >
-            <View className="flex-row items-center space-x-3">
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               {item.icon}
-              <Text className="text-white text-base">{item.label}</Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: '600',
+                  marginLeft: 12,
+                }}
+              >
+                {item.label}
+              </Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#fff" />
           </TouchableOpacity>
         ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
