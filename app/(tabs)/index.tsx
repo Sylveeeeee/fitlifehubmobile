@@ -3,9 +3,15 @@ import { Link } from 'expo-router';
 import WaterCount from '../../components/watercount';
 import EnergyHistory from '@/components/EnergyHistory';
 import { useState } from 'react';
+import { useEnergy } from '@/context/EnergyContext';
+
+type EnergyContextType = {
+  totals: any; // Replace 'any' with the actual type of 'totals' if known
+};
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState('Dashboard');
+  const { totals } = useEnergy() as EnergyContextType;
 
   return (
     <View className="flex-1 bg-[#15161f]">
@@ -73,7 +79,7 @@ export default function Index() {
           {activeTab === 'Dashboard' && (
             <>
               <WaterCount />
-              <EnergyHistory />
+              <EnergyHistory totals={totals} />
             </>
           )}
           {activeTab === 'Charts' && (

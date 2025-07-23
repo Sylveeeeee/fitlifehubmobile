@@ -11,7 +11,7 @@ export default function WaterCount() {
   // animation scale values สำหรับปุ่ม +
   const scalePlus = useRef(new Animated.Value(1)).current;
 
-  const animatePressIn = (scaleAnim) => {
+  const animatePressIn = (scaleAnim: Animated.Value | Animated.ValueXY) => {
     Animated.spring(scaleAnim, {
       toValue: 0.9,
       useNativeDriver: true,
@@ -20,7 +20,7 @@ export default function WaterCount() {
     }).start();
   };
 
-  const animatePressOut = (scaleAnim) => {
+  const animatePressOut = (scaleAnim: Animated.Value | Animated.ValueXY) => {
     Animated.spring(scaleAnim, {
       toValue: 1,
       useNativeDriver: true,
@@ -90,8 +90,7 @@ export default function WaterCount() {
               height: 64,
               justifyContent: 'center',
               alignItems: 'center',
-              background:
-                'linear-gradient(45deg, #22b6ff, #38e7ff)', // **Note: linear-gradient ไม่ support โดยตรงใน RN**
+              // background: 'linear-gradient(45deg, #22b6ff, #38e7ff)', // **Note: linear-gradient ไม่ support โดยตรงใน RN**
               shadowColor: '#22b6ff',
               shadowOffset: { width: 0, height: 6 },
               shadowOpacity: 0.8,
