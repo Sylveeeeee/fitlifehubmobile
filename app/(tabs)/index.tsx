@@ -89,7 +89,7 @@ export default function Index() {
             <Text className="text-white mt-10 text-lg">Report content here...</Text>
           )}
           {activeTab === 'Snapshot' && (
-            <Text className="text-white mt-10 text-lg">Snapshot content here...</Text>
+            <Text className="text-white mt-10 text-lg">Snapshot content heres...</Text>
           )}
         </View>
       </ScrollView>
