@@ -1,17 +1,30 @@
-import { View, Text, ScrollView, Pressable, ActivityIndicator, TextInput } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่ม
 
 export default function FoodDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const [food, setFood] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
+  const [targets, setTargets] = useState({
+    calories: 0,
+    protein: 0,
+    fat: 0,
+    carbs: 0,
+  });
 
   // UI states
   const [amount, setAmount] = useState('1');
@@ -54,7 +67,9 @@ export default function FoodDetailScreen() {
 
   if (loading || !food) {
     return (
-      <View className="flex-1 bg-[#1a1b2e] justify-center items-center">
+      <View
+        style={{ flex: 1, backgroundColor: '#1a1b2e', justifyContent: 'center', alignItems: 'center' }}
+      >
         <ActivityIndicator size="large" color="#ff7a1a" />
       </View>
     );
@@ -77,52 +92,101 @@ export default function FoodDetailScreen() {
 
   return (
     <View className="flex-1 bg-[#1a1b2e]">
-    <ScrollView className="flex-1 bg-[#1a1b2e] px-4 pt-10">
-      {/* Header */}
-      <View className="flex-row justify-between items-center mb-4">
-        <Pressable onPress={() => router.back()}>
-          <Ionicons name="close" size={28} color="#fff" />
-        </Pressable>
-        <Text className="text-white font-bold text-xl">
-          <Text>⭐ </Text>
-          {food.foodName}
-        </Text>
-        <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
-      </View>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingTop: 40 }}>
+        {/* Header */}
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 16,
+          }}
+        >
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="close" size={28} color="#fff" />
+          </Pressable>
+          <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>
+            <Text>⭐ </Text>
+            {food.foodName}
+          </Text>
+          <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+        </View>
 
-      {/* Amount, Serving Size, Timestamp, Group */}
-      <View className="bg-[#23243a] rounded-xl p-4 mb-4">
-        <View className="mb-3">
-          <Text className="text-white font-bold text-base mb-1">Amount</Text>
-          <TextInput
-            value={amount}
-            onChangeText={setAmount}
-            keyboardType="numeric"
-            className="bg-[#2a2c3d] rounded-lg px-3 py-2 text-white"
-            style={{ width: 80 }}
-          />
+        {/* Amount, Serving Size, Timestamp, Group */}
+        <View
+          style={{
+            backgroundColor: '#23243a',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 16,
+          }}
+        >
+          <View style={{ marginBottom: 12 }}>
+            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
+              Amount
+            </Text>
+            <TextInput
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="numeric"
+              style={{
+                backgroundColor: '#2a2c3d',
+                borderRadius: 8,
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                color: 'white',
+                width: 80,
+              }}
+            />
+          </View>
+          <View style={{ marginBottom: 12 }}>
+            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
+              Serving Size
+            </Text>
+            <Text style={{ color: 'white' }}>{servingSize}</Text>
+          </View>
+          <View style={{ marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
+            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginRight: 8 }}>
+              Timestamp
+            </Text>
+            <MaterialCommunityIcons name="lock" size={18} color="#ffb300" />
+            <Text
+              style={{
+                backgroundColor: '#2a2c3d',
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 8,
+                color: 'white',
+                marginHorizontal: 8,
+              }}
+            >
+              {timestamp}
+            </Text>
+            <Ionicons name="checkmark-circle" size={18} color="#ffb300" />
+          </View>
+          <View style={{ marginBottom: 4 }}>
+            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
+              Group
+            </Text>
+            <Text style={{ color: 'white' }}>{group}</Text>
+          </View>
         </View>
-        <View className="mb-3">
-          <Text className="text-white font-bold text-base mb-1">Serving Size</Text>
-          <Text className="text-white">{servingSize}</Text>
-        </View>
-        <View className="mb-3 flex-row items-center">
-          <Text className="text-white font-bold text-base mr-2">Timestamp</Text>
-          <MaterialCommunityIcons name="lock" size={18} color="#ffb300" />
-          <Text className="bg-[#2a2c3d] px-2 py-1 rounded-lg text-white mx-2">{timestamp}</Text>
-          <Ionicons name="checkmark-circle" size={18} color="#ffb300" />
-        </View>
-        <View className="mb-1">
-          <Text className="text-white font-bold text-base mb-1">Group</Text>
-          <Text className="text-white">{group}</Text>
-        </View>
-      </View>      
+     
 
-      {/* Energy Summary */}
-      <View className="bg-[#2a2c3d] rounded-xl p-4 mb-4">
-        <Text className="text-white font-bold text-lg mb-2">Energy Summary</Text>
-        <View className="flex-row items-center justify-around">
-          <View className="relative items-center justify-center">
+        {/* Energy Summary */}
+        <View
+          style={{
+            backgroundColor: '#2a2c3d',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 16,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-around',
+          }}
+        >
+          <View style={{ position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Background Circle */}
             <AnimatedCircularProgress
               size={120}
               width={15}
@@ -130,65 +194,124 @@ export default function FoodDetailScreen() {
               tintColor="#444"
               backgroundColor="#1a1b2e"
               rotation={0}
-            >{() => null}</AnimatedCircularProgress>
+            >
+              {() => null}
+            </AnimatedCircularProgress>
+
+            {/* Protein */}
             <AnimatedCircularProgress
               size={120}
               width={15}
-              fill={proteinPercent}
+              fill={Math.min(proteinPercent, 100)}
               tintColor="#22c55e"
               backgroundColor="transparent"
               rotation={0}
               style={{ position: 'absolute' }}
             />
+
+            {/* Carbs */}
             <AnimatedCircularProgress
               size={120}
               width={15}
-              fill={carbsPercent}
+              fill={Math.min(carbsPercent, 100)}
               tintColor="#06b6d4"
               backgroundColor="transparent"
-              rotation={(proteinPercent / 100) * 360}
+              rotation={(Math.min(proteinPercent, 100) / 100) * 360}
               style={{ position: 'absolute' }}
             />
+
+            {/* Fat */}
             <AnimatedCircularProgress
               size={120}
               width={15}
-              fill={fatPercent}
+              fill={Math.min(fatPercent, 100)}
               tintColor="#f97316"
               backgroundColor="transparent"
-              rotation={((proteinPercent + carbsPercent) / 100) * 360}
+              rotation={((Math.min(proteinPercent, 100) + Math.min(carbsPercent, 100)) / 100) * 360}
               style={{ position: 'absolute' }}
             />
-            <View className="absolute items-center">
-              <Text className="text-white font-bold text-xl">{food.calories}</Text>
-              <Text className="text-white text-xs">kcal</Text>
+
+            {/* Center Text */}
+            <View style={{ position: 'absolute', alignItems: 'center' }}>
+              <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>
+                {food.calories}
+              </Text>
+              <Text style={{ color: 'white', fontSize: 12 }}>kcal</Text>
             </View>
           </View>
-          <View className="ml-4">
+
+          <View style={{ marginLeft: 16 }}>
             {macros.map((m) => (
-              <Text key={m.label} style={{ color: m.color }} className="text-sm mb-1">
+              <Text key={m.label} style={{ color: m.color, fontSize: 14, marginBottom: 6 }}>
                 {m.label} ({((m.value / total) * 100).toFixed(0)}%) - {m.value}g
               </Text>
             ))}
           </View>
         </View>
-      </View>
 
-      {/* Macronutrient Targets */}
-      <View className="bg-[#2a2c3d] rounded-xl p-4 mb-6">
-        <Text className="text-white font-bold text-lg mb-2">Macronutrient Targets</Text>
-        {[{ label: 'Energy', value: food.calories, target: targets.calories, unit: 'kcal', color: '#fff' }, ...macros.map(m => ({ label: m.label, value: m.value, target: m.target, color: m.color, unit: 'g' }))].map((item) => (
-          <View key={item.label} className="mb-3">
-            <Text className="text-white text-sm mb-1">
-              {item.label} – {item.value} / {item.target} {item.unit} ({((item.value / (item.target || 1)) * 100).toFixed(0)}%)
-            </Text>
-            <View className="h-2 w-full bg-gray-700 rounded-full">
-              <View style={{ width: `${(item.value / (item.target || 1)) * 100}%`, backgroundColor: item.color || '#fff', height: 8, borderRadius: 5 }} />
-            </View>
-          </View>
-        ))}
-      </View>
+        {/* Macronutrient Targets */}
+        <View
+          style={{
+            backgroundColor: '#2a2c3d',
+            borderRadius: 12,
+            padding: 16,
+            marginBottom: 24,
+          }}
+        >
+          <Text
+            style={{ color: 'white', fontWeight: '700', fontSize: 18, marginBottom: 12 }}
+          >
+            Macronutrient Targets
+          </Text>
+          {[
+            {
+              label: 'Energy',
+              value: food.calories,
+              target: targets.calories,
+              unit: 'kcal',
+              color: '#fff',
+            },
+            ...macros.map((m) => ({
+              label: m.label,
+              value: m.value,
+              target: m.target,
+              color: m.color,
+              unit: 'g',
+            })),
+          ].map((item) => {
+            const percent = Math.min((item.value / (item.target || 1)) * 100, 100);
+            return (
+              <View key={item.label} style={{ marginBottom: 16 }}>
+                <Text style={{ color: 'white', fontSize: 14, marginBottom: 6 }}>
+                  {item.label} – {item.value} / {item.target} {item.unit} (
+                  {percent.toFixed(0)}%)
+                </Text>
+                <View
+                  style={{
+                    height: 8,
+                    width: '100%',
+                    backgroundColor: '#374151',
+                    borderRadius: 5,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <View
+                    style={{
+                      width: `${percent}%`,
+                      backgroundColor: item.color || '#fff',
+                      height: 8,
+                      borderRadius: 5,
+                    }}
+                  />
+                </View>
+              </View>
+            );
+          })}
+        </View>
 
     </ScrollView>
+
+    
       {/* Add to Diary Button */}
       <View className="absolute left-0 right-0 bottom-0 px-4 pb-8 bg-[#1a1b2e] pt-5">
         <Pressable onPress={() => console.log('Add to Diary')} className="bg-white py-2 rounded-full items-center mb-10">
