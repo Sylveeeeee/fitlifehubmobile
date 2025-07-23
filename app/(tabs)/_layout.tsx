@@ -7,12 +7,13 @@ import "@/global.css";
 export default function RootLayout() {
   const pathname = usePathname();
   // ซ่อน BottomNavbar เมื่ออยู่หน้า foods/[id]
-  const showNavbar = !(pathname.startsWith('/(tabs)/foods/'));
+  const showNavbar = !(pathname.startsWith('/foods/'));
 
   return (
     <>
       <Stack screenOptions={{ headerShown: false }} />
       {showNavbar && <BottomNavbar />}
+      {/* แสดง StatusBar เสมอ */}
       <StatusBar style="auto" />
     </>
   );

@@ -76,6 +76,7 @@ export default function FoodDetailScreen() {
   ];
 
   return (
+    <View className="flex-1 bg-[#1a1b2e]">
     <ScrollView className="flex-1 bg-[#1a1b2e] px-4 pt-10">
       {/* Header */}
       <View className="flex-row justify-between items-center mb-4">
@@ -115,17 +116,7 @@ export default function FoodDetailScreen() {
           <Text className="text-white font-bold text-base mb-1">Group</Text>
           <Text className="text-white">{group}</Text>
         </View>
-      </View>
-
-      {/* Nutrient Count & Data Source */}
-      <View className="flex-row items-center mb-2">
-        <MaterialCommunityIcons name="flask-outline" size={20} color="#ff4d4f" />
-        <Text className="text-[#ff4d4f] ml-1 mr-2 font-bold">81 Listed Nutrients</Text>
-        <Text className="text-gray-400">Data Source: NCCDB</Text>
-      </View>
-      <Text className="text-white text-sm mb-2">
-        Nutritional Information per 1 cup — 258g
-      </Text>
+      </View>      
 
       {/* Energy Summary */}
       <View className="bg-[#2a2c3d] rounded-xl p-4 mb-4">
@@ -197,10 +188,13 @@ export default function FoodDetailScreen() {
         ))}
       </View>
 
-      {/* Add to Diary Button */}
-      <Pressable onPress={() => console.log('Add to Diary')} className="bg-white py-3 rounded-full items-center mb-10">
-        <Text className="text-black font-semibold text-lg">ADD TO DIARY</Text>
-      </Pressable>
     </ScrollView>
+      {/* Add to Diary Button */}
+      <View className="absolute left-0 right-0 bottom-0 px-4 pb-8 bg-[#1a1b2e] pt-5">
+        <Pressable onPress={() => console.log('Add to Diary')} className="bg-white py-2 rounded-full items-center mb-10">
+          <Text className="text-black font-semibold text-lg">ADD TO DIARY</Text>
+        </Pressable>
+      </View>
+    </View>
   );
 }
