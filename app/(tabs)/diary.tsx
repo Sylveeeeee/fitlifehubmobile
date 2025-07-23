@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { useEnergy } from '@/context/EnergyContext';
 
 const { width } = Dimensions.get('window');
 
@@ -19,8 +20,8 @@ export default function DiaryScreen() {
   const meals = ['Uncategorized', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const { totals, setTotals } = useEnergy() as { totals: { calories: number; protein: number; fat: number; carbs: number }, setTotals: React.Dispatch<React.SetStateAction<{ calories: number; protein: number; fat: number; carbs: number }>> };
   const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
-  const [totals, setTotals] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
 
   type MealType = 'Uncategorized' | 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
 
@@ -52,7 +53,7 @@ export default function DiaryScreen() {
     fetchTargets();
   }, []);
 
-  const addFood = (meal: string, food: { name: string, calories: number, protein: number, fat: number, carbs: number }) => {
+  const addFood = (meal: MealType, food: { name: string, calories: number, protein: number, fat: number, carbs: number }) => {
     const updatedMealData = {
       ...mealData,
       [meal]: [...mealData[meal], food],

@@ -1,30 +1,116 @@
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { BarChart } from 'react-native-chart-kit';
 
-export default function EnergyHistory() {
+type Totals = {
+  calories: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+};
+
+interface EnergyHistoryProps {
+  totals: Totals;
+}
+
+const screenWidth = Dimensions.get('window').width;
+
+export default function EnergyHistory({ totals }: EnergyHistoryProps) {
   return (
-    <View className="w-[92%] self-center my-3 bg-[#232433] rounded-2xl p-4 shadow-lg border-2 border-[#22b6ff] items-center" style={{ minHeight: 260 }}>
+    <View
+      className="w-[92%] self-center my-3 bg-[#232433] rounded-2xl p-4 shadow-lg items-center"
+      style={{ minHeight: 300 }}
+    >
       {/* Header */}
       <View className="flex-row items-center justify-between mb-2 w-full">
-        <Text className="text-white text-lg font-bold">Energy History (kcal)</Text>
+        <Text className="text-[#ffb300] text-lg font-bold">Energy History</Text>
         <Feather name="chevron-right" size={20} color="#fff" />
       </View>
-      {/* Mock Chart */}
-      <View className="w-full" style={{ height: 150, position: 'relative', marginBottom: 8 }}>
-        {/* เส้นกราฟแนวนอน */}
-        {[10, 8, 6, 4, 2, 0].map((val, idx) => (
-          <View key={val} className="flex-row items-center" style={{ position: 'absolute', top: idx * 25, left: 0, right: 0 }}>
-            <View className="border-t border-gray-400 opacity-40 w-full absolute left-0 right-0" />
-            <Text className="text-gray-300 text-xs" style={{ width: 24 }}>{val}</Text>
-          </View>
-        ))}
-        {/* เส้นแกน X (mock) */}
-        <View className="absolute bottom-0 left-0 right-0 flex-row justify-between px-2">
-          <Text className="text-gray-300 text-xs">Jul 15</Text>
-          <Text className="text-gray-300 text-xs">Jul 18</Text>
-          <Text className="text-gray-300 text-xs">Jul 21</Text>
-        </View>
+
+      {/* Calories */}
+      <View className="w-full mb-2">
+        <Text className="text-white text-base">Calories: {totals.calories} kcal</Text>
       </View>
+
+      {/* Bar Chart */}
+      <View className="w-full items-center mb-1">
+        <BarChart
+          data={{
+            labels: ['Protein', 'Carbs', 'Fat'],
+            datasets: [
+              {
+                data: [totals.protein, totals.carbs, totals.fat],
+                colors: [
+                  () => '#22c55e', // Protein
+                  () => '#2dd4bf', // Carbs
+                  () => '#f87171', // Fat
+                ],
+              },
+            ],
+          }}
+          width={screenWidth * 0.85}
+          height={180}
+          yAxisSuffix="g"
+          fromZero={true}
+          withCustomBarColorFromData={true}
+          flatColor={true}
+          chartConfig={{
+            backgroundColor: '#232433',
+            backgroundGradientFrom: '#232433',
+            backgroundGradientTo: '#232433',
+            decimalPlaces: 0,
+            color: () => '#ffffff',
+            labelColor: () => '#ffffff',
+            propsForBackgroundLines: {
+              stroke: '#444',
+            },
+          }}
+          verticalLabelRotation={0}
+          segments={4}
+          style={{
+            borderRadius: 12,
+          }}
+          yAxisLabel=""
+        />
+      </View>
+
+      {/* ตัวเลขใต้กราฟแท่งแบบแม่นยำ */}
+      <View
+        className="relative w-[85%] self-center mt-[-12px] mb-4"
+        style={{ height: 24 }} // เพิ่มความสูง container เพื่อขยับตัวเลขลง
+      >
+        <Text
+          className="text-xs text-center absolute"
+          style={{
+            left: (screenWidth * 0.85) * (1 / 6) - 10,
+            color: '#22c55e',
+            top: 4,
+          }}
+        >
+          {totals.protein}g
+        </Text>
+        <Text
+          className="text-xs text-center absolute"
+          style={{
+            left: (screenWidth * 0.85) * (3 / 6) - 10,
+            color: '#2dd4bf',
+            top: 4,
+          }}
+        >
+          {totals.carbs}g
+        </Text>
+        <Text
+          className="text-xs text-center absolute"
+          style={{
+            left: (screenWidth * 0.85) * (5 / 6) - 45,
+            color: '#f87171',
+            top: 4,
+          }}
+        >
+          {totals.fat}g
+        </Text>
+      </View>
+
       {/* Legend */}
       <View className="flex-row justify-center mt-2 space-x-4">
         <View className="flex-row items-center">
@@ -38,10 +124,6 @@ export default function EnergyHistory() {
         <View className="flex-row items-center">
           <View className="w-3 h-1.5 rounded bg-[#f87171] mr-1" />
           <Text className="text-white text-xs">Fat</Text>
-        </View>
-        <View className="flex-row items-center">
-          <View className="w-3 h-1.5 rounded bg-[#fbbf24] mr-1" />
-          <Text className="text-white text-xs">Alcohol</Text>
         </View>
       </View>
     </View>

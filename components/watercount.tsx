@@ -1,16 +1,39 @@
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
+import { View, Text, TouchableWithoutFeedback, Animated } from 'react-native';
+import { useState, useRef } from 'react';
 
 const GLASS_SIZE_ML = 250;
 
 export default function WaterCount() {
   const [count, setCount] = useState(0);
 
+  // animation scale values สำหรับปุ่ม -
+  const scaleMinus = useRef(new Animated.Value(1)).current;
+  // animation scale values สำหรับปุ่ม +
+  const scalePlus = useRef(new Animated.Value(1)).current;
+
+  const animatePressIn = (scaleAnim: Animated.Value | Animated.ValueXY) => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.9,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 10,
+    }).start();
+  };
+
+  const animatePressOut = (scaleAnim: Animated.Value | Animated.ValueXY) => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 10,
+    }).start();
+  };
+
   const addGlass = () => setCount(count + 1);
   const removeGlass = () => setCount(count > 0 ? count - 1 : 0);
 
   return (
-    <View className="w-[92%] self-center my-6 bg-[#181d2b] border-2 border-[#22b6ff] rounded-3xl shadow-lg px-6 py-7 items-center">
+    <View className="w-[92%] self-center my-6 bg-[#232433] rounded-3xl shadow-lg px-6 py-7 items-center">
       {/* Sport Icon & Title */}
       <View className="flex-row items-center mb-3">
         <Text className="text-2xl font-extrabold text-[#22b6ff] mr-2">💪</Text>
@@ -27,20 +50,57 @@ export default function WaterCount() {
       </Text>
       {/* Buttons */}
       <View className="flex-row items-center gap-x-10 mt-2">
-        <TouchableOpacity
-          className="bg-[#232738] border-2 border-[#ffb300] rounded-full w-16 h-16 items-center justify-center active:scale-95"
+        {/* ปุ่มลบ */}
+        <TouchableWithoutFeedback
+          onPressIn={() => animatePressIn(scaleMinus)}
+          onPressOut={() => animatePressOut(scaleMinus)}
           onPress={removeGlass}
-          activeOpacity={0.8}
         >
-          <Text className="text-[#ffb300] text-4xl font-extrabold">-</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          className="bg-gradient-to-tr from-[#22b6ff] to-[#38e7ff] border-2 border-[#22b6ff] rounded-full w-16 h-16 items-center justify-center shadow-lg active:scale-95"
+          <Animated.View
+            style={{
+              transform: [{ scale: scaleMinus }],
+              backgroundColor: '#232738',
+              borderColor: '#ffb300',
+              borderWidth: 2,
+              borderRadius: 9999,
+              width: 64,
+              height: 64,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text className="text-[#ffb300] text-4xl font-extrabold">-</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+
+        {/* ปุ่มบวก */}
+        <TouchableWithoutFeedback
+          onPressIn={() => animatePressIn(scalePlus)}
+          onPressOut={() => animatePressOut(scalePlus)}
           onPress={addGlass}
-          activeOpacity={0.8}
         >
-          <Text className="text-white text-4xl font-extrabold">+</Text>
-        </TouchableOpacity>
+          <Animated.View
+            style={{
+              transform: [{ scale: scalePlus }],
+              backgroundColor: 'transparent',
+              borderColor: '#22b6ff',
+              borderWidth: 2,
+              borderRadius: 9999,
+              width: 64,
+              height: 64,
+              justifyContent: 'center',
+              alignItems: 'center',
+              // background: 'linear-gradient(45deg, #22b6ff, #38e7ff)', // **Note: linear-gradient ไม่ support โดยตรงใน RN**
+              shadowColor: '#22b6ff',
+              shadowOffset: { width: 0, height: 6 },
+              shadowOpacity: 0.8,
+              shadowRadius: 8,
+              elevation: 10,
+            }}
+          >
+            <Text className="text-white text-4xl font-extrabold">+</Text>
+          </Animated.View>
+        </TouchableWithoutFeedback>
       </View>
       {/* Note */}
       <Text className="text-xs text-[#b2cdfa] mt-5 italic">
