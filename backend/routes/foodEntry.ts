@@ -1,25 +1,25 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
 // POST /api/food-entry
-router.post('/', async (req, res) => {
-  const { userId, foodId, quantity, mealType, date } = req.body;
+router.post('/', authenticateToken, async (req: any, res) => {
+  const userId = req.user.userId; // ดึง userId จาก token
+  const { foodId, quantity, mealType, date } = req.body;
 
-  if (!userId || !foodId || !quantity || !mealType || !date) {
+  if (!foodId || !quantity || !mealType || !date) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
-    // ตรวจสอบว่า foodId ที่ส่งมามีอยู่ในฐานข้อมูลหรือไม่
     const food = await prisma.food.findUnique({ where: { id: foodId } });
     if (!food) {
       return res.status(404).json({ error: 'Food not found' });
     }
 
-    // สร้าง food entry ใหม่
     const newEntry = await prisma.foodEntry.create({
       data: {
         userId,
@@ -37,19 +37,13 @@ router.post('/', async (req, res) => {
   }
 });
 
-
-// GET /api/food-entry?userId=1&date=2025-07-22
-router.get('/', async (req, res) => {
-  const { userId, date } = req.query;
-
-  if (!userId) {
-    return res.status(400).json({ error: 'Missing userId' });
-  }
+// GET /api/food-entry?date=2025-07-22
+router.get('/', authenticateToken, async (req: any, res) => {
+  const userId = req.user.userId;
+  const { date } = req.query;
 
   try {
-    const where: any = {
-      userId: Number(userId),
-    };
+    const where: any = { userId };
 
     if (date) {
       const parsedDate = new Date(date as string);
@@ -66,12 +60,8 @@ router.get('/', async (req, res) => {
 
     const entries = await prisma.foodEntry.findMany({
       where,
-      include: {
-        food: true, // รวมข้อมูลอาหาร
-      },
-      orderBy: {
-        date: 'desc',
-      },
+      include: { food: true },
+      orderBy: { date: 'desc' },
     });
 
     res.json(entries);
@@ -80,5 +70,18 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-  
+
+// DELETE /api/food-entry/:id
+router.delete('/:id', authenticateToken, async (req: any, res) => {
+  const userId = req.user.userId;
+  const entryId = Number(req.params.id);
+  // ตรวจสอบว่า entry นี้เป็นของ user นี้จริง
+  const entry = await prisma.foodEntry.findUnique({ where: { id: entryId } });
+  if (!entry || entry.userId !== userId) {
+    return res.status(404).json({ error: 'Entry not found' });
+  }
+  await prisma.foodEntry.delete({ where: { id: entryId } });
+  res.json({ success: true });
+});
+
 export default router;

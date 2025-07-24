@@ -12,7 +12,6 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่ม
 
 export default function FoodDetailScreen() {
   const router = useRouter();
@@ -31,6 +30,35 @@ export default function FoodDetailScreen() {
   const [servingSize, setServingSize] = useState('cup – 258g');
   const [timestamp, setTimestamp] = useState('1:07');
   const [group, setGroup] = useState('Uncategorized');
+
+
+  const handleAddToDiary = async () => {
+    try {
+      const token = await getToken();
+      const res = await fetch(`${API_URL}/api/food-entry`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          foodId: food.id,
+          quantity: Number(amount),
+          mealType: group, // หรือ mealType ที่เลือก
+          date: new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString(),
+        }),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        console.log('Add to diary failed:', error);
+        return;
+      }
+      // ไปหน้า Diary ทันที
+      router.replace('/diary');
+    } catch (e) {
+      // handle error
+    }
+  };
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -91,7 +119,7 @@ export default function FoodDetailScreen() {
   ];
 
   return (
-    <View className="flex-1 bg-[#1a1b2e]">
+    <View className="flex-1 bg-[#1a1b2e] ">
       <ScrollView style={{ flex: 1, paddingHorizontal: 16, paddingTop: 40 }}>
         {/* Header */}
         <View
@@ -171,7 +199,7 @@ export default function FoodDetailScreen() {
             <Text style={{ color: 'white' }}>{group}</Text>
           </View>
         </View>
-     
+
 
         {/* Energy Summary */}
         <View
@@ -309,12 +337,12 @@ export default function FoodDetailScreen() {
           })}
         </View>
 
-    </ScrollView>
+      </ScrollView>
 
-    
+
       {/* Add to Diary Button */}
       <View className="absolute left-0 right-0 bottom-0 px-4 pb-8 bg-[#1a1b2e] pt-5">
-        <Pressable onPress={() => console.log('Add to Diary')} className="bg-white py-2 rounded-full items-center mb-10">
+        <Pressable onPress={handleAddToDiary} className="bg-white py-2 rounded-full items-center mb-10">
           <Text className="text-black font-semibold text-lg">ADD TO DIARY</Text>
         </Pressable>
       </View>

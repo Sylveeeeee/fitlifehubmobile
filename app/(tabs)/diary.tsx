@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { Swipeable } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import {
   View,
   Text,
@@ -13,19 +16,13 @@ import { API_URL } from '@/config';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useEnergy } from '@/context/EnergyContext';
 import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่ม
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
-const initialMealData = {
-  Uncategorized: [],
-  Breakfast: [],
-  Lunch: [],
-  Dinner: [],
-  Snacks: [],
-};
-
 export default function DiaryScreen() {
   const meals = ['Uncategorized', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+  const router = useRouter();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const {
@@ -50,6 +47,67 @@ export default function DiaryScreen() {
   });
 
   useEffect(() => {
+    fetchEntries();
+  }, []);
+
+
+  const fetchEntries = async () => {
+    const token = await getToken();
+    const now = new Date();
+    const utc7 = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const today = utc7.toISOString().slice(0, 10); // YYYY-MM-DD
+    const res = await fetch(`${API_URL}/api/food-entry?date=${today}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const entries = await res.json();
+
+    // จัดหมวดหมู่
+    const newMealData: Record<MealType, any[]> = {
+      Uncategorized: [],
+      Breakfast: [],
+      Lunch: [],
+      Dinner: [],
+      Snacks: [],
+    };
+    entries.forEach((entry: any) => {
+      const meal = (entry.mealType || 'Uncategorized') as MealType;
+      newMealData[meal] = [...(newMealData[meal] || []), entry];
+    });
+    setMealData(newMealData);
+
+    // รวม total
+    setTotals({
+      calories: entries.reduce((sum: number, e: any) => sum + (e.food?.calories || 0) * e.quantity, 0),
+      protein: entries.reduce((sum: number, e: any) => sum + (e.food?.protein || 0) * e.quantity, 0),
+      fat: entries.reduce((sum: number, e: any) => sum + (e.food?.fat || 0) * e.quantity, 0),
+      carbs: entries.reduce((sum: number, e: any) => sum + (e.food?.carbs || 0) * e.quantity, 0),
+    });
+  };
+
+
+  const handleDeleteEntry = async (entryId: number) => {
+    try {
+      const token = await getToken();
+      await fetch(`${API_URL}/api/food-entry/${entryId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchEntries();
+      // ลบออกจาก state ทันที (optional)
+      setMealData((prev) => {
+        const newData = { ...prev };
+        (Object.keys(newData) as MealType[]).forEach((meal) => {
+          newData[meal] = newData[meal].filter((item) => item.id !== entryId);
+        });
+        return newData;
+      });
+    } catch (e) {
+      // handle error
+    }
+  };
+
+
+  useEffect(() => {
     const fetchTargets = async () => {
       const token = await getToken();
       const res = await fetch(`${API_URL}/api/profile/me`, {
@@ -68,30 +126,14 @@ export default function DiaryScreen() {
     fetchTargets();
   }, []);
 
-  const addFood = (
-    meal: MealType,
-    food: { name: string; calories: number; protein: number; fat: number; carbs: number }
-  ) => {
-    const updatedMealData = {
-      ...mealData,
-      [meal]: [...mealData[meal], food],
-    };
-    setMealData(updatedMealData);
 
-    setTotals((prev) => ({
-      calories: prev.calories + food.calories,
-      protein: prev.protein + food.protein,
-      fat: prev.fat + food.fat,
-      carbs: prev.carbs + food.carbs,
-    }));
-  };
 
   const summarySlides = [
     {
       type: 'energy',
       data: [
         { label: 'Consumed', value: totals.calories },
-        { label: 'Expenditure', value: 2108 },
+        { label: 'Expenditure', value: targets.calories },
         { label: 'Remaining', value: targets.calories - totals.calories },
       ],
     },
@@ -100,194 +142,281 @@ export default function DiaryScreen() {
       data: [
         {
           label: 'Energy',
-          value: `${totals.calories} / ${targets.calories} kcal`,
+          value: `${totals.calories} / ${targets.calories}`,
           percent: Math.min((totals.calories / targets.calories) * 100, 100),
         },
         {
           label: 'Protein',
-          value: `${totals.protein} / ${targets.protein} g`,
+          value: `${totals.protein} / ${targets.protein} `,
           percent: Math.min((totals.protein / targets.protein) * 100, 100),
         },
         {
           label: 'Net Carbs',
-          value: `${totals.carbs} / ${targets.carbs} g`,
+          value: `${totals.carbs} / ${targets.carbs} `,
           percent: Math.min((totals.carbs / targets.carbs) * 100, 100),
         },
         {
           label: 'Fat',
-          value: `${totals.fat} / ${targets.fat} g`,
+          value: `${totals.fat} / ${targets.fat} `,
           percent: Math.min((totals.fat / targets.fat) * 100, 100),
         },
       ],
     },
   ];
 
-  const pieData = [
-    { value: totals.protein, color: '#4FD1C5' },
-    { value: totals.carbs, color: '#63B3ED' },
-    { value: totals.fat, color: '#F6AD55' },
-  ];
+  // คำนวณยอดรวม
+  const sum = totals.protein + totals.carbs + totals.fat;
+
+  // คำนวณเปอร์เซ็นต์แต่ละอัน
+  const proteinPercent = sum ? (totals.protein / sum) * 100 : 0;
+  const carbsPercent = sum ? (totals.carbs / sum) * 100 : 0;
+  const fatPercent = sum ? (totals.fat / sum) * 100 : 0;
 
   const toggleMeal = (meal: string) => {
     setExpanded(expanded === meal ? null : meal);
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#15161f]">
-      {/* Header */}
-      <View className="flex-row items-center justify-between px-6 pb-4">
-        {/* ลบ pt-12 เพราะ SafeAreaView จัดให้ */}
-        <Text className="text-white text-base font-semibold">✔</Text>
-        <Text className="text-white text-xl font-bold">Today</Text>
-        <View className="flex-row items-center space-x-4">
-          <TouchableOpacity
-            onPress={() =>
-              addFood('Lunch', {
-                name: 'Grilled Chicken',
-                calories: 250,
-                protein: 30,
-                fat: 8,
-                carbs: 0,
-              })
-            }
-          >
-            <Ionicons name="add" size={24} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
-          </TouchableOpacity>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView className="flex-1 bg-[#15161f]">
+        {/* Header */}
+        <View className="flex-row items-center justify-between px-6 pb-4">
+          {/* ลบ pt-12 เพราะ SafeAreaView จัดให้ */}
+          <Text className="text-white text-base font-semibold">✔</Text>
+          <Text className="text-white text-xl font-bold">Today</Text>
+          <View className="flex-row items-center space-x-4">
+            <TouchableOpacity >
+              <Ionicons name="add" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      {/* Summary Carousel */}
-      <View className="h-52">
-        <FlatList
-          data={summarySlides}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={(e) => {
-            const index = Math.round(e.nativeEvent.contentOffset.x / width);
-            setActiveSlide(index);
-          }}
-          keyExtractor={(item, index) => `${item.type}-${index}`}
-          renderItem={({ item }) => (
-            <View style={{ width }} className="px-6 py-2">
-              {item.type === 'energy' ? (
-                <View>
-                  <Text className="text-gray-400 font-semibold text-xs mb-1">
-                    ENERGY SUMMARY
-                  </Text>
-                  <View className="flex-row justify-center">
-                    <AnimatedCircularProgress
-                      size={140}
-                      width={14}
-                      fill={Math.min((totals.calories / targets.calories) * 100, 100) || 0}
-                      tintColor="#F6AD55"
-                      backgroundColor="#2D3748"
-                      rotation={0}
-                      lineCap="round"
-                    >
-                      {(fill: number) => (
-                        <View className="items-center">
+        {/* Summary Carousel */}
+        <View className="h-52">
+          <FlatList
+            data={summarySlides}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={(e) => {
+              const index = Math.round(e.nativeEvent.contentOffset.x / width);
+              setActiveSlide(index);
+            }}
+            keyExtractor={(item, index) => `${item.type}-${index}`}
+            renderItem={({ item }) => (
+              <View style={{ width }} className="px-6 py-2">
+                {item.type === 'energy' ? (
+                  <View>
+                    <Text className="text-gray-400 font-semibold text-xs mb-1">
+                      ENERGY SUMMARY
+                    </Text>
+                    <View className="flex-row justify-center items-end grid-cols-3 gap-4 mb-4">
+                      <View style={{ width: 110, height: 110, justifyContent: 'center', alignItems: 'center' }}>
+                        {/* วงโปรตีน */}
+                        <AnimatedCircularProgress
+                          size={110}
+                          width={10}
+                          fill={proteinPercent}
+                          tintColor="#22c55e"
+                          backgroundColor="#23243a"
+                          rotation={0}
+                          style={{ position: 'absolute' }}
+                        />
+                        {/* วงคาร์บ */}
+                        <AnimatedCircularProgress
+                          size={110}
+                          width={10}
+                          fill={carbsPercent}
+                          tintColor="#06b6d4"
+                          backgroundColor="transparent"
+                          rotation={(proteinPercent / 100) * 360}
+                          style={{ position: 'absolute' }}
+                        />
+                        {/* วงไขมัน */}
+                        <AnimatedCircularProgress
+                          size={110}
+                          width={10}
+                          fill={fatPercent}
+                          tintColor="#f97316"
+                          backgroundColor="transparent"
+                          rotation={((proteinPercent + carbsPercent) / 100) * 360}
+                          style={{ position: 'absolute' }}
+                        />
+                        {/* ตรงกลาง */}
+                        <View style={{ position: 'absolute', alignItems: 'center', justifyContent: 'center', width: 120, height: 120 }}>
                           <Text className="text-white font-bold text-xl">{totals.calories}</Text>
                           <Text className="text-gray-400 text-sm">kcal</Text>
-                          <Text className="text-gray-500 text-xs mt-1">
-                            of {targets.calories} kcal
-                          </Text>
+                          <Text className="text-gray-500 text-xs mt-1">Total</Text>
                         </View>
-                      )}
-                    </AnimatedCircularProgress>
-                  </View>
-                </View>
-              ) : (
-                <View>
-                  <Text className="text-gray-400 font-semibold text-xs mb-1">TARGETS</Text>
-                  {item.data.map((d, i) => (
-                    <View key={i} className="mb-2">
-                      <View className="flex-row justify-between">
-                        <Text className="text-white font-semibold text-sm">{d.label}</Text>
-                        <Text className="text-white text-sm">{d.value}</Text>
                       </View>
-                      {'percent' in d && (
-                        <View className="h-2 bg-gray-700 rounded-full mt-1">
-                          <View
-                            style={{ width: `${d.percent}%` }}
-                            className="h-2 bg-teal-400 rounded-full"
-                          />
-                        </View>
-                      )}
+                      <AnimatedCircularProgress
+                        size={120}
+                        width={10}
+                        fill={Math.min((totals.calories / targets.calories) * 100, 100) || 0}
+                        tintColor="#F6AD55"
+                        backgroundColor="#2D3748"
+                        rotation={0}
+                        lineCap="round"
+                      >
+                        {(fill: number) => (
+                          <View className="items-center">
+                            <Text className="text-white font-bold text-xl">{totals.calories}</Text>
+                            <Text className="text-gray-400 text-sm">kcal</Text>
+                            <Text className="text-gray-500 text-xs mt-1">
+                              of {targets.calories} kcal
+                            </Text>
+                          </View>
+                        )}
+                      </AnimatedCircularProgress>
+                      <AnimatedCircularProgress
+                        size={110}
+                        width={10}
+                        fill={Math.min((totals.calories / targets.calories) * 100, 100) || 0}
+                        tintColor="#F6AD55"
+                        backgroundColor="#2D3748"
+                        rotation={0}
+                        lineCap="round"
+                      >
+                        {(fill: number) => (
+                          <View className="items-center">
+                            <Text className="text-white font-bold text-xl">{totals.calories}</Text>
+                            <Text className="text-gray-400 text-sm">kcal</Text>
+                            <Text className="text-gray-500 text-xs mt-1">
+                              of {targets.calories} kcal
+                            </Text>
+                          </View>
+                        )}
+                      </AnimatedCircularProgress>
                     </View>
-                  ))}
-                </View>
-              )}
-            </View>
-          )}
-        />
-      </View>
 
-      {/* Water & Meals */}
-      <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center my-4 mx-4">
-        <Text className="text-white font-semibold">Water 0 / 64 fl oz</Text>
-      </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View>
+                    <Text className="text-gray-400 font-semibold text-xs mb-1">TARGETS</Text>
+                    {item.data.map((d, i) => (
+                      <View key={i} className="mb-2">
+                        <View className="flex-row justify-between">
+                          <View className="flex-row ">
+                          <Text className="text-white font-semibold text-sm">{d.label}:</Text>
+                          <Text className="text-white text-sm ml-2">
+                            {/* ถ้า value เป็นตัวเลข ให้แสดงทศนิยม 2 ตำแหน่ง */}
+                            {typeof d.value === 'number'
+                              ? d.value.toFixed(1)
+                              : // ถ้า value เป็น string แบบ "12.345 / 20"
+                              typeof d.value === 'string' && d.value.includes('/')
+                                ? d.value
+                                  .split('/')
+                                  .map((v) =>
+                                    !isNaN(Number(v.trim()))
+                                      ? Number(v.trim()).toFixed(1)
+                                      : v.trim()
+                                  )
+                                  .join(' / ')
+                                : d.value}
+                          </Text>
+                          </View>
+                          {'percent' in d && (
+                            <Text className="text-white text-xs">{d.percent.toFixed(0)}%</Text>
+                          )}
+                        </View>
+                        {'percent' in d && (
+                          <View className="h-2 bg-gray-700 rounded-full mt-1">
+                            <View
+                              style={{ width: `${d.percent}%` }}
+                              className="h-2 bg-teal-400 rounded-full"
+                            />
+                          </View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            )}
+          />
+        </View>
 
-      <ScrollView className="flex-1 px-4 pb-6">
-        {meals.map((meal) => {
-          const typedMeal = meal as MealType;
-          return (
-            <View key={typedMeal} className="mb-2">
-              <TouchableOpacity
-                onPress={() => toggleMeal(typedMeal)}
-                className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center"
-              >
-                <Text className="text-white font-bold">{typedMeal}</Text>
-                <Ionicons
-                  name={expanded === typedMeal ? 'chevron-up' : 'chevron-down'}
-                  size={20}
-                  color="#fff"
-                />
-              </TouchableOpacity>
-              {expanded === typedMeal && (
-                <View className="bg-[#1f2133] px-4 py-2 rounded-b-xl">
-                  {mealData[typedMeal].length === 0 ? (
-                    <Text className="text-gray-400">No entries</Text>
-                  ) : (
-                    mealData[typedMeal].map((item, index) => (
-                      <Text key={index} className="text-white">
-                        {item.name}
-                      </Text>
-                    ))
-                  )}
-                </View>
-              )}
-            </View>
-          );
-        })}
-      </ScrollView>
+        {/* Water & Meals */}
+        <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center my-4 mx-4">
+          <Text className="text-white font-semibold">Water 0 / 64 fl oz</Text>
+        </TouchableOpacity>
 
-      {/* Bottom Navigation */}
-      <View className="flex-row justify-around items-center py-3 bg-[#1a1b2e] border-t border-gray-700">
-        {['Discover', 'Diary', 'Add', 'Foods', 'More'].map((tab, idx) => (
-          <TouchableOpacity key={idx} className="items-center">
-            <Ionicons
-              name={
-                tab === 'Discover'
-                  ? 'bar-chart'
-                  : tab === 'Diary'
-                  ? 'book'
-                  : tab === 'Add'
-                  ? 'add-circle'
-                  : tab === 'Foods'
-                  ? 'nutrition'
-                  : 'ellipsis-horizontal'
-              }
-              size={tab === 'Add' ? 36 : 24}
-              color={tab === 'Diary' ? '#ff7a1a' : '#fff'}
-            />
-            {tab !== 'Add' && <Text className="text-white text-xs mt-1">{tab}</Text>}
-          </TouchableOpacity>
-        ))}
-      </View>
-    </SafeAreaView>
+        <ScrollView className="flex-1 px-4 pb-6">
+          {meals.map((meal) => {
+            const typedMeal = meal as MealType;
+            return (
+              <View key={typedMeal} className="mb-2">
+                <TouchableOpacity
+                  onPress={() => toggleMeal(typedMeal)}
+                  className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center"
+                >
+                  <Text className="text-white font-bold">{typedMeal}</Text>
+                  <Ionicons
+                    name={expanded === typedMeal ? 'chevron-up' : 'chevron-down'}
+                    size={20}
+                    color="#fff"
+                  />
+                </TouchableOpacity>
+                {expanded === typedMeal && (
+                  <View className="bg-[#1f2133]  rounded-b-xl  ">
+                    {mealData[typedMeal].length === 0 ? (
+                      <View className="flex-1 px-4 py-2">
+                        <Text className="text-gray-400">No entries</Text>
+                      </View>
+                    ) : (
+                      mealData[typedMeal].map((item, index) => (
+                        <View key={index} className="flex-row justify-between items-center px-4 py-2 border-t border-[#15161f]">
+                          <TouchableOpacity
+                            onPress={() => router.push(`/foods/${item.foodId}`)}
+                            className="flex-1"
+                          >
+                            <Text className="text-white">{item.food?.foodName || item.food?.name || '-'}</Text>
+                            <Text className="text-gray-400 text-xs">
+                              {item.quantity} x {item.food?.calories || 0} kcal
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => handleDeleteEntry(item.id)}
+                          >
+                            <Ionicons name="trash" size={18} color="#fff" />
+                          </TouchableOpacity>
+                        </View>
+                      ))
+                    )}
+                  </View>
+                )}
+              </View>
+            );
+          })}
+        </ScrollView>
+
+        {/* Bottom Navigation */}
+        <View className="flex-row justify-around items-center py-3 bg-[#1a1b2e] border-t border-gray-700">
+          {['Discover', 'Diary', 'Add', 'Foods', 'More'].map((tab, idx) => (
+            <TouchableOpacity key={idx} className="items-center">
+              <Ionicons
+                name={
+                  tab === 'Discover'
+                    ? 'bar-chart'
+                    : tab === 'Diary'
+                      ? 'book'
+                      : tab === 'Add'
+                        ? 'add-circle'
+                        : tab === 'Foods'
+                          ? 'nutrition'
+                          : 'ellipsis-horizontal'
+                }
+                size={tab === 'Add' ? 36 : 24}
+                color={tab === 'Diary' ? '#ff7a1a' : '#fff'}
+              />
+              {tab !== 'Add' && <Text className="text-white text-xs mt-1">{tab}</Text>}
+            </TouchableOpacity>
+          ))}
+        </View>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
