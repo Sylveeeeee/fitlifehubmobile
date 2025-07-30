@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 // POST /api/food-entry
 router.post('/', authenticateToken, async (req: any, res) => {
-  const userId = req.user.userId; // ดึง userId จาก token
+  const userId = req.user.userId;
   const { foodId, quantity, mealType, date } = req.body;
 
   if (!foodId || !quantity || !mealType || !date) {
@@ -20,13 +20,17 @@ router.post('/', authenticateToken, async (req: any, res) => {
       return res.status(404).json({ error: 'Food not found' });
     }
 
+    // ✅ เก็บเป็น UTC
+    const parsedDate = new Date(date);
+    parsedDate.setUTCHours(0, 0, 0, 0);
+
     const newEntry = await prisma.foodEntry.create({
       data: {
         userId,
         foodId,
         quantity,
         mealType,
-        date: new Date(date),
+        date: parsedDate,
       },
     });
 
@@ -37,7 +41,8 @@ router.post('/', authenticateToken, async (req: any, res) => {
   }
 });
 
-// GET /api/food-entry?date=2025-07-22
+
+// GET /api/food-entry?date=2025-07-30
 router.get('/', authenticateToken, async (req: any, res) => {
   const userId = req.user.userId;
   const { date } = req.query;
@@ -48,9 +53,10 @@ router.get('/', authenticateToken, async (req: any, res) => {
     if (date) {
       const parsedDate = new Date(date as string);
       const start = new Date(parsedDate);
-      start.setHours(0, 0, 0, 0);
+      start.setUTCHours(0, 0, 0, 0);
+
       const end = new Date(parsedDate);
-      end.setHours(23, 59, 59, 999);
+      end.setUTCHours(23, 59, 59, 999);
 
       where.date = {
         gte: start,
@@ -70,6 +76,7 @@ router.get('/', authenticateToken, async (req: any, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // DELETE /api/food-entry/:id
 router.delete('/:id', authenticateToken, async (req: any, res) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Swipeable } from 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
   View,
@@ -25,6 +25,9 @@ export default function DiaryScreen() {
   const router = useRouter();
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   const {
     totals,
     setTotals,
@@ -46,21 +49,26 @@ export default function DiaryScreen() {
     Snacks: [],
   });
 
-  useEffect(() => {
-    fetchEntries();
-  }, []);
-
-
-  const fetchEntries = async () => {
+  const fetchEntries = async (dateObj = selectedDate) => {
     const token = await getToken();
-    const now = new Date();
-    const utc7 = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+    const utc7 = new Date(dateObj.getTime());
     const today = utc7.toISOString().slice(0, 10); // YYYY-MM-DD
+    console.log('fetching for date:', today);
     const res = await fetch(`${API_URL}/api/food-entry?date=${today}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const entries = await res.json();
+    console.log('📦 Raw entries from API:', entries);
 
+    entries.forEach((entry: any, index: number) => {
+      console.log(`🔹 Entry ${index + 1}:`, {
+        id: entry.id,
+        mealType: entry.mealType,
+        date: entry.date,
+        quantity: entry.quantity,
+        food: entry.food,
+      });
+    });
     // จัดหมวดหมู่
     const newMealData: Record<MealType, any[]> = {
       Uncategorized: [],
@@ -84,6 +92,9 @@ export default function DiaryScreen() {
     });
   };
 
+  useEffect(() => {
+    fetchEntries(selectedDate);
+  }, [selectedDate]);
 
   const handleDeleteEntry = async (entryId: number) => {
     try {
@@ -183,7 +194,28 @@ export default function DiaryScreen() {
         <View className="flex-row items-center justify-between px-6 pb-4">
           {/* ลบ pt-12 เพราะ SafeAreaView จัดให้ */}
           <Text className="text-white text-base font-semibold">✔</Text>
-          <Text className="text-white text-xl font-bold">Today</Text>
+          <View className="flex-row items-center justify-center mb-2">
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(true)}
+              className="bg-[#292b40] rounded-xl px-4 py-2"
+            >
+              <Text className="text-white font-semibold">
+                {selectedDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="default"
+              onChange={(_, date) => {
+                setShowDatePicker(false);
+                if (date) setSelectedDate(date);
+              }}
+              maximumDate={new Date()}
+            />
+          )}
           <View className="flex-row items-center space-x-4">
             <TouchableOpacity >
               <Ionicons name="add" size={24} color="#fff" />
@@ -195,7 +227,7 @@ export default function DiaryScreen() {
         </View>
 
         {/* Summary Carousel */}
-        <View className="h-52">
+        <View className="h-54">
           <FlatList
             data={summarySlides}
             horizontal
@@ -290,8 +322,13 @@ export default function DiaryScreen() {
                           </View>
                         )}
                       </AnimatedCircularProgress>
-                    </View>
 
+                    </View>
+                    <View className=' flex-row justify-between items-center px-3'>
+                      <Text className='font-semibold text-white'>Consumed</Text>
+                      <Text className='font-semibold text-white'>Expenditure</Text>
+                      <Text className='font-semibold text-white'>Remaining</Text>
+                    </View>
                   </View>
                 ) : (
                   <View>
@@ -300,23 +337,23 @@ export default function DiaryScreen() {
                       <View key={i} className="mb-2">
                         <View className="flex-row justify-between">
                           <View className="flex-row ">
-                          <Text className="text-white font-semibold text-sm">{d.label}:</Text>
-                          <Text className="text-white text-sm ml-2">
-                            {/* ถ้า value เป็นตัวเลข ให้แสดงทศนิยม 2 ตำแหน่ง */}
-                            {typeof d.value === 'number'
-                              ? d.value.toFixed(1)
-                              : // ถ้า value เป็น string แบบ "12.345 / 20"
-                              typeof d.value === 'string' && d.value.includes('/')
-                                ? d.value
-                                  .split('/')
-                                  .map((v) =>
-                                    !isNaN(Number(v.trim()))
-                                      ? Number(v.trim()).toFixed(1)
-                                      : v.trim()
-                                  )
-                                  .join(' / ')
-                                : d.value}
-                          </Text>
+                            <Text className="text-white font-semibold text-sm">{d.label}</Text>
+                            <Text className="text-white text-sm ml-2">
+                              {/* ถ้า value เป็นตัวเลข ให้แสดงทศนิยม 2 ตำแหน่ง */}
+                              {typeof d.value === 'number'
+                                ? d.value.toFixed(1)
+                                : // ถ้า value เป็น string แบบ "12.345 / 20"
+                                typeof d.value === 'string' && d.value.includes('/')
+                                  ? d.value
+                                    .split('/')
+                                    .map((v) =>
+                                      !isNaN(Number(v.trim()))
+                                        ? Number(v.trim()).toFixed(1)
+                                        : v.trim()
+                                    )
+                                    .join(' / ')
+                                  : d.value}
+                            </Text>
                           </View>
                           {'percent' in d && (
                             <Text className="text-white text-xs">{d.percent.toFixed(0)}%</Text>
@@ -337,6 +374,7 @@ export default function DiaryScreen() {
               </View>
             )}
           />
+
         </View>
 
         {/* Water & Meals */}
@@ -392,30 +430,6 @@ export default function DiaryScreen() {
             );
           })}
         </ScrollView>
-
-        {/* Bottom Navigation */}
-        <View className="flex-row justify-around items-center py-3 bg-[#1a1b2e] border-t border-gray-700">
-          {['Discover', 'Diary', 'Add', 'Foods', 'More'].map((tab, idx) => (
-            <TouchableOpacity key={idx} className="items-center">
-              <Ionicons
-                name={
-                  tab === 'Discover'
-                    ? 'bar-chart'
-                    : tab === 'Diary'
-                      ? 'book'
-                      : tab === 'Add'
-                        ? 'add-circle'
-                        : tab === 'Foods'
-                          ? 'nutrition'
-                          : 'ellipsis-horizontal'
-                }
-                size={tab === 'Add' ? 36 : 24}
-                color={tab === 'Diary' ? '#ff7a1a' : '#fff'}
-              />
-              {tab !== 'Add' && <Text className="text-white text-xs mt-1">{tab}</Text>}
-            </TouchableOpacity>
-          ))}
-        </View>
       </SafeAreaView>
     </GestureHandlerRootView>
   );

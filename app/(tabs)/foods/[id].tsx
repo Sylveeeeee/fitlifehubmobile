@@ -5,6 +5,9 @@ import {
   Pressable,
   ActivityIndicator,
   TextInput,
+  TouchableOpacity,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +15,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { Picker } from '@react-native-picker/picker';
 
 export default function FoodDetailScreen() {
   const router = useRouter();
@@ -25,11 +29,20 @@ export default function FoodDetailScreen() {
     carbs: 0,
   });
 
+  const mealOptions = [
+    { label: 'Uncategorized', value: 'Uncategorized' },
+    { label: 'Breakfast', value: 'Breakfast' },
+    { label: 'Lunch', value: 'Lunch' },
+    { label: 'Dinner', value: 'Dinner' },
+    { label: 'Snacks', value: 'Snacks' },
+  ];
+
   // UI states
   const [amount, setAmount] = useState('1');
   const [servingSize, setServingSize] = useState('cup – 258g');
   const [timestamp, setTimestamp] = useState('1:07');
   const [group, setGroup] = useState('Uncategorized');
+  const [isOpen, setIsOpen] = useState(false);
 
 
   const handleAddToDiary = async () => {
@@ -45,7 +58,7 @@ export default function FoodDetailScreen() {
           foodId: food.id,
           quantity: Number(amount),
           mealType: group, // หรือ mealType ที่เลือก
-          date: new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString(),
+          date: new Date(Date.now()).toISOString(),
         }),
       });
       if (!res.ok) {
@@ -149,6 +162,7 @@ export default function FoodDetailScreen() {
             marginBottom: 16,
           }}
         >
+          {/* Amount */}
           <View style={{ marginBottom: 12 }}>
             <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
               Amount
@@ -167,18 +181,35 @@ export default function FoodDetailScreen() {
               }}
             />
           </View>
+
+          {/* Serving Size */}
           <View style={{ marginBottom: 12 }}>
             <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
               Serving Size
             </Text>
-            <Text style={{ color: 'white' }}>{servingSize}</Text>
+            <TextInput
+              value={servingSize}
+              onChangeText={setServingSize}
+              style={{
+                backgroundColor: '#2a2c3d',
+                borderRadius: 8,
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                color: 'white',
+              }}
+            />
           </View>
+
+          {/* Timestamp */}
           <View style={{ marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
             <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginRight: 8 }}>
               Timestamp
             </Text>
             <MaterialCommunityIcons name="lock" size={18} color="#ffb300" />
-            <Text
+            <TextInput
+              value={timestamp}
+              onChangeText={setTimestamp}
+              placeholder="e.g. 1:07"
               style={{
                 backgroundColor: '#2a2c3d',
                 paddingHorizontal: 8,
@@ -186,20 +217,49 @@ export default function FoodDetailScreen() {
                 borderRadius: 8,
                 color: 'white',
                 marginHorizontal: 8,
+                width: 60,
+                textAlign: 'center',
               }}
-            >
-              {timestamp}
-            </Text>
+            />
             <Ionicons name="checkmark-circle" size={18} color="#ffb300" />
           </View>
-          <View style={{ marginBottom: 4 }}>
-            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
-              Group
-            </Text>
-            <Text style={{ color: 'white' }}>{group}</Text>
+
+          {/* Group (Picker) */}
+          <View className="mb-5">
+            <Text className="text-gray-300 text-sm mb-2">Group</Text>
+
+            {/* ปุ่ม Dropdown */}
+            <TouchableOpacity
+              onPress={() => setIsOpen(!isOpen)}
+              className="bg-[#2a2c3d] rounded-md px-3 py-2 flex-row justify-between items-center"
+            >
+              <Text className="text-white text-base">{group}</Text>
+              <Ionicons
+                name={isOpen ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color="white"
+              />
+            </TouchableOpacity>
+
+            {/* ตัวเลือก */}
+            {isOpen && (
+              <View className="bg-[#2a2c3d] rounded-md mt-1">
+                {mealOptions.map((item) => (
+                  <TouchableOpacity
+                    key={item.value}
+                    onPress={() => {
+                      setGroup(item.value);
+                      setIsOpen(false);
+                    }}
+                    className="py-2 px-3 border-t border-[#23243a]"
+                  >
+                    <Text className="text-white text-md">{item.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </View>
         </View>
-
 
         {/* Energy Summary */}
         <View
@@ -341,7 +401,7 @@ export default function FoodDetailScreen() {
 
 
       {/* Add to Diary Button */}
-      <View className="absolute left-0 right-0 bottom-0 px-4 pb-8 bg-[#1a1b2e] pt-5">
+      <View className="absolute left-0 right-0 bottom-0 px-4 pb-8 bg-[#1a1b2e] pt-5 ">
         <Pressable onPress={handleAddToDiary} className="bg-white py-2 rounded-full items-center mb-10">
           <Text className="text-black font-semibold text-lg">ADD TO DIARY</Text>
         </Pressable>
