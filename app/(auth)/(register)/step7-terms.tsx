@@ -32,7 +32,6 @@ export default function RegisterStep7({
           name: registerData.firstName || registerData.name,
         }),
       });
-      console.error('Response:', registerData);
       const result = await res.json();
 
       if (!res.ok) {

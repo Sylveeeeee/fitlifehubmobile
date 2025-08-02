@@ -17,6 +17,11 @@ import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { Picker } from '@react-native-picker/picker';
 
+type ServingOption = {
+  label: string;
+  value: number;
+};
+
 export default function FoodDetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
@@ -37,12 +42,31 @@ export default function FoodDetailScreen() {
     { label: 'Snacks', value: 'Snacks' },
   ];
 
+  const servingOptions: ServingOption[] = [
+    { label: '100 g', value: 100 },
+    { label: '1 cup (258g)', value: 258 },
+    { label: '1 tbsp (15g)', value: 15 },
+  ];
+
+  const handleSelectServing = (option: ServingOption) => {
+    setSelectedServing(option);
+    setAmount(String(option.value));
+    setIsServingOpen(false);
+  };
+
+  // และตอน map
+  servingOptions.map((option: ServingOption) => (
+    <TouchableOpacity key={option.value} onPress={() => handleSelectServing(option)}>
+      <Text>{option.label}</Text>
+    </TouchableOpacity>
+  ));
+
   // UI states
-  const [amount, setAmount] = useState('1');
-  const [servingSize, setServingSize] = useState('cup – 258g');
-  const [timestamp, setTimestamp] = useState('1:07');
+  const [amount, setAmount] = useState('100');
+  const [selectedServing, setSelectedServing] = useState<ServingOption>(servingOptions[0]);
   const [group, setGroup] = useState('Uncategorized');
   const [isOpen, setIsOpen] = useState(false);
+  const [isServingOpen, setIsServingOpen] = useState(false);
 
 
   const handleAddToDiary = async () => {
@@ -116,19 +140,26 @@ export default function FoodDetailScreen() {
     );
   }
 
-  const protein = food.protein || 0;
-  const carbs = food.carbs || 0;
-  const fat = food.fat || 0;
-  const total = protein + carbs + fat || 1;
+  const multiplier = Number(amount) / 100;
 
-  const proteinPercent = (protein / total) * 100;
-  const carbsPercent = (carbs / total) * 100;
-  const fatPercent = (fat / total) * 100;
+  // ปรับค่าตาม multiplier
+  const adjustedCalories = (food?.calories || 0) * multiplier;
+  const adjustedProtein = (food?.protein || 0) * multiplier;
+  const adjustedCarbs = (food?.carbs || 0) * multiplier;
+  const adjustedFat = (food?.fat || 0) * multiplier;
+
+  const total = adjustedProtein + adjustedCarbs + adjustedFat || 1;
+
+  const proteinPercent = (adjustedProtein / total) * 100;
+  const carbsPercent = (adjustedCarbs / total) * 100;
+  const fatPercent = (adjustedFat / total) * 100;
+  // คำนวณตัวคูณตามกรัมที่กรอก
+
 
   const macros = [
-    { label: 'Protein', value: protein, color: '#22c55e', target: targets.protein },
-    { label: 'Net Carbs', value: carbs, color: '#06b6d4', target: targets.carbs },
-    { label: 'Fat', value: fat, color: '#f97316', target: targets.fat },
+    { label: 'Protein', value: adjustedProtein, color: '#22c55e', target: targets.protein },
+    { label: 'Net Carbs', value: adjustedCarbs, color: '#06b6d4', target: targets.carbs },
+    { label: 'Fat', value: adjustedFat, color: '#f97316', target: targets.fat },
   ];
 
   return (
@@ -153,7 +184,7 @@ export default function FoodDetailScreen() {
           <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
         </View>
 
-        {/* Amount, Serving Size, Timestamp, Group */}
+        {/* Amount, Serving Size, Group */}
         <View
           style={{
             backgroundColor: '#23243a',
@@ -183,56 +214,56 @@ export default function FoodDetailScreen() {
           </View>
 
           {/* Serving Size */}
-          <View style={{ marginBottom: 12 }}>
-            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginBottom: 4 }}>
-              Serving Size
-            </Text>
-            <TextInput
-              value={servingSize}
-              onChangeText={setServingSize}
-              style={{
-                backgroundColor: '#2a2c3d',
-                borderRadius: 8,
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-                color: 'white',
-              }}
-            />
+          <View className="mb-5">
+            <Text className="text-white font-bold text-lg mb-2">Serving Size</Text>
+
+            {/* ปุ่ม Dropdown */}
+            <TouchableOpacity
+              onPress={() => setIsServingOpen(!isServingOpen)}
+              className="bg-[#2a2c3d] rounded-md px-3 py-2 flex-row justify-between items-center"
+            >
+              <Text className="text-white text-base">{selectedServing.label}</Text>
+              <Ionicons
+                name={isServingOpen ? 'chevron-up' : 'chevron-down'}
+                size={18}
+                color="white"
+              />
+            </TouchableOpacity>
+
+            {/* ตัวเลือก */}
+            {isServingOpen && (
+              <View className="bg-[#2a2c3d] rounded-md mt-1">
+                {servingOptions
+                  .filter((option: ServingOption) => option.value !== selectedServing.value)
+                  .map((option: ServingOption) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      onPress={() => {
+                        setSelectedServing(option);
+                        setAmount(String(option.value)); // ✅ sync กับ Amount
+                        setIsServingOpen(false);
+                      }}
+                      className="py-2 px-3 border-t border-[#23243a]"
+                    >
+                      <Text className="text-white text-md">{option.label}</Text>
+                    </TouchableOpacity>
+                  ))}
+
+              </View>
+            )}
           </View>
 
-          {/* Timestamp */}
-          <View style={{ marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={{ color: 'white', fontWeight: '700', fontSize: 16, marginRight: 8 }}>
-              Timestamp
-            </Text>
-            <MaterialCommunityIcons name="lock" size={18} color="#ffb300" />
-            <TextInput
-              value={timestamp}
-              onChangeText={setTimestamp}
-              placeholder="e.g. 1:07"
-              style={{
-                backgroundColor: '#2a2c3d',
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-                borderRadius: 8,
-                color: 'white',
-                marginHorizontal: 8,
-                width: 60,
-                textAlign: 'center',
-              }}
-            />
-            <Ionicons name="checkmark-circle" size={18} color="#ffb300" />
-          </View>
 
           {/* Group (Picker) */}
-          <View className="mb-5">
-            <Text className="text-gray-300 text-sm mb-2">Group</Text>
+          <View className="mb-5 ">
+            <Text className="text-white font-bold text-lg mb-2">Group</Text>
 
             {/* ปุ่ม Dropdown */}
             <TouchableOpacity
               onPress={() => setIsOpen(!isOpen)}
               className="bg-[#2a2c3d] rounded-md px-3 py-2 flex-row justify-between items-center"
             >
+              {/* ✅ แสดงเฉพาะตัวที่เลือก */}
               <Text className="text-white text-base">{group}</Text>
               <Ionicons
                 name={isOpen ? 'chevron-up' : 'chevron-down'}
@@ -244,21 +275,25 @@ export default function FoodDetailScreen() {
             {/* ตัวเลือก */}
             {isOpen && (
               <View className="bg-[#2a2c3d] rounded-md mt-1">
-                {mealOptions.map((item) => (
-                  <TouchableOpacity
-                    key={item.value}
-                    onPress={() => {
-                      setGroup(item.value);
-                      setIsOpen(false);
-                    }}
-                    className="py-2 px-3 border-t border-[#23243a]"
-                  >
-                    <Text className="text-white text-md">{item.label}</Text>
-                  </TouchableOpacity>
-                ))}
+                {mealOptions
+                  // ✅ ซ่อนตัวเลือกที่เลือกอยู่
+                  .filter((item) => item.value !== group)
+                  .map((item) => (
+                    <TouchableOpacity
+                      key={item.value}
+                      onPress={() => {
+                        setGroup(item.value);
+                        setIsOpen(false);
+                      }}
+                      className="py-2 px-3 border-t border-[#23243a]"
+                    >
+                      <Text className="text-white text-md">{item.label}</Text>
+                    </TouchableOpacity>
+                  ))}
               </View>
             )}
           </View>
+
         </View>
 
         {/* Energy Summary */}
@@ -322,7 +357,7 @@ export default function FoodDetailScreen() {
             {/* Center Text */}
             <View style={{ position: 'absolute', alignItems: 'center' }}>
               <Text style={{ color: 'white', fontWeight: '700', fontSize: 20 }}>
-                {food.calories}
+                {adjustedCalories.toFixed(0)}
               </Text>
               <Text style={{ color: 'white', fontSize: 12 }}>kcal</Text>
             </View>
@@ -331,7 +366,7 @@ export default function FoodDetailScreen() {
           <View style={{ marginLeft: 16 }}>
             {macros.map((m) => (
               <Text key={m.label} style={{ color: m.color, fontSize: 14, marginBottom: 6 }}>
-                {m.label} ({((m.value / total) * 100).toFixed(0)}%) - {m.value}g
+                {m.label} ({((m.value / total) * 100).toFixed(0)}%) - {m.value.toFixed(0)}g
               </Text>
             ))}
           </View>
@@ -354,7 +389,7 @@ export default function FoodDetailScreen() {
           {[
             {
               label: 'Energy',
-              value: food.calories,
+              value: adjustedCalories,
               target: targets.calories,
               unit: 'kcal',
               color: '#fff',
@@ -371,7 +406,7 @@ export default function FoodDetailScreen() {
             return (
               <View key={item.label} style={{ marginBottom: 16 }}>
                 <Text style={{ color: 'white', fontSize: 14, marginBottom: 6 }}>
-                  {item.label} – {item.value} / {item.target} {item.unit} (
+                  {item.label} – {item.value.toFixed(0)} / {item.target} {item.unit} (
                   {percent.toFixed(0)}%)
                 </Text>
                 <View

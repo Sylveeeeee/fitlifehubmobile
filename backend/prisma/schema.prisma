@@ -31,7 +31,7 @@ model User {
 
 model Food {
   id        Int      @id @default(autoincrement())
-  foodName  String
+  foodName  String   @unique
   calories  Float
   protein   Float
   carbs     Float

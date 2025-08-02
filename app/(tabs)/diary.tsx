@@ -85,10 +85,19 @@ export default function DiaryScreen() {
 
     // รวม total
     setTotals({
-      calories: entries.reduce((sum: number, e: any) => sum + (e.food?.calories || 0) * e.quantity, 0),
-      protein: entries.reduce((sum: number, e: any) => sum + (e.food?.protein || 0) * e.quantity, 0),
-      fat: entries.reduce((sum: number, e: any) => sum + (e.food?.fat || 0) * e.quantity, 0),
-      carbs: entries.reduce((sum: number, e: any) => sum + (e.food?.carbs || 0) * e.quantity, 0),
+      calories: entries.reduce((sum: number, e: any) =>
+        sum + ((e.food?.calories || 0) * e.quantity) / 100, 0
+      ),
+      protein: entries.reduce((sum: number, e: any) =>
+        sum + ((e.food?.protein || 0) * e.quantity) / 100, 0
+      ),
+      fat: entries.reduce((sum: number, e: any) =>
+        sum + ((e.food?.fat || 0) * e.quantity) / 100, 0
+      ),
+      carbs: entries.reduce((sum: number, e: any) =>
+        sum + ((e.food?.carbs || 0) * e.quantity) / 100, 0
+      ),
+
     });
   };
 
@@ -339,10 +348,9 @@ export default function DiaryScreen() {
                           <View className="flex-row ">
                             <Text className="text-white font-semibold text-sm">{d.label}</Text>
                             <Text className="text-white text-sm ml-2">
-                              {/* ถ้า value เป็นตัวเลข ให้แสดงทศนิยม 2 ตำแหน่ง */}
                               {typeof d.value === 'number'
                                 ? d.value.toFixed(1)
-                                : // ถ้า value เป็น string แบบ "12.345 / 20"
+                                :
                                 typeof d.value === 'string' && d.value.includes('/')
                                   ? d.value
                                     .split('/')
@@ -389,7 +397,8 @@ export default function DiaryScreen() {
               <View key={typedMeal} className="mb-2">
                 <TouchableOpacity
                   onPress={() => toggleMeal(typedMeal)}
-                  className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center"
+                  className={` px-4 py-4 flex-row justify-between items-center bg-[#292b40] ${expanded === typedMeal ? 'rounded-t-xl' : 'rounded-xl'
+                    }`}
                 >
                   <Text className="text-white font-bold">{typedMeal}</Text>
                   <Ionicons
