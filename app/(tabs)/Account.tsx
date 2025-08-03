@@ -4,10 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { getToken, removeToken } from '@/utils/tokenStorage.native';
 import { router } from 'expo-router';
 import { API_URL } from '@/config';
-
+import { Link } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 export default function Account() {
   const [user, setUser] = useState<any>(null);
-
+const router = useRouter();
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -72,10 +73,13 @@ export default function Account() {
         </TouchableOpacity>
 
         {/* Change Password */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Change Password</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
+      <TouchableOpacity
+      className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2"
+      onPress={() => router.push('/ChangePassword')}
+    >
+      <Text className="text-white text-base font-bold">ChangePassword</Text>
+      <Ionicons name="chevron-forward" size={20} color="#fff" />
+    </TouchableOpacity>
 
         {/* Two-Factor Authentication */}
         <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
