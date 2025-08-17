@@ -293,7 +293,6 @@ export default function FoodDetailScreen() {
               </View>
             )}
           </View>
-
         </View>
 
         {/* Energy Summary */}

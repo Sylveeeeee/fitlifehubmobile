@@ -27,6 +27,7 @@ model User {
   createdAt    DateTime  @default(now())
 
   foodEntries FoodEntry[]
+  exerciseEntries ExerciseEntry[]
 }
 
 model Food {
@@ -52,4 +53,59 @@ model FoodEntry {
 
   user User @relation(fields: [userId], references: [id])
   food Food @relation(fields: [foodId], references: [id])
+}
+
+model ExerciseEntry {
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+  category     ExerciseCategory  // เช่น Cardio, Strength
+  type         ExerciseType      // เช่น Running, Swimming, Walking
+  duration     Int      // นาที
+  calories     Float    // kcal ที่เผาผลาญ
+  timestamp    DateTime @default(now())
+  note         String?  // ข้อความเพิ่มเติม
+  mealType String // Breakfast / Lunch / Dinner / Snack
+}
+
+enum ExerciseCategory {
+  Cardio
+  Gym
+  Strength
+  Flexibility
+  Balance
+  Other
+}
+
+enum ExerciseType {
+  // Cardio
+  Running
+  Swimming
+  Walking
+  Cycling
+  HIIT
+
+  // Gym/Strength
+  BenchPress
+  Squat
+  Deadlift
+  PullUp
+  PushUp
+  ShoulderPress
+  Row
+  BicepCurl
+  TricepExtension
+  LegPress
+  Lunges
+  Plank
+
+  // Flexibility/Balance
+  Yoga
+  Stretching
+  Pilates
+  BalanceBoard
+
+  // Other
+  Weightlifting
+  Other
 }

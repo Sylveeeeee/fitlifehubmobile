@@ -86,16 +86,16 @@ export default function DiaryScreen() {
     // รวม total
     setTotals({
       calories: entries.reduce((sum: number, e: any) =>
-        sum + ((e.food?.calories || 0) * e.quantity) / 100, 0
+        sum + ((e.food?.calories || 0) * e.quantity)  , 0
       ),
       protein: entries.reduce((sum: number, e: any) =>
-        sum + ((e.food?.protein || 0) * e.quantity) / 100, 0
+        sum + ((e.food?.protein || 0) * e.quantity)  , 0
       ),
       fat: entries.reduce((sum: number, e: any) =>
-        sum + ((e.food?.fat || 0) * e.quantity) / 100, 0
+        sum + ((e.food?.fat || 0) * e.quantity)  , 0
       ),
       carbs: entries.reduce((sum: number, e: any) =>
-        sum + ((e.food?.carbs || 0) * e.quantity) / 100, 0
+        sum + ((e.food?.carbs || 0) * e.quantity)  , 0
       ),
 
     });

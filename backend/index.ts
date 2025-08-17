@@ -3,6 +3,7 @@ import cors from 'cors';
 import profileRouter from './routes/profile';
 import foodEntryRouter from './routes/foodEntry';
 import foodRouter from './routes/food';
+import exerciseEntryRouter from './routes/exerciseEntry';
 import 'dotenv/config';
 
 const app = express();
@@ -16,7 +17,9 @@ app.use('/api/food-entry', foodEntryRouter);
 // ใช้ /api/foods
 app.use('/api/foods', foodRouter);
 
+app.use('/api/exercise-entry',  exerciseEntryRouter);
 
-app.listen(3404, () => {
-  console.log('Backend running on http://localhost:3404');
+
+app.listen(3333, () => {
+  console.log('Backend running on http://localhost:3333');
 });
