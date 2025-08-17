@@ -126,7 +126,6 @@ export default function DiaryScreen() {
     }
   };
 
-
   useEffect(() => {
     const fetchTargets = async () => {
       const token = await getToken();
@@ -145,8 +144,6 @@ export default function DiaryScreen() {
     };
     fetchTargets();
   }, []);
-
-
 
   const summarySlides = [
     {
@@ -382,7 +379,6 @@ export default function DiaryScreen() {
               </View>
             )}
           />
-
         </View>
 
         {/* Water & Meals */}

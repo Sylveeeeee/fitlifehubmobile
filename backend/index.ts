@@ -17,6 +17,6 @@ app.use('/api/food-entry', foodEntryRouter);
 app.use('/api/foods', foodRouter);
 
 
-app.listen(3000, () => {
-  console.log('Backend running on http://localhost:3000');
+app.listen(3001, () => {
+  console.log('Backend running on http://localhost:3001');
 });
