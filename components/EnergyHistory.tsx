@@ -77,7 +77,7 @@ export default function EnergyHistory({ totals }: EnergyHistoryProps) {
       {/* ตัวเลขใต้กราฟแท่งแบบแม่นยำ */}
       <View
         className="relative w-[85%] self-center mt-[-12px] mb-4"
-        style={{ height: 24 }} // เพิ่มความสูง container เพื่อขยับตัวเลขลง
+        style={{ height: 24 }}
       >
         <Text
           className="text-xs text-center absolute"
@@ -92,7 +92,7 @@ export default function EnergyHistory({ totals }: EnergyHistoryProps) {
         <Text
           className="text-xs text-center absolute"
           style={{
-            left: (screenWidth * 0.85) * (3 / 6) - 10,
+            left: (screenWidth * 0.85) * (3 / 6) - 30, // ลดจาก -10 เป็น -30 เพื่อขยับมาทางซ้าย
             color: '#2dd4bf',
             top: 4,
           }}

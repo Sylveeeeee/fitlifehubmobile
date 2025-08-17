@@ -46,17 +46,17 @@ export default function BottomNavbar() {
 
     return (
       <Pressable className="flex items-center" onPress={() => handleNavigate(path)}>
-        <Icon name={icon as any} size={28} color={color} />
-        <Text style={{ color, fontWeight: 'bold' }}>{label}</Text>
+        <Icon name={icon as any} size={22} color={color} />
+        <Text style={{ color, fontWeight: 'bold', fontSize: 12 }}>{label}</Text>
       </Pressable>
     );
   };
 
   return (
     <>
-      <View className="pt-[12px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50">
+      <View className="pt-[20px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50 ">
         <NavButton label="Discover" icon="barschart" path="/" />
-        <NavButton label="Diary" icon="notebook" iconSet="MaterialCommunityIcons" path="/diary" />
+        <NavButton label="Diary" icon="notebook-outline" iconSet="MaterialCommunityIcons" path="/diary" />
 
         <Pressable className="flex items-center" onPress={() => setModalVisible(true)}>
           <AntDesign name="pluscircle" size={40} color={activeColor} />
