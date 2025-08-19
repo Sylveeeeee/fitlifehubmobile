@@ -20,6 +20,8 @@ app.use('/api/foods', foodRouter);
 app.use('/api/exercise-entry',  exerciseEntryRouter);
 
 
-app.listen(3333, () => {
-  console.log('Backend running on http://localhost:3333');
+const PORT = process.env.PORT || 3333;
+
+app.listen(PORT, () => {
+  console.log(`Backend running on http://localhost:${PORT}`);
 });

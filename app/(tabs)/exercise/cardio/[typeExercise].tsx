@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@/config';
@@ -34,7 +34,8 @@ export default function WalkingScreen() {
     const [isOpen, setIsOpen] = useState(false);
     const [group, setGroup] = useState('Uncategorized');
     const [userWeight, setUserWeight] = useState(70);
-    const { type } = useLocalSearchParams();
+    const { typeExercise } = useLocalSearchParams();
+    const [note, setNote] = useState('');
 
 
     useEffect(() => {
@@ -72,12 +73,13 @@ export default function WalkingScreen() {
                 },
                 body: JSON.stringify({
                     category: 'Cardio',
-                    type: type ,
+                    type: typeExercise,
                     duration: selectedDuration.value,
                     calories: Number(energyBurned),
                     mealType: group,
                     effort: selectedEffort.label,
                     timestamp: new Date().toISOString(),
+                    note,
                 }),
             });
             if (!res.ok) {
@@ -94,6 +96,7 @@ export default function WalkingScreen() {
     };
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View className="flex-1 bg-[#1A1B28] pt-12 px-4">
             {/* Header */}
             <View className="flex-row items-center mb-6">
@@ -110,7 +113,7 @@ export default function WalkingScreen() {
                     {effortLevels.map((level) => (
                         <TouchableOpacity
                             key={level.label}
-                            className={`px-4 py-2 rounded-xl mr-2 ${selectedEffort.label === level.label ? 'bg-teal-500' : 'bg-[#292b40]'}`}
+                            className={`px-4 py-2 rounded-xl mr-2 ${selectedEffort.label === level.label ? 'bg-[#ffb300]' : 'bg-[#292b40]'}`}
                             onPress={() => setSelectedEffort(level)}
                         >
                             <Text className="text-white">{level.label}</Text>
@@ -127,7 +130,7 @@ export default function WalkingScreen() {
                     {durationOptions.map((option) => (
                         <TouchableOpacity
                             key={option.value}
-                            className={`px-4 py-2 rounded-xl mr-2 ${selectedDuration.value === option.value ? 'bg-teal-500' : 'bg-[#292b40]'}`}
+                            className={`px-4 py-2 rounded-xl mr-2 ${selectedDuration.value === option.value ? 'bg-[#ffb300]' : 'bg-[#292b40]'}`}
                             onPress={() => setSelectedDuration(option)}
                         >
                             <Text className="text-white">{option.label}</Text>
@@ -140,15 +143,6 @@ export default function WalkingScreen() {
             <View className="bg-[#292b40] rounded-lg px-4 py-3 mb-3">
                 <Text className="text-gray-300">Energy Burned</Text>
                 <Text className="text-white text-lg">{energyBurned} kcal</Text>
-            </View>
-
-            {/* Timestamp */}
-            <View className="bg-[#292b40] rounded-lg px-4 py-3 mb-3 flex-row justify-between items-center">
-                <View>
-                    <Text className="text-gray-300">Timestamp</Text>
-                    <Text className="text-white">{new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' })}</Text>
-                </View>
-                <Ionicons name="lock-closed" size={20} color="#FBBF24" />
             </View>
 
             {/* Group */}
@@ -190,10 +184,19 @@ export default function WalkingScreen() {
                 )}
             </View>
 
-            <Text className="text-gray-400 text-xs mb-6">
-                Based on your current weight of {userWeight}kg.
-            </Text>
+            <View className="mb-5">
+                <Text className="text-white font-bold text-lg mb-2">Note</Text>
+                <TextInput
+                    className="bg-[#2a2c3d] text-white rounded-md px-3 py-2"
+                    value={note}
+                    onChangeText={setNote}
+                    placeholder=" Add additional notes "
+                    placeholderTextColor="#888"
+                    multiline
+                />
+            </View>
 
+            
             {/* Add to Diary */}
             <TouchableOpacity
                 className="bg-gray-100 py-3 rounded-xl items-center"
@@ -203,5 +206,6 @@ export default function WalkingScreen() {
                 <Text className="text-black text-base font-bold">{loading ? 'Saving...' : 'ADD TO DIARY'}</Text>
             </TouchableOpacity>
         </View>
+    </TouchableWithoutFeedback>
     );
 }

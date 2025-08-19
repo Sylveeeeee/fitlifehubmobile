@@ -4,9 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const cardioItems = [
-  { label: 'Walking', icon: 'walk', path: '/exercise/cardio/walking' },
-  { label: 'Running', icon: 'walk-outline', path: '/exercise/cardio/running' },
-  { label: 'Swimming', icon: 'water', path: '/exercise/cardio/swimming' },
+  { label: 'Walking', icon: 'walk', path: '/exercise/cardio/Walking' },
+  { label: 'Running', icon: 'walk-outline', path: '/exercise/cardio/Running' },
+  { label: 'Swimming', icon: 'water', path: '/exercise/cardio/Swimming' },
 ];
 
 export default function CardioScreen() {

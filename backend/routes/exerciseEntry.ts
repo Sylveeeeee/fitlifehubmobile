@@ -8,7 +8,10 @@ const prisma = new PrismaClient();
 // POST /api/exercise-entry
 router.post('/', authenticateToken, async (req: any, res) => {
   const userId = req.user.userId;
-  const { category, type, duration, calories, note, timestamp, mealType  } = req.body;
+  const { category, type, duration, calories, note, timestamp, mealType } = req.body;
+
+  console.log('ExerciseEntry payload:', req.body); // <--- log ตรงนี้
+
 
   if (!category || !type || !duration || !calories || !timestamp || !mealType) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -29,7 +32,7 @@ router.post('/', authenticateToken, async (req: any, res) => {
     });
     res.json(entry);
   } catch (err) {
-    console.error(err);
+    console.error('Create ExerciseEntry error:', err); // <--- log ตรงนี้
     res.status(500).json({ error: 'Failed to create exercise entry' });
   }
 });
@@ -60,4 +63,16 @@ router.get('/', authenticateToken, async (req: any, res) => {
   }
 });
 
+router.delete('/:id', authenticateToken, async (req: any, res) => {
+  const userId = req.user.userId;
+  const entryId = Number(req.params.id);
+  // ตรวจสอบว่า entry นี้เป็นของ user นี้จริง
+  const entry = await prisma.exerciseEntry.findUnique({ where: { id: entryId } });
+  if (!entry || entry.userId !== userId) {
+    return res.status(404).json({ error: 'Entry not found' });
+  }
+  await prisma.exerciseEntry.delete({ where: { id: entryId } });
+  res.json({ success: true });
+});
+                                
 export default router;
