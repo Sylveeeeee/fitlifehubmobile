@@ -62,7 +62,7 @@ export default function FoodDetailScreen() {
   ));
 
   // UI states
-  const [amount, setAmount] = useState('100');
+  const [amount, setAmount] = useState('1'); // 1 = 100g
   const [selectedServing, setSelectedServing] = useState<ServingOption>(servingOptions[0]);
   const [group, setGroup] = useState('Uncategorized');
   const [isOpen, setIsOpen] = useState(false);
@@ -140,9 +140,10 @@ export default function FoodDetailScreen() {
     );
   }
 
-  const multiplier = Number(amount) / 100;
+  // 1 amount = selectedServing.value (g)
+  const multiplier = Number(amount) * (selectedServing.value / 100);
+  // เช่น ถ้าเลือก 1 cup (258g) => multiplier = 1 * 2.58 = 2.58
 
-  // ปรับค่าตาม multiplier
   const adjustedCalories = (food?.calories || 0) * multiplier;
   const adjustedProtein = (food?.protein || 0) * multiplier;
   const adjustedCarbs = (food?.carbs || 0) * multiplier;
@@ -240,7 +241,6 @@ export default function FoodDetailScreen() {
                       key={option.value}
                       onPress={() => {
                         setSelectedServing(option);
-                        setAmount(String(option.value)); // ✅ sync กับ Amount
                         setIsServingOpen(false);
                       }}
                       className="py-2 px-3 border-t border-[#23243a]"
@@ -293,7 +293,6 @@ export default function FoodDetailScreen() {
               </View>
             )}
           </View>
-
         </View>
 
         {/* Energy Summary */}

@@ -4,12 +4,36 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRegister } from './RegisterContext';
 
 const activityLevels = [
-  { label: 'No Activity', value: 'no_activity' },
-  { label: 'Sedentary', value: 'sedentary' },
-  { label: 'Light', value: 'light' },
-  { label: 'Moderate', value: 'moderate' },
-  { label: 'Active', value: 'active' },
-  { label: 'Very Active', value: 'very_active' },
+  {
+    label: 'No Activity',
+    value: 'no_activity',
+    description: 'No movement at all. Typically used for patients in a coma or completely bedridden.',
+  },
+  {
+    label: 'Sedentary',
+    value: 'sedentary',
+    description: 'Very minimal activity. Mostly sitting throughout the day with little to no exercise.',
+  },
+  {
+    label: 'Light',
+    value: 'light',
+    description: 'Light movement such as casual walking, light housework, or stretching.',
+  },
+  {
+    label: 'Moderate',
+    value: 'moderate',
+    description: 'Moderate exercise like brisk walking, cycling, or light sports 3–5 times a week.',
+  },
+  {
+    label: 'Active',
+    value: 'active',
+    description: 'Regular physical activity such as running, swimming, or playing sports almost daily.',
+  },
+  {
+    label: 'Very Active',
+    value: 'very_active',
+    description: 'Intense physical activity. Often applies to athletes or individuals with physically demanding jobs.',
+  },
 ];
 
 export default function RegisterStep2({ navigation }: { navigation: any }) {
@@ -37,7 +61,7 @@ export default function RegisterStep2({ navigation }: { navigation: any }) {
         </View>
         <Text className="text-white text-xl font-bold mb-1">{activityLevels[selected].label}</Text>
         <Text className="text-gray-400 text-center mb-4">
-          Health professionals monitoring comatose patients should select this activity level.
+          {activityLevels[selected].description}
         </Text>
         <View className="flex-row justify-center items-center mt-4">
           {activityLevels.map((item, i) => (

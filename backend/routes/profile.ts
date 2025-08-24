@@ -3,6 +3,8 @@ import { prisma } from '../db';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { authenticateToken, AuthRequest } from '../middleware/auth';
+import { calculateEnergyTarget } from '../utils/calculateEnergyTarget';
+
 
 const router = Router();
 
@@ -86,6 +88,11 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
         fatGoal: true,
         carbsGoal: true,
         bodyFat: true,
+        activityLevel: true,
+        goalRate: true,
+        goalWeight: true,
+        baseEnergyNeed: true,
+        activityCalories: true,
       },
     });
     res.json(user);
@@ -97,36 +104,64 @@ router.get('/me', authenticateToken, async (req: AuthRequest, res) => {
 // PUT /api/profile/me
 router.put('/me', authenticateToken, async (req: AuthRequest, res) => {
   const userId = req.user?.userId;
-  const { name, sex, birthday, height, weight, bodyFat, activityLevel, goalRate, goalType, goalWeight, caloriesGoal, proteinGoal, carbsGoal, fatGoal  } = req.body;
+  const {
+    name, sex, birthday, height, weight, bodyFat,
+    activityLevel, goalRate, goalWeight
+  } = req.body;
+
   if (!userId) return res.status(401).json({ error: 'Unauthorized' });
+
   try {
-    const user = await prisma.user.update({
+    // อัปเดตข้อมูลพื้นฐานก่อน
+    const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name, sex, birthday, height, weight, bodyFat, activityLevel, goalRate, goalWeight, caloriesGoal, proteinGoal, carbsGoal, fatGoal },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        sex: true,
-        birthday: true,
-        height: true,
-        weight: true,
-        bodyFat: true,
-        activityLevel: true,
-        goalRate: true,
-        goalWeight: true,
-        caloriesGoal: true,
-        proteinGoal: true,
-        carbsGoal: true,
-        fatGoal: true,
+      data: {
+        name, sex, birthday, height, weight, bodyFat,
+        activityLevel, goalRate, goalWeight
       },
     });
-    res.json(user);
+
+    // คำนวณ target ใหม่
+    const targets = calculateEnergyTarget({
+      weight: updatedUser.weight,
+      height: updatedUser.height,
+      birthday: updatedUser.birthday?.toISOString().split('T')[0], // แปลงเป็น yyyy-mm-dd
+      sex: updatedUser.sex,
+      activityLevel: updatedUser.activityLevel,
+      goalRate: updatedUser.goalRate,
+      goalWeight: updatedUser.goalWeight,
+      bodyFat: updatedUser.bodyFat,
+      caloriesGoal: updatedUser.caloriesGoal,  
+    });
+
+    // อัปเดตค่าที่คำนวณใหม่
+    const finalUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        caloriesGoal: targets.energyTarget,
+        proteinGoal: targets.proteinGoal,
+        fatGoal: targets.fatGoal,
+        carbsGoal: targets.carbsGoal,
+        baseEnergyNeed: targets.baseEnergyNeed,         // ✅ เพิ่ม
+        activityCalories: targets.activityCalories,     // ✅ เพิ่ม
+      },
+      select: {
+        id: true, email: true, name: true, sex: true, birthday: true,
+        height: true, weight: true, bodyFat: true, activityLevel: true,
+        goalRate: true, goalWeight: true,
+        caloriesGoal: true, proteinGoal: true, fatGoal: true, carbsGoal: true,
+        baseEnergyNeed: true,
+        activityCalories: true,
+      },
+    });
+
+    res.json(finalUser);
   } catch (error) {
-    console.error('Update profile error:', error); // เพิ่มบรรทัดนี้
+    console.error('Update profile error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // GET /api/profile/goal
 router.get('/goal', authenticateToken, async (req: AuthRequest, res) => {
@@ -156,7 +191,7 @@ router.put('/goal', authenticateToken, async (req: AuthRequest, res) => {
   try {
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { caloriesGoal, proteinGoal, fatGoal, carbsGoal,  },
+      data: { caloriesGoal, proteinGoal, fatGoal, carbsGoal, },
       select: {
         caloriesGoal: true,
         proteinGoal: true,
