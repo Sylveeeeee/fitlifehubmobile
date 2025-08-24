@@ -4,7 +4,8 @@ import WaterCount from '../../components/watercount';
 import EnergyHistory from '@/components/EnergyHistory';
 import { useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
-
+import Charts from "@/components/Charts";
+import Report from "@/components/Report";
 type EnergyContextType = {
   totals: any; // Replace 'any' with the actual type of 'totals' if known
 };
@@ -74,19 +75,36 @@ export default function Index() {
       </View>
 
       {/* เนื้อหาข้างล่าง scroll ได้ และไม่ถูกบีบโดย SafeArea */}
-      <ScrollView className="flex-1 bg-[#15161f]" contentContainerStyle={{ paddingBottom: 40 }}>
+      <ScrollView className="flex-1 bg-[#15161f]" contentContainerStyle={{ paddingBottom: 80 }}>
         <View className="items-center px-4 pt-4">
           {activeTab === 'Dashboard' && (
             <>
               <WaterCount />
               <EnergyHistory totals={totals} />
+              
             </>
           )}
           {activeTab === 'Charts' && (
-            <Text className="text-white mt-10 text-lg">Charts content here...</Text>
+            <View className="text-white mt-10 text-lg">
+              <Charts/></View>
           )}
           {activeTab === 'Report' && (
-            <Text className="text-white mt-10 text-lg">Report content here...</Text>
+           <Report
+        periodLabel="19–25 ส.ค. 2025"
+        energy={{
+          energyTarget: 1814,
+          expenditureAboveBaseline: 0,
+          totalTarget: 1814,
+          consumed: 0,
+        }}
+        macros={[
+          { key: "energy", label: "พลังงาน", unit: "kcal", target: null, consumed: null, color: "#3b82f6" },
+          { key: "protein", label: "โปรตีน", unit: "g", target: null, consumed: null, color: "#10b981" },
+          { key: "netCarbs", label: "คาร์บสุทธิ", unit: "g", target: null, consumed: null, color: "#f59e0b" },
+          { key: "fat", label: "ไขมัน", unit: "g", target: null, consumed: null, color: "#ef4444" },
+        ]}
+      />
+
           )}
           {activeTab === 'Snapshot' && (
             <Text className="text-white mt-10 text-lg">Snapshot content heres...</Text>
