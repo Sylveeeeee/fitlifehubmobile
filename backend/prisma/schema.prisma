@@ -18,6 +18,8 @@ model User {
   weight       Float?
   bodyFat      Float?
   caloriesGoal Int?
+  baseEnergyNeed Int?
+  activityCalories Int?
   proteinGoal  Float?
   fatGoal      Float?
   carbsGoal    Float?

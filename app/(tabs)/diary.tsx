@@ -38,7 +38,10 @@ export default function DiaryScreen() {
       React.SetStateAction<{ calories: number; protein: number; fat: number; carbs: number }>
     >;
   };
-  const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
+  const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0, activityCalories: 0, baseEnergyNeed: 0 });
+
+  useEffect(() => {
+  });
 
   type MealType = 'Uncategorized' | 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
 
@@ -159,25 +162,25 @@ export default function DiaryScreen() {
   };
 
   const handleDeleteExercise = async (entryId: number) => {
-  try {
-    const token = await getToken();
-    await fetch(`${API_URL}/api/exercise-entry/${entryId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    fetchEntries(selectedDate); // รีเฟรชข้อมูลหลังลบ
-    // ลบออกจาก state ทันที (optional)
-    setMealData((prev) => {
-      const newData = { ...prev };
-      (Object.keys(newData) as MealType[]).forEach((meal) => {
-        newData[meal] = newData[meal].filter((item) => item.id !== entryId);
+    try {
+      const token = await getToken();
+      await fetch(`${API_URL}/api/exercise-entry/${entryId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
       });
-      return newData;
-    });
-  } catch (e) {
-    // handle error
-  }
-};
+      fetchEntries(selectedDate); // รีเฟรชข้อมูลหลังลบ
+      // ลบออกจาก state ทันที (optional)
+      setMealData((prev) => {
+        const newData = { ...prev };
+        (Object.keys(newData) as MealType[]).forEach((meal) => {
+          newData[meal] = newData[meal].filter((item) => item.id !== entryId);
+        });
+        return newData;
+      });
+    } catch (e) {
+      // handle error
+    }
+  };
 
   useEffect(() => {
     const fetchTargets = async () => {
@@ -193,12 +196,14 @@ export default function DiaryScreen() {
         protein: user.proteinGoal,
         fat: user.fatGoal,
         carbs: user.carbsGoal,
+        activityCalories: user.activityCalories,
+        baseEnergyNeed: user.baseEnergyNeed,
       });
     };
     fetchTargets();
   }, []);
 
-  const totalTarget = targets.calories + exerciseCalories;
+  const totalTarget = Math.max(targets.baseEnergyNeed + targets.activityCalories + exerciseCalories, 1);
 
   const summarySlides = [
     {
@@ -247,6 +252,13 @@ export default function DiaryScreen() {
   const toggleMeal = (meal: string) => {
     setExpanded(expanded === meal ? null : meal);
   };
+
+  const baseEnergyNeed = targets.baseEnergyNeed;
+  const activityCalories = targets.activityCalories;
+
+  const basePercent = (baseEnergyNeed / totalTarget) * 100;
+  const activityPercent = (activityCalories / totalTarget) * 100;
+  const exercisePercent = (exerciseCalories / totalTarget) * 100;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -344,21 +356,54 @@ export default function DiaryScreen() {
                           <Text className="text-gray-400 text-sm">kcal</Text>
                         </View>
                       </View>
-                      <AnimatedCircularProgress
-                        size={110}
-                        width={8}
-                        fill={Math.min((exerciseCalories / totalTarget) * 100, 100) || 0}
-                        tintColor="#F6AD55"
-                        backgroundColor="#A78BFA"
-                        rotation={0}
-                      >
-                        {(fill: number) => (
-                          <View className="items-center">
-                            <Text className="text-white font-bold text-xl">{totalTarget}</Text>
-                            <Text className="text-gray-400 text-sm">kcal</Text>
-                          </View>
-                        )}
-                      </AnimatedCircularProgress>
+
+                      {/* Exersice*/}
+                      <View style={{ width: 110, height: 110, justifyContent: 'center', alignItems: 'center' }}>
+                        {/* วง base energy (สีม่วง) */}
+                        <AnimatedCircularProgress
+                          size={116}
+                          width={8}
+                          fill={Math.min(basePercent, 100)}
+                          tintColor="#775bce"
+                          rotation={0}
+                          style={{ position: 'absolute' }}
+                        />
+
+                        {/* วง activity (สีม่วงเข้ม) */}
+                        <AnimatedCircularProgress
+                          size={116}
+                          width={8}
+                          fill={Math.min(activityPercent, 100)}
+                          tintColor="#372474"
+                          rotation={(basePercent / 100) * 360}
+                          style={{ position: 'absolute' }}
+                        />
+
+                        {/* วง exercise (สีส้ม) */}
+                        <AnimatedCircularProgress
+                          size={116}
+                          width={8}
+                          fill={Math.min(exercisePercent, 100)}
+                          tintColor="#F6AD55"
+
+                          rotation={((basePercent + activityPercent) / 100) * 360}
+                          style={{ position: 'absolute' }}
+                        />
+
+                        {/* ตรงกลาง */}
+                        <View style={{
+                          position: 'absolute',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 120,
+                          height: 120,
+                        }}>
+                          <Text className="text-white font-bold text-xl">{totalTarget}</Text>
+                          <Text className="text-gray-400 text-sm">kcal</Text>
+                        </View>
+                      </View>
+
+                      {/* Remaining*/}
                       <AnimatedCircularProgress
                         size={110}
                         width={8}
@@ -425,6 +470,23 @@ export default function DiaryScreen() {
               </View>
             )}
           />
+        </View>
+
+        <View className="flex-row justify-center ">
+          <View className='flex-row justify-center items-center space-x-2 bg-[#292b40] rounded-xl px-2 py-2'>
+            {summarySlides.map((_, index) => (
+              <View
+                key={index}
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  marginHorizontal: 4,
+                  backgroundColor: index === activeSlide ? '#ffb300' : '#4B5563', // active = ส้ม, inactive = เทา
+                }}
+              />
+            ))}
+          </View>
         </View>
 
         {/* Water & Meals */}

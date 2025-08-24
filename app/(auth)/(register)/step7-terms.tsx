@@ -67,6 +67,12 @@ export default function RegisterStep7({
             ? Number(registerData.bodyFat)
             : null,
           activityLevel: registerData.activityLevel,
+          baseEnergyNeed: registerData.baseEnergyNeed
+            ? Number(registerData.baseEnergyNeed)
+            : null,
+          activityCalories: registerData.activityCalories
+            ? Number(registerData.activityCalories)
+            : null,
           goalRate: registerData.goalRate,
           goalType: registerData.goalType, 
           goalWeight: registerData.goalWeight
@@ -84,6 +90,7 @@ export default function RegisterStep7({
           fatGoal: registerData.fatGoal
             ? Number(registerData.fatGoal)
             : null,
+            
         }),
       });
 
