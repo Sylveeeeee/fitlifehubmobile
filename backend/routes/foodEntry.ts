@@ -91,4 +91,60 @@ router.delete('/:id', authenticateToken, async (req: any, res) => {
   res.json({ success: true });
 });
 
+// GET /api/food-entry/energy-history?range=7d | 14d | 1m
+router.get('/energy-history', authenticateToken, async (req: any, res) => {
+  const userId = req.user?.userId;
+  const range = req.query.range || '7d';
+
+  const endDate = new Date();
+  const startDate = new Date();
+
+  if (range === '7d') startDate.setDate(endDate.getDate() - 6);
+  else if (range === '14d') startDate.setDate(endDate.getDate() - 13);
+  else if (range === '1m') startDate.setMonth(endDate.getMonth() - 1);
+
+  startDate.setUTCHours(0, 0, 0, 0);
+  endDate.setUTCHours(23, 59, 59, 999);
+
+  try {
+    const entries = await prisma.foodEntry.findMany({
+      where: {
+        userId,
+        date: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+      include: { food: true },
+    });
+
+    const dailyTotals: Record<string, { protein: number; carbs: number; fat: number }> = {};
+
+    for (const entry of entries) {
+      const dateKey = entry.date.toISOString().split('T')[0];
+      const q = entry.quantity;
+      const f = entry.food;
+
+      if (!dailyTotals[dateKey]) {
+        dailyTotals[dateKey] = { protein: 0, carbs: 0, fat: 0 };
+      }
+
+      dailyTotals[dateKey].protein += f.protein * q;
+      dailyTotals[dateKey].carbs += f.carbs * q;
+      dailyTotals[dateKey].fat += f.fat * q;
+    }
+
+    const history = Object.entries(dailyTotals).map(([date, values]) => ({
+      date,
+      ...values,
+    }));
+
+    res.json({ history });
+  } catch (err) {
+    console.error('🚨 Energy history error:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 export default router;

@@ -74,5 +74,47 @@ router.delete('/:id', authenticateToken, async (req: any, res) => {
   await prisma.exerciseEntry.delete({ where: { id: entryId } });
   res.json({ success: true });
 });
+
+// GET /api/exercise-entry/energy-history?range=7d
+router.get('/energy-history', authenticateToken, async (req: any, res) => {
+  const userId = req.user.userId;
+  const { range = '7d' } = req.query;
+
+  // คำนวณช่วงเวลา
+  const now = new Date();
+  let startDate = new Date();
+  if (range === '7d') startDate.setDate(now.getDate() - 6);
+  if (range === '14d') startDate.setDate(now.getDate() - 13);
+  if (range === '1m') startDate.setMonth(now.getMonth() - 1);
+
+  startDate.setUTCHours(0, 0, 0, 0);
+
+  try {
+    const entries = await prisma.exerciseEntry.findMany({
+      where: {
+        userId,
+        timestamp: { gte: startDate, lte: now },
+      },
+      orderBy: { timestamp: 'asc' },
+    });
+
+    // รวมแคลอรี่ต่อวัน
+    const historyMap: Record<string, number> = {};
+    entries.forEach((e) => {
+      const dateKey = e.timestamp.toISOString().split('T')[0];
+      historyMap[dateKey] = (historyMap[dateKey] || 0) + e.calories;
+    });
+
+    const history = Object.entries(historyMap).map(([date, burned]) => ({
+      date,
+      burned,
+    }));
+
+    res.json({ history });
+  } catch (err) {
+    console.error('🚨 Error fetching burned energy history:', err);
+    res.status(500).json({ error: 'Failed to fetch burned energy history' });
+  }
+});
                                 
 export default router;

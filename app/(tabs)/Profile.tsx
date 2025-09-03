@@ -21,8 +21,6 @@ const activityOptions: Option[] = [
   { label: 'Very Active', value: 'very_active' },
 ];
 
-
-
 export default function ProfileScreen() {
   const [profile, setProfile] = useState<any>(null);
   const [editMode, setEditMode] = useState(false);

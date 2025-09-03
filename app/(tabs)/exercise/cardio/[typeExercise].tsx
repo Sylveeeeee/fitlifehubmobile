@@ -126,16 +126,16 @@ export default function CardioScreen() {
     setLoading(false);
   };
 
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View className="flex-1 bg-[#1A1B28] pt-12 px-4">
-        {/* Header */}
-        <View className="flex-row items-center mb-6">
-          <TouchableOpacity onPress={() => router.back()} className="mr-3">
-            <Ionicons name="close" size={24} color="white" />
-          </TouchableOpacity>
-          <Text className="text-xl text-white font-bold">{cardioType.label}</Text>
-        </View>
+    return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View className="flex-1 bg-[#1A1B28] pt-12 px-4">
+            {/* Header */}
+            <View className="flex-row items-center mb-6">
+                <TouchableOpacity onPress={() => router.back()} className="mr-3">
+                    <Ionicons name="close" size={24} color="white" />
+                </TouchableOpacity>
+                <Text className="text-xl text-white font-bold">General Walking</Text>
+            </View>
 
         {/* Effort Level */}
         <View className="mb-3">

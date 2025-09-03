@@ -85,7 +85,7 @@ export default function Index() {
         <View className="items-center px-4 pt-4">
           {activeTab === 'Dashboard' && (
             <>
-              <EnergyHistory totals={totals} />
+              <EnergyHistory  />
               <WaterCount />
             </>
           )}
