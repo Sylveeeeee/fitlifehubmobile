@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 
 const gymItems = [
-  { label: 'Weight', icon: 'barbell', path: '/exercise/gym/weighttraining' },
+  { label: 'WeightTraining', icon: 'barbell', path: '/exercise/gym/weighttraining' },
   { label: 'Bodyweight', icon: 'fitness', path: '/exercise/gym/bodyweight' },
   { label: 'HIIT', icon: 'flash', path: '/exercise/gym/hiit' },
   { label: 'CrossFit', icon: 'pulse', path: '/exercise/gym/crossfit' },
