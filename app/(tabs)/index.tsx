@@ -6,20 +6,26 @@ import { useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
 import Charts from "@/components/Charts";
 import Report from "@/components/Report";
+
 type EnergyContextType = {
-  totals: any; // Replace 'any' with the actual type of 'totals' if known
+  totals: { calories: number; protein: number; carbs: number; fat: number };
 };
 
 export default function Index() {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const { totals } = useEnergy() as EnergyContextType;
 
+  // Target ของผู้ใช้ (สามารถปรับให้ดึงจาก API/profile จริงได้)
+  const proteinTarget = 105;
+  const carbTarget = 250;
+  const fatTarget = 60;
+
   return (
     <View className="flex-1 bg-[#15161f]">
-      {/* StatusBar สีเข้ม */}
+      {/* StatusBar */}
       <StatusBar barStyle="light-content" backgroundColor="#232433" />
 
-      {/* Header แบบชิด Notch จริง ๆ */}
+      {/* Header */}
       <View className="w-full pb-2 px-4 bg-[#232433] rounded-b-[20px] pt-[50px]">
         <View className="flex-row items-center justify-between mt-2">
           <View className="flex-row items-center">
@@ -74,40 +80,41 @@ export default function Index() {
         </View>
       </View>
 
-      {/* เนื้อหาข้างล่าง scroll ได้ และไม่ถูกบีบโดย SafeArea */}
+      {/* Content */}
       <ScrollView className="flex-1 bg-[#15161f]" contentContainerStyle={{ paddingBottom: 80 }}>
         <View className="items-center px-4 pt-4">
           {activeTab === 'Dashboard' && (
             <>
               <EnergyHistory totals={totals} />
               <WaterCount />
-              
             </>
           )}
+
           {activeTab === 'Charts' && (
             <View className="text-white mt-10 text-lg">
-              <Charts/></View>
+              <Charts />
+            </View>
           )}
-          {activeTab === 'Report' && (
-           <Report
-        periodLabel="19–25 ส.ค. 2025"
-        energy={{
-          energyTarget: 1814,
-          expenditureAboveBaseline: 0,
-          totalTarget: 1814,
-          consumed: 0,
-        }}
-        macros={[
-          { key: "energy", label: "พลังงาน", unit: "kcal", target: null, consumed: null, color: "#3b82f6" },
-          { key: "protein", label: "โปรตีน", unit: "g", target: null, consumed: null, color: "#10b981" },
-          { key: "netCarbs", label: "คาร์บสุทธิ", unit: "g", target: null, consumed: null, color: "#f59e0b" },
-          { key: "fat", label: "ไขมัน", unit: "g", target: null, consumed: null, color: "#ef4444" },
-        ]}
-      />
 
+          {activeTab === 'Report' && (
+            <Report
+              periodLabel="19–25 ส.ค. 2025"
+              energy={{
+                energyTarget: proteinTarget + carbTarget * 4 + fatTarget * 9,
+                expenditureAboveBaseline: 0,
+                totalTarget: proteinTarget + carbTarget * 4 + fatTarget * 9,
+                consumed: totals.calories, // sync กับ diary
+              }}
+              macros={[
+                { key: "protein", label: "โปรตีน", unit: "g", target: proteinTarget, consumed: totals.protein, color: "#10b981" },
+                { key: "carbs", label: "คาร์บ", unit: "g", target: carbTarget, consumed: totals.carbs, color: "#f59e0b" },
+                { key: "fat", label: "ไขมัน", unit: "g", target: fatTarget, consumed: totals.fat, color: "#ef4444" },
+              ]}
+            />
           )}
+
           {activeTab === 'Snapshot' && (
-            <Text className="text-white mt-10 text-lg">Snapshot content heres...</Text>
+            <Text className="text-white mt-10 text-lg">Snapshot content here...</Text>
           )}
         </View>
       </ScrollView>

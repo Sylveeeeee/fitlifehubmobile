@@ -1,7 +1,7 @@
-// components/EnergyBudgetCard.tsx
 import React from "react";
 import { View, Text } from "react-native";
 import * as Progress from "react-native-progress";
+import { calculateBMR, calculateTDEE, getMacroTargets } from "@/utils/nutrition";
 
 type EnergyData = {
   energyTarget: number;
@@ -27,7 +27,7 @@ type Props = {
 
 const clampPercent = (v: number) => Math.max(0, Math.min(100, v));
 
-export default function EnergyBudgetCard({
+export default function Report({
   periodLabel = "",
   energy = { energyTarget: 0, expenditureAboveBaseline: 0, totalTarget: 0, consumed: 0 },
   macros = [],
@@ -38,7 +38,7 @@ export default function EnergyBudgetCard({
     : 0;
 
   return (
-    <View className="w-full max-w-3xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+    <View className="w-full max-w-3xl rounded-2xl border border-gray-200 bg-[#ffffff] p-4 shadow-sm">
       {/* Header */}
       <Text className="text-lg font-semibold text-gray-900 mb-1">
         Daily Average Energy Budget
