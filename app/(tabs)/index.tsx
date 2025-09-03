@@ -98,7 +98,7 @@ export default function Index() {
 
           {activeTab === 'Report' && (
             <Report
-              periodLabel="19–25 ส.ค. 2025"
+              periodLabel="Today"
               energy={{
                 energyTarget: proteinTarget + carbTarget * 4 + fatTarget * 9,
                 expenditureAboveBaseline: 0,
