@@ -37,8 +37,8 @@ export default function AddExerciseScreen() {
               className="w-[30%] bg-[#2B2C3C] rounded-xl p-4 mb-4 items-center"
               onPress={() => router.push(item.path as any)} // ใช้ as any ป้องกัน ts error
             >
-              <Ionicons name={item.icon as any} size={40} color="#9CA3AF" />
-              <Text className="text-white text-center text-xs mt-2">
+              <Ionicons name={item.icon as any} size={42} color="#9CA3AF" />
+              <Text className="text-white text-center text-xs mt-2 pt-[2px]">
                 {item.label}
               </Text>
             </TouchableOpacity>

@@ -5,33 +5,48 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 
-
-const cardioTypes = {
-  walking: {
-    label: 'Walking',
+// กำหนดข้อมูลแต่ละประเภท
+const gymTypes = {
+  weighttraining: {
+    label: 'Weight Training',
     effortLevels: [
-      { label: 'Light', desc: 'เดินช้า/เดินเล่น', factor: 2.8 },
-      { label: 'Moderate', desc: 'เดินเร็ว', factor: 3.8 },
-      { label: 'Vigorous', desc: 'เดินขึ้นเนิน/เดินเร็วมาก', factor: 5.0 },
+      { label: 'Beginner', desc: 'น้ำหนักเบา/ท่าพื้นฐาน', factor: 3.5 },
+      { label: 'Intermediate', desc: 'น้ำหนักปานกลาง/ท่าผสม', factor: 5.0 },
+      { label: 'Advanced', desc: 'น้ำหนักมาก/ท่ายาก', factor: 6.0 },
     ],
   },
-  running: {
-    label: 'Running',
+  bodyweight: {
+    label: 'Bodyweight',
     effortLevels: [
-      { label: 'Light', desc: 'วิ่งช้า (jogging)', factor: 7.0 },
-      { label: 'Moderate', desc: 'วิ่งปานกลาง', factor: 9.8 },
-      { label: 'Vigorous', desc: 'วิ่งเร็ว/interval', factor: 11.0 },
+      { label: 'Beginner', desc: 'ท่าง่าย เช่น push-up, squat', factor: 3.8 },
+      { label: 'Intermediate', desc: 'ท่าผสม, plank, burpee', factor: 5.0 },
+      { label: 'Advanced', desc: 'ท่ายาก เช่น muscle-up', factor: 6.0 },
     ],
   },
-  swimming: {
-    label: 'Swimming',
+  hiit: {
+    label: 'HIIT',
     effortLevels: [
-      { label: 'Light', desc: 'ว่ายน้ำช้า', factor: 6.0 },
-      { label: 'Moderate', desc: 'ว่ายน้ำออกกำลัง', factor: 8.0 },
-      { label: 'Vigorous', desc: 'ว่ายน้ำเร็ว/แข่ง', factor: 10.0 },
+      { label: 'Light', desc: 'Interval เบา', factor: 6.0 },
+      { label: 'Moderate', desc: 'Interval ปานกลาง', factor: 8.0 },
+      { label: 'Intense', desc: 'Interval หนัก', factor: 10.0 },
     ],
   },
-  // เพิ่มประเภทอื่นๆ ได้ที่นี่
+  crossfit: {
+    label: 'CrossFit',
+    effortLevels: [
+      { label: 'Beginner', desc: 'WOD เบา', factor: 5.0 },
+      { label: 'Intermediate', desc: 'WOD ปานกลาง', factor: 7.0 },
+      { label: 'Advanced', desc: 'WOD หนัก', factor: 9.0 },
+    ],
+  },
+  stretching: {
+    label: 'Stretching',
+    effortLevels: [
+      { label: 'Light', desc: 'ยืดเหยียดเบา', factor: 2.3 },
+      { label: 'Moderate', desc: 'ยืดเหยียดปานกลาง', factor: 3.0 },
+      { label: 'Intense', desc: 'ยืดเหยียดเข้มข้น', factor: 3.8 },
+    ],
+  },
 };
 
 const durationOptions = [
@@ -48,7 +63,10 @@ const mealOptions = [
   { label: 'Snacks', value: 'Snacks' },
 ];
 
-export default function CardioScreen() {
+const gymTypeKeys = ['weighttraining', 'bodyweight', 'hiit', 'crossfit', 'stretching'] as const;
+type GymTypeKey = typeof gymTypeKeys[number];
+
+export default function GymExerciseScreen() {
   const router = useRouter();
   const { typeExercise } = useLocalSearchParams();
   const typeKey =
@@ -57,13 +75,14 @@ export default function CardioScreen() {
       : Array.isArray(typeExercise) && typeof typeExercise[0] === 'string'
       ? typeExercise[0].toLowerCase()
       : undefined;
-  const cardioType =
-    typeKey && cardioTypes[typeKey as keyof typeof cardioTypes]
-      ? cardioTypes[typeKey as keyof typeof cardioTypes]
-      : cardioTypes.walking;
+
+  const gymType =
+    (typeKey && gymTypeKeys.includes(typeKey as GymTypeKey)
+      ? gymTypes[typeKey as GymTypeKey]
+      : gymTypes.weighttraining);
 
   const [selectedDuration, setSelectedDuration] = useState(durationOptions[1]);
-  const [selectedEffort, setSelectedEffort] = useState(cardioType.effortLevels[0]);
+  const [selectedEffort, setSelectedEffort] = useState(gymType.effortLevels[0]);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [group, setGroup] = useState('Uncategorized');
@@ -71,8 +90,8 @@ export default function CardioScreen() {
   const [note, setNote] = useState('');
 
   useEffect(() => {
-    setSelectedEffort(cardioType.effortLevels[0]);
-  }, [cardioType]);
+    setSelectedEffort(gymType.effortLevels[0]);
+  }, [typeExercise]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -106,8 +125,8 @@ export default function CardioScreen() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          category: 'Cardio',
-          type: cardioType.label,
+          category: 'Gym',
+          type: gymType.label,
           duration: selectedDuration.value,
           calories: Number(energyBurned),
           mealType: group,
@@ -118,11 +137,14 @@ export default function CardioScreen() {
       });
       if (!res.ok) {
         const error = await res.json();
-        console.log('Add to diary failed:', error);
+        Alert.alert('Add to diary failed', error.message || 'Unknown error');
+        setLoading(false);
         return;
       }
       router.replace('/diary');
-    } catch (e) {}
+    } catch (e) {
+      Alert.alert('Error', 'Something went wrong');
+    }
     setLoading(false);
   };
 
@@ -134,14 +156,14 @@ export default function CardioScreen() {
           <TouchableOpacity onPress={() => router.back()} className="mr-3">
             <Ionicons name="close" size={24} color="white" />
           </TouchableOpacity>
-          <Text className="text-xl text-white font-bold">{cardioType.label}</Text>
+          <Text className="text-xl text-white font-bold">{gymType.label}</Text>
         </View>
 
         {/* Effort Level */}
         <View className="mb-3">
           <Text className="text-gray-300 mb-1">Effort Level</Text>
           <View className="flex-row">
-            {cardioType.effortLevels.map((level) => (
+            {gymType.effortLevels.map((level) => (
               <TouchableOpacity
                 key={level.label}
                 className={`px-4 py-2 rounded-xl mr-2 ${selectedEffort.label === level.label ? 'bg-[#ffb300]' : 'bg-[#292b40]'}`}
