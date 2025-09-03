@@ -6,8 +6,6 @@ import {
   ActivityIndicator,
   TextInput,
   TouchableOpacity,
-  Modal,
-  FlatList,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -15,7 +13,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type ServingOption = {
   label: string;
@@ -67,11 +65,14 @@ export default function FoodDetailScreen() {
   const [group, setGroup] = useState('Uncategorized');
   const [isOpen, setIsOpen] = useState(false);
   const [isServingOpen, setIsServingOpen] = useState(false);
-
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleAddToDiary = async () => {
     try {
       const token = await getToken();
+      const dateToUse = selectedDate ? new Date(selectedDate) : new Date();
+
       const res = await fetch(`${API_URL}/api/food-entry`, {
         method: 'POST',
         headers: {
@@ -82,7 +83,7 @@ export default function FoodDetailScreen() {
           foodId: food.id,
           quantity: Number(amount),
           mealType: group, // หรือ mealType ที่เลือก
-          date: new Date(Date.now()).toISOString(),
+          date: dateToUse.toISOString(),
         }),
       });
       if (!res.ok) {
@@ -252,6 +253,34 @@ export default function FoodDetailScreen() {
               </View>
             )}
           </View>
+
+          {/* ปุ่มเลือกวันที่ */}
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            className="bg-[#292b40] rounded-xl px-4 py-2 mb-4"
+          >
+            <Text className="text-white font-semibold">
+              {selectedDate.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </Text>
+          </Pressable>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={selectedDate}
+              mode="date"
+              display="default"
+              onChange={(_, date) => {
+                setShowDatePicker(false);
+                if (date) setSelectedDate(date);
+              }}
+              maximumDate={new Date()}
+            />
+          )}
+
 
 
           {/* Group (Picker) */}

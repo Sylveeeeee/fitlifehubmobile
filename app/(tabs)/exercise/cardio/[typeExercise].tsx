@@ -103,7 +103,7 @@ export default function WalkingScreen() {
                 <TouchableOpacity onPress={() => router.back()} className="mr-3">
                     <Ionicons name="close" size={24} color="white" />
                 </TouchableOpacity>
-                <Text className="text-xl text-white font-bold">General Walking</Text>
+                <Text className="text-xl text-white font-bold">{typeExercise}</Text>
             </View>
 
             {/* Effort Level */}
