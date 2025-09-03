@@ -16,6 +16,8 @@ import {
 } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -97,6 +99,12 @@ export default function EnergyHistory() {
   }
 
   return (
+    <View className="flex-1 bg-[#1c1d2a]">
+      <View className="flex-row items-center justify-between pt-14 pb-6 px-6">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>        
+      </View>
     <ScrollView className="flex-1 bg-[#1c1d2a]">
       <View className="w-[92%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg">
         {/* Title */}
@@ -249,5 +257,6 @@ export default function EnergyHistory() {
         )}
       </View>
     </ScrollView>
+    </View>
   );
 }
