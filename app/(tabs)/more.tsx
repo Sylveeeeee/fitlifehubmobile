@@ -138,8 +138,11 @@ export default function MoreScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#15161f' }}>
       <View style={{ paddingTop: 48, paddingBottom: 16, paddingHorizontal: 24 }}>
-        <Text style={{ fontSize: 30, fontWeight: '800', color: 'white', marginBottom: 4 }}>
+        <Text style={{ fontSize: 30, fontWeight: '800', color: '#ffb300', marginBottom: 4 }}>
           More
+        </Text>
+        <Text style={{ fontSize: 16, color: '#ccc', marginBottom: 5 }}>
+          {user?.name || '-'}
         </Text>
         <Text style={{ fontSize: 16, color: '#ccc', marginBottom: 16 }}>
           {user?.email || '-'}

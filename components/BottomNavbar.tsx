@@ -7,41 +7,43 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Feather from '@expo/vector-icons/Feather';
 import PlusMenu from './PlusMenu';
 
+// Mapping ของ iconSet เป็น Component จริง
+const iconSets = {
+  AntDesign,
+  MaterialCommunityIcons,
+  FontAwesome5,
+  Feather,
+} as const;
+
+type IconSetName = keyof typeof iconSets;
+
+// กำหนด path ที่อนุญาตล่วงหน้าเป็น literal type
+type Path = '/' | '/diary' | '/foods' | '/more';
+
+type NavButtonProps = {
+  label: string;
+  icon: string;
+  iconSet?: IconSetName;
+  path: Path;
+};
+
 export default function BottomNavbar() {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '/'; // ให้ pathname เป็น string
   const [modalVisible, setModalVisible] = useState(false);
 
   const activeColor = '#ffb300';
   const inactiveColor = '#888888';
 
-  // ฟังก์ชันไม่ให้ navigate ซ้ำหน้าเดิม
-  const handleNavigate = (path: string) => {
+  // Navigate แบบ type-safe
+  const handleNavigate = (path: Path) => {
     if (pathname !== path) {
-      router.push(path);
+      router.push(path); // TS พอใจเพราะ path เป็น literal type
     }
   };
 
-  const NavButton = ({
-    label,
-    icon,
-    iconSet,
-    path,
-  }: {
-    label: string;
-    icon: React.ComponentProps<typeof AntDesign>['name'];
-    iconSet?: 'AntDesign' | 'MaterialCommunityIcons' | 'FontAwesome5' | 'Feather';
-    path: string;
-  }) => {
-    const Icon =
-      iconSet === 'MaterialCommunityIcons'
-        ? MaterialCommunityIcons
-        : iconSet === 'FontAwesome5'
-        ? FontAwesome5
-        : iconSet === 'Feather'
-        ? Feather
-        : AntDesign;
-
+  const NavButton = ({ label, icon, iconSet = 'AntDesign', path }: NavButtonProps) => {
+    const Icon = iconSets[iconSet];
     const color = pathname === path ? activeColor : inactiveColor;
 
     return (
@@ -54,7 +56,7 @@ export default function BottomNavbar() {
 
   return (
     <>
-      <View className="pt-[20px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50 ">
+      <View className="pt-[20px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50">
         <NavButton label="Discover" icon="barschart" path="/" />
         <NavButton label="Diary" icon="notebook-outline" iconSet="MaterialCommunityIcons" path="/diary" />
 
@@ -73,7 +75,7 @@ export default function BottomNavbar() {
         onRequestClose={() => setModalVisible(false)}
       >
         <Pressable
-          className="flex-1 justify-end items-center "
+          className="flex-1 justify-end items-center"
           onPress={() => setModalVisible(false)}
         >
           <View

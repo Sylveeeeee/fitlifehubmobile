@@ -37,7 +37,7 @@ export default function Report({
     : 0;
 
   return (
-    <View className="w-full max-w-3xl rounded-2xl border border-black bg-[#232433] p-4 shadow-sm">
+    <View className="w-full max-w-3xl rounded-2xl   bg-[#232433] p-4 shadow-lg">
       {/* Header */}
       <Text className="text-lg font-semibold text-[#fcae05] mb-1">
         Daily Average Energy Budget
@@ -47,7 +47,7 @@ export default function Report({
       ) : null}
 
       {/* Energy Stats Grid */}
-      <View className="flex flex-row flex-wrap border border-black rounded-lg mb-4">
+      <View className="flex flex-row flex-wrap  rounded-lg mb-4">
         <Stat label="Energy Target" value={`${energy.energyTarget} kcal`} />
         <Stat
           label="Expenditure Above Baseline"
@@ -94,7 +94,7 @@ export default function Report({
           return (
             <View
               key={m.key}
-              className="border border-black rounded-lg p-3"
+              className="border  rounded-lg p-3 shadow-lg"
             >
               <View className="flex flex-row justify-between mb-1">
                 <Text className="text-sm font-medium text-white">{m.label}</Text>
