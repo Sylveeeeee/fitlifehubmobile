@@ -73,7 +73,7 @@ export default function BottomNavbar() {
         onRequestClose={() => setModalVisible(false)}
       >
         <Pressable
-          className="flex-1 justify-end items-center bg-black/50"
+          className="flex-1 justify-end items-center "
           onPress={() => setModalVisible(false)}
         >
           <View
