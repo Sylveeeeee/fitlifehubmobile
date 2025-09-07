@@ -95,6 +95,7 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
       select: {
         baseEnergyNeed: true,
         activityCalories: true,
+        caloriesGoal: true,
       },
     });
 
@@ -119,6 +120,7 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
       burned,
       baseEnergyNeed: user?.baseEnergyNeed || 0,
       activityCalories: user?.activityCalories || 0,
+      caloriesGoal: user?.caloriesGoal || 0,
     }));
 
     res.json({ history });
