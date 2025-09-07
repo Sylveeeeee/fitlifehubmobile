@@ -13,12 +13,13 @@ import {
   VictoryAxis,
   VictoryStack,
   VictoryBar,
+  VictoryLine,
 } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-  
+
 const screenWidth = Dimensions.get('window').width;
 
 type EnergyEntry = {
@@ -29,6 +30,7 @@ type EnergyEntry = {
   burned?: number; // เพิ่ม field สำหรับพลังงานที่ใช้ไป
   baseEnergyNeed?: number;
   activityCalories?: number;
+  caloriesGoal?: number;
 };
 
 const RANGE_OPTIONS = [
@@ -83,20 +85,23 @@ export default function EnergyHistory() {
     fetchEnergyHistory();
   }, [fetchEnergyHistory]);
 
+  const sortedHistory = [...history].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   // แยก data ตาม type
-  const consumedData = history.map((d) => ({
-    date: formatDate(d.date),
-    proteinKcal: (d.protein || 0) * 4,
-    carbsKcal: (d.carbs || 0) * 4,
-    fatKcal: (d.fat || 0) * 9,
-  }));
+  const consumedData = sortedHistory.map((d) => ({
+  date: formatDate(d.date),
+  proteinKcal: (d.protein || 0) * 4,
+  carbsKcal: (d.carbs || 0) * 4,
+  fatKcal: (d.fat || 0) * 9,
+  caloriesGoal: d.caloriesGoal || 0,
+}));
 
-  const burnedData = history.map((d) => ({
-    date: formatDate(d.date),
-    burnedKcal: d.burned || 0,
-    baseKcal: d.baseEnergyNeed || 0,
-    activityKcal: d.activityCalories || 0,
-  }));
+const burnedData = sortedHistory.map((d) => ({
+  date: formatDate(d.date),
+  burnedKcal: d.burned || 0,
+  baseKcal: d.baseEnergyNeed || 0,
+  activityKcal: d.activityCalories || 0,
+  caloriesGoal: d.caloriesGoal || 0,
+}));
 
   function formatDate(dateStr: string) {
     const d = new Date(dateStr);
@@ -184,6 +189,7 @@ export default function EnergyHistory() {
                 />
                 <VictoryAxis
                   dependentAxis
+                  tickCount={5}
                   tickFormat={(t: any) => `${t}`}
                   style={{
                     tickLabels: { fill: 'white', fontSize: 10 },
@@ -191,6 +197,24 @@ export default function EnergyHistory() {
                     grid: { stroke: '#444' },
                   }}
                 />
+                
+                {type === 'consumed' && (
+                  <VictoryLine
+                    data={consumedData.map((d) => ({
+                      date: d.date,
+                      y: d.caloriesGoal || 0,
+                    }))}
+                    x="date"
+                    y="y"
+                    style={{
+                      data: {
+                        stroke: '#fff',
+                        strokeDasharray: '4,4',
+                        strokeWidth: 1,
+                      },
+                    }}
+                  />
+                )}
 
                 {type === 'consumed' ? (
                   <VictoryStack colorScale={['#22c55e', '#f97316', '#3b82f6']}>
@@ -206,7 +230,6 @@ export default function EnergyHistory() {
                   </VictoryStack>
                 )}
               </VictoryChart>
-
 
               {/* Legend */}
               {type === 'consumed' ? (
