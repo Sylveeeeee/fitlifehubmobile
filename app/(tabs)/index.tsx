@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
 import Charts from "@/components/Charts";
 import Report from "@/components/Report";
+import Snapshot from '@/components/Snapshot';
 
 type EnergyContextType = {
   totals: { calories: number; protein: number; carbs: number; fat: number };
@@ -97,7 +98,9 @@ export default function Index() {
           )}
 
           {activeTab === 'Snapshot' && (
-            <Text className="text-white mt-10 text-lg">Snapshot content here...</Text>
+            <Text className="text-white mt-10 text-lg">
+              <Snapshot />
+            </Text>
           )}
         </View>
       </ScrollView>
