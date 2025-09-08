@@ -265,34 +265,22 @@ export default function DiaryScreen() {
       <SafeAreaView className="flex-1 bg-[#15161f]">
         {/* Header */}
         <View className="flex-row items-center justify-between px-6 pb-4">
-          {/* ลบ pt-12 เพราะ SafeAreaView จัดให้ */}
           <Text className="text-white text-base font-semibold">✔</Text>
-          <View className="flex-row items-center justify-center mb-2">
-            <TouchableOpacity
-              onPress={() => setShowDatePicker(true)}
-              className="bg-[#292b40] rounded-xl px-4 py-2"
-            >
-              <Text className="text-white font-semibold">
-                {selectedDate.toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          {showDatePicker && (
+          <View className="flex justify-center items-center  ">
             <DateTimePicker
               value={selectedDate}
               mode="date"
               display="default"
-              onChange={(_, date) => {
-                setShowDatePicker(false);
+              onChange={(event, date) => {
+                setShowDatePicker(false); // ✅ ปิดทันที
                 if (date) setSelectedDate(date);
               }}
               maximumDate={new Date()}
             />
-          )}
+          </View>
+
           <View className="flex-row items-center space-x-4">
-            <TouchableOpacity >
-              <Ionicons name="add" size={24} color="#fff" />
-            </TouchableOpacity>
+
             <TouchableOpacity>
               <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
             </TouchableOpacity>
