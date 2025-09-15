@@ -47,3 +47,4 @@ yarn-error.*
 .env
 .env
 .gitignore
+backend/index.ts
