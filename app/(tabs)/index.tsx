@@ -1,21 +1,31 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native';
-import { Link } from 'expo-router';
 import WaterCount from '../../components/watercount';
 import EnergyHistory from '@/components/EnergyHistory';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
 import Charts from "@/components/Charts";
 import Report from "@/components/Report";
 import Snapshot from '@/components/Snapshot';
+import NetEnergyChart from '@/components/NetEnergyChart';
+import { registerForPushNotifications, scheduleDailyNotifications } from '../services/notificationService';
 
 type EnergyContextType = {
   totals: { calories: number; protein: number; carbs: number; fat: number };
 };
 
 export default function Index() {
+  
+  useEffect(() => {
+    async function setupNotifications() {
+      await registerForPushNotifications();
+      await scheduleDailyNotifications();
+    }
+    setupNotifications();
+  }, []);
+  
   const [activeTab, setActiveTab] = useState('Dashboard');
   const { totals } = useEnergy() as EnergyContextType;
-
+  
   // Target ของผู้ใช้ (สามารถปรับให้ดึงจาก API/profile จริงได้)
   const proteinTarget = 105;
   const carbTarget = 250;
@@ -50,9 +60,8 @@ export default function Index() {
                   onPress={() => setActiveTab(tab)}
                 >
                   <Text
-                    className={`text-base ${
-                      activeTab === tab ? 'text-white font-semibold' : 'text-[#232738] font-medium'
-                    }`}
+                    className={`text-base ${activeTab === tab ? 'text-white font-semibold' : 'text-[#232738] font-medium'
+                      }`}
                   >
                     {tab}
                   </Text>
@@ -69,6 +78,7 @@ export default function Index() {
         <View className="items-center px-4 pt-[20px]">
           {activeTab === 'Dashboard' && (
             <>
+              <NetEnergyChart />
               <EnergyHistory />
               <WaterCount />
             </>
