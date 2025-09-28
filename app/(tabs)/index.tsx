@@ -3,9 +3,7 @@ import WaterCount from '../../components/watercount';
 import EnergyHistory from '@/components/EnergyHistory';
 import { useEffect, useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
-import Charts from "@/components/Charts";
-import Report from "@/components/Report";
-import Snapshot from '@/components/Snapshot';
+
 import NetEnergyChart from '@/components/NetEnergyChart';
 import { registerForPushNotifications, scheduleDailyNotifications } from '../services/notificationService';
 
@@ -52,7 +50,7 @@ export default function Index() {
         {/* Tab Navbar */}
         <View className="w-full h-[38px] flex-row items-center px-1 py-1 mt-2 bg-white rounded-[16px]">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['Dashboard', 'Charts', 'Report', 'Snapshot'].map((tab, index) => (
+            {['Dashboard'].map((tab, index) => (
               <View key={tab} className="flex-row items-center">
                 <TouchableOpacity
                   className={`px-3 py-1 rounded-full mr-1 ${activeTab === tab ? 'bg-[#ffb300]' : ''}`}
@@ -84,34 +82,13 @@ export default function Index() {
             </>
           )}
 
-          {activeTab === 'Charts' && (
-            <View className="text-white mt-10 text-lg">
-              <Charts />
-            </View>
-          )}
+          
+          
 
-          {activeTab === 'Report' && (
-            <Report
-              periodLabel="Today"
-              energy={{
-                energyTarget: proteinTarget + carbTarget * 4 + fatTarget * 9,
-                expenditureAboveBaseline: 0,
-                totalTarget: proteinTarget + carbTarget * 4 + fatTarget * 9,
-                consumed: totals.calories, // sync กับ diary
-              }}
-              macros={[
-                { key: "protein", label: "โปรตีน", unit: "g", target: proteinTarget, consumed: totals.protein, color: "#10b981" },
-                { key: "carbs", label: "คาร์บ", unit: "g", target: carbTarget, consumed: totals.carbs, color: "#f59e0b" },
-                { key: "fat", label: "ไขมัน", unit: "g", target: fatTarget, consumed: totals.fat, color: "#ef4444" },
-              ]}
-            />
-          )}
+          
+        
 
-          {activeTab === 'Snapshot' && (
-            <Text className="text-white mt-10 text-lg">
-              <Snapshot />
-            </Text>
-          )}
+          
         </View>
       </ScrollView>
     </View>

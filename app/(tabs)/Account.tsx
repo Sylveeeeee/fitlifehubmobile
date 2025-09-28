@@ -72,50 +72,6 @@ const router = useRouter();
           </View>
         </TouchableOpacity>
 
-        {/* Change Password */}
-      <TouchableOpacity
-      className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2"
-      onPress={() => router.push('/ChangePassword')}
-    >
-      <Text className="text-white text-base font-bold">ChangePassword</Text>
-      <Ionicons name="chevron-forward" size={20} color="#fff" />
-    </TouchableOpacity>
-
-        {/* Two-Factor Authentication */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Two-Factor Authentication</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Account Data */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Account Data</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Subscription */}
-        <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-white text-base font-bold">Subscription</Text>
-            <View className="flex-row items-center space-x-2">
-              <Text className="text-[#2ec4b6] font-bold">Free</Text>
-              <Text className="text-[#ff7a1a] font-bold">UPGRADE</Text>
-              <Ionicons name="chevron-forward" size={20} color="#fff" />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* Notifications */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Notifications</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Privacy */}
-        <TouchableOpacity className="flex-row items-center justify-between bg-[#292b40] rounded-xl px-4 py-4 mb-2">
-          <Text className="text-white text-base font-bold">Privacy</Text>
-          <Ionicons name="chevron-forward" size={20} color="#fff" />
-        </TouchableOpacity>
 
         {/* LOG OUT */}
         <View className="px-6 pb-8 pt-4">

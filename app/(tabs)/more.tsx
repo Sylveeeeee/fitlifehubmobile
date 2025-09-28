@@ -24,14 +24,7 @@ type MenuItem = {
   route:
     | '/Account'
     | '/Profile'
-    | '/targets'
-    | '/fasting'
-    | '/display'
-    | '/connect'
-    | '/sharing'
-    | '/referrals'
-    | '/support'
-    | '/about';
+    
 };
 
 const fullMenu: MenuItem[] = [
@@ -45,48 +38,7 @@ const fullMenu: MenuItem[] = [
     icon: <Ionicons name="person-outline" size={22} color="#fff" />,
     route: '/Profile',
   },
-  {
-    label: 'Targets',
-    icon: <Ionicons name="radio-button-on-outline" size={22} color="#fff" />,
-    route: '/targets',
-  },
-  {
-    label: 'Fasting',
-    icon: <MaterialIcons name="timer" size={22} color="#fff" />,
-    route: '/fasting',
-  },
-  {
-    label: 'Display',
-    icon: <Ionicons name="phone-portrait-outline" size={22} color="#fff" />,
-    route: '/display',
-  },
-  {
-    label: 'Connect Apps & Devices',
-    icon: <Feather name="refresh-cw" size={22} color="#fff" />,
-    route: '/connect',
-  },
-  {
-    label: 'Sharing',
-    icon: <Feather name="share-2" size={22} color="#fff" />,
-    route: '/sharing',
-  },
-  {
-    label: 'Referrals',
-    icon: <FontAwesome5 name="user-friends" size={22} color="#fff" />,
-    route: '/referrals',
-  },
-  {
-    label: 'Support',
-    icon: <Entypo name="help-with-circle" size={22} color="#fff" />,
-    route: '/support',
-  },
-  {
-    label: 'About',
-    icon: (
-      <Ionicons name="information-circle-outline" size={22} color="#fff" />
-    ),
-    route: '/about',
-  },
+ 
 ];
 
 export default function MoreScreen() {
