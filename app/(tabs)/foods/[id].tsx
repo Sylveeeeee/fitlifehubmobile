@@ -16,7 +16,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useToast } from '@/components/ToastProvider';
 import { useEnergy } from '@/context/EnergyContext';
-import { getTotals } from '@/app/services/energyService';
+import { getTargets, getTotals } from '@/app/services/energyService';
 
 type ServingOption = {
   label: string;
@@ -34,7 +34,9 @@ export default function FoodDetailScreen() {
     fat: 0,
     carbs: 0,
   });
+  const { totals, setTotals } = useEnergy();
 
+  
   const mealOptions = [
     { label: 'Uncategorized', value: 'Uncategorized' },
     { label: 'Breakfast', value: 'Breakfast' },
@@ -71,7 +73,37 @@ export default function FoodDetailScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const { showToast } = useToast();
-  const { setTotals } = useEnergy();
+
+  const [dailyGoal, setDailyGoal] = useState<{ calories: number; protein: number; fat: number; carbs: number } | null>(null);
+
+  const fetchDailyGoal = async (dateObj = selectedDate) => {
+    try {
+      const token = await getToken();
+      const today = new Date(dateObj.getTime()).toISOString().slice(0, 10);
+      // ปรับ endpoint ถ้า backend ของคุณต่างออกไป (เช่น /api/profile/daily-goal หรือ /api/daily-goal)
+      const res = await fetch(`${API_URL}/api/daily-goal?date=${today}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        setDailyGoal(null);
+        console.log('fetchDailyGoal: no goal, status', res.status);
+
+        return;
+      }
+
+      const json = await res.json();
+      const goal = json.goal ?? json;
+      setDailyGoal({
+        calories: goal.calories ?? 0,
+        protein: goal.protein ?? 0,
+        fat: goal.fat ?? 0,
+        carbs: goal.carbs ?? 0,
+      });
+      console.log('fetchDailyGoal: from API', goal);
+    } catch (e) {
+      setDailyGoal(null);
+    }
+  };
 
   const handleAddToDiary = async () => {
     try {
@@ -100,10 +132,15 @@ export default function FoodDetailScreen() {
         return;
       }
 
-      const totals = await getTotals(dateToUse.toISOString().slice(0, 10));
-      setTotals(totals);
+      const updatedTotals = await getTotals(dateToUse.toISOString().slice(0, 10));
+      const updatedTargets = await getTargets(dateToUse.toISOString().slice(0, 10));
 
-      const remainingCalories = Math.round(targets.calories - totals.calories + totals.burned);
+      setTotals(updatedTotals);
+      setTargets(updatedTargets);
+
+      // ✅ ใช้ค่าจาก DB โดยตรง (ไม่คำนวณซ้ำ)
+      const goalCalories = dailyGoal?.calories ?? updatedTargets.calories;
+      const remainingCalories = goalCalories - updatedTotals.calories;
 
       if (remainingCalories > 100) {
         showToast(`You still need ${remainingCalories} kcal to reach your goal! 💪`, 'success');

@@ -8,6 +8,7 @@ import Report from "@/components/Report";
 import Snapshot from '@/components/Snapshot';
 import NetEnergyChart from '@/components/NetEnergyChart';
 import { registerForPushNotifications, scheduleDailyNotifications } from '../services/notificationService';
+import BurnedChart from '@/components/BurnedChart';
 
 type EnergyContextType = {
   totals: { calories: number; protein: number; carbs: number; fat: number };
@@ -80,6 +81,7 @@ export default function Index() {
             <>
               <NetEnergyChart />
               <EnergyHistory />
+              <BurnedChart />
               <WaterCount />
             </>
           )}

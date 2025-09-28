@@ -42,6 +42,7 @@ async function updateDailyGoal(userId: number, date: Date) {
 }
 
 // POST /api/food-entry
+// POST /api/food-entry
 router.post('/', authenticateToken, async (req: any, res) => {
   const userId = req.user.userId;
   const { foodId, quantity, mealType, date } = req.body;
@@ -56,9 +57,13 @@ router.post('/', authenticateToken, async (req: any, res) => {
       return res.status(404).json({ error: 'Food not found' });
     }
 
-    // ✅ เก็บเป็น UTC
-    const parsedDate = new Date(date);
-    parsedDate.setUTCHours(0, 0, 0, 0);
+    // ✅ แปลงวันที่ให้ตรงเวลาไทย (UTC+7)
+    const localDate = new Date(date); // วันที่ที่ผู้ใช้เลือก
+    const utcDate = new Date(localDate.getTime() - 7 * 60 * 60 * 1000); 
+    // -7 ชั่วโมงเพราะ DB เก็บเป็น UTC
+
+    // ตั้งเวลาเป็น 00:00:00.000
+    utcDate.setUTCHours(0, 0, 0, 0);
 
     const newEntry = await prisma.foodEntry.create({
       data: {
@@ -66,17 +71,17 @@ router.post('/', authenticateToken, async (req: any, res) => {
         foodId,
         quantity,
         mealType,
-        date: parsedDate,
+        date: utcDate,
       },
     });
-    await updateDailyGoal(userId, parsedDate);
+
+    await updateDailyGoal(userId, utcDate);
     res.status(201).json(newEntry);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 // GET /api/food-entry?date=2025-07-30
 router.get('/', authenticateToken, async (req: any, res) => {
@@ -142,7 +147,6 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
 
   startDate.setUTCHours(0, 0, 0, 0);
   endDate.setUTCHours(23, 59, 59, 999);
-
 
   try {
     const user = await prisma.user.findUnique({
