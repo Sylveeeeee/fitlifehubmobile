@@ -14,6 +14,9 @@ import { API_URL } from '@/config';
 import { getToken } from '@/utils/tokenStorage.native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useToast } from '@/components/ToastProvider';
+import { useEnergy } from '@/context/EnergyContext';
+import { getTotals } from '@/app/services/energyService';
 
 type ServingOption = {
   label: string;
@@ -67,12 +70,15 @@ export default function FoodDetailScreen() {
   const [isServingOpen, setIsServingOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const { showToast } = useToast();
+  const { setTotals } = useEnergy();
 
   const handleAddToDiary = async () => {
     try {
       const token = await getToken();
       const dateToUse = selectedDate ? new Date(selectedDate) : new Date();
 
+      // บันทึกอาหารก่อน
       const res = await fetch(`${API_URL}/api/food-entry`, {
         method: 'POST',
         headers: {
@@ -82,19 +88,38 @@ export default function FoodDetailScreen() {
         body: JSON.stringify({
           foodId: food.id,
           quantity: Number(amount),
-          mealType: group, // หรือ mealType ที่เลือก
+          mealType: group,
           date: dateToUse.toISOString(),
         }),
       });
+
       if (!res.ok) {
         const error = await res.json();
         console.log('Add to diary failed:', error);
+        showToast('Failed to add to diary', 'error');
         return;
       }
-      // ไปหน้า Diary ทันที
-      router.replace('/diary');
+
+      const totals = await getTotals(dateToUse.toISOString().slice(0, 10));
+      setTotals(totals);
+
+      const remainingCalories = Math.round(targets.calories - totals.calories + totals.burned);
+
+      if (remainingCalories > 100) {
+        showToast(`You still need ${remainingCalories} kcal to reach your goal! 💪`, 'success');
+      } else if (remainingCalories >= -100 && remainingCalories <= 100) {
+        showToast("Congrats! You've reached your daily goal 🎉", 'success');
+      } else {
+        showToast(`You exceeded your goal by ${Math.abs(remainingCalories)} kcal ⚖️`, 'error');
+      }
+
+      // ไปหน้า Diary
+      setTimeout(() => {
+        router.replace('/diary');
+      }, 1000);
+
     } catch (e) {
-      // handle error
+      console.error(e);
     }
   };
 
@@ -156,7 +181,6 @@ export default function FoodDetailScreen() {
   const carbsPercent = (adjustedCarbs / total) * 100;
   const fatPercent = (adjustedFat / total) * 100;
   // คำนวณตัวคูณตามกรัมที่กรอก
-
 
   const macros = [
     { label: 'Protein', value: adjustedProtein, color: '#22c55e', target: targets.protein },

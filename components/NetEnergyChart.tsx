@@ -1,0 +1,195 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, Dimensions, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { VictoryChart, VictoryAxis, VictoryLine, VictoryBar } from 'victory-native';
+import { getToken } from '@/utils/tokenStorage.native';
+import { API_URL } from '@/config';
+
+const screenWidth = Dimensions.get('window').width;
+
+type NetEnergyEntry = {
+    date: string;
+    protein: number;
+    carbs: number;
+    fat: number;
+    burned?: number;
+    baseEnergyNeed?: number;
+    activityCalories?: number;
+    caloriesGoal?: number;
+    calories?: number;
+};
+
+function formatDate(dateStr: string) {
+    const d = new Date(dateStr);
+    return `${d.getDate()}/${d.getMonth() + 1}`;
+}
+
+const RANGE_OPTIONS = [
+    { label: '7 วัน', value: '7d' },
+    { label: '14 วัน', value: '14d' },
+    { label: '1 เดือน', value: '1m' },
+];
+
+export default function NetEnergyChart() {
+    const [range, setRange] = useState('7d');
+    const [history, setHistory] = useState<NetEnergyEntry[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchEnergyHistory = async () => {
+            setLoading(true);
+            try {
+                const token = await getToken();
+                const foodRes = await fetch(`${API_URL}/api/food-entry/energy-history?range=${range}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const exerciseRes = await fetch(`${API_URL}/api/exercise-entry/energy-history?range=${range}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (!foodRes.ok || !exerciseRes.ok) throw new Error('Failed to fetch');
+
+                const foodJson = await foodRes.json();
+                const exerciseJson = await exerciseRes.json();
+
+                console.log('foodJson:', foodJson);
+                console.log('exerciseJson:', exerciseJson);
+
+                // รวมข้อมูลตามวันที่
+                const merged: { [date: string]: NetEnergyEntry } = {};
+
+                (foodJson.history || []).forEach((f: NetEnergyEntry) => {
+                    merged[f.date] = { ...f };
+                });
+
+                (exerciseJson.history || []).forEach((e: NetEnergyEntry) => {
+                    if (!merged[e.date]) merged[e.date] = { date: e.date, protein: 0, carbs: 0, fat: 0 };
+                    merged[e.date] = {
+                        ...merged[e.date],
+                        burned: e.burned ?? merged[e.date].burned,
+                        baseEnergyNeed: e.baseEnergyNeed ?? merged[e.date].baseEnergyNeed,
+                        activityCalories: e.activityCalories ?? merged[e.date].activityCalories,
+                    };
+                });
+
+                setHistory(Object.values(merged));
+            } catch (err) {
+                setHistory([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchEnergyHistory();
+    }, [range]);
+
+    const sortedHistory = [...history]
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .slice(-range);
+
+    const netEnergyData = sortedHistory.map((d) => {
+        console.log('Calculating net for:', d);
+        const consumed = d.calories
+            ?? ((d.protein || 0) * 4) + ((d.carbs || 0) * 4) + ((d.fat || 0) * 9);
+
+
+        console.log('Consumed for', d.date, 'is', consumed);
+        const burned =
+            (d.baseEnergyNeed || 0) +
+            (d.activityCalories || 0) +
+            (d.burned || 0);
+        const caloriesGoal = d.caloriesGoal || 0;
+        const net = consumed - caloriesGoal;
+        console.log('Net for', d.date, 'is', net);
+        return {
+            date: formatDate(d.date),
+            net,
+            caloriesGoal,
+            netDiff: net - caloriesGoal, // ส่วนต่างจาก goal
+            consumed,
+            burned,
+        };
+    });
+
+    if (loading) {
+        return (
+            <View className="w-[92%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg items-center">
+                <ActivityIndicator size="large" color="#ffb300" />
+            </View>
+        );
+    }
+
+    return (
+        <View className="w-[92%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg">
+            <Text className="text-[#ffb300] text-lg font-bold mb-2">
+                Net Energy Chart (kcal)
+            </Text>
+
+            {/* Range Selector */}
+            <View className="flex-row gap-x-2">
+                {RANGE_OPTIONS.map((opt) => (
+                    <TouchableOpacity
+                        key={opt.value}
+                        onPress={() => setRange(opt.value)}
+                        className={`px-3 py-1 rounded-full ${range === opt.value ? 'bg-[#ffb300]' : 'bg-[#3a3b4d]'
+                            }`}
+                    >
+                        <Text className="text-white text-xs">{opt.label}</Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+            <VictoryChart
+                domainPadding={{ x: 20, y: 10 }}
+                height={250}
+                width={screenWidth * 0.92}
+            >
+                <VictoryAxis
+                    tickFormat={(t: any) => t}
+                    style={{
+                        tickLabels: { fill: 'white', fontSize: 10 },
+                        axis: { stroke: 'white' },
+                    }}
+                />
+                <VictoryAxis
+                    dependentAxis
+                    tickCount={5}
+                    tickFormat={(t: any) => `${t}`}
+                    style={{
+                        tickLabels: { fill: 'white', fontSize: 10 },
+                        axis: { stroke: 'white' },
+                        grid: { stroke: '#444' },
+                    }}
+                />
+
+                {/* Net Energy Bar (ส่วนต่างจาก goal) */}
+                <VictoryBar
+                    data={netEnergyData}
+                    x="date"
+                    y="net"
+                    style={{
+                        data: { fill: '#ffb300', opacity: 0.7, width: 15 },
+                        labels: { fill: 'white', fontSize: 10 },
+                    }}
+                />
+            </VictoryChart>
+            <View className="flex-row justify-center mt-3 gap-x-4">
+                <View className="flex-row items-center">
+                    <View
+                        className="w-3 h-3 rounded"
+                        style={{ backgroundColor: '#ffb300', marginRight: 4 }}
+                    />
+                    <Text className="text-white text-xs">Net Energy</Text>
+                </View>
+                <View className="flex-row items-center">
+                    <View
+                        className="w-3 h-1.5 rounded"
+                        style={{
+                            backgroundColor: '#22c55e',
+                            marginRight: 4,
+                            borderStyle: 'dashed',
+                        }}
+                    />
+                </View>
+            </View>
+        </View>
+    );
+}

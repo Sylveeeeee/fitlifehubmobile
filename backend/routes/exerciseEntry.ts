@@ -1,9 +1,70 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { authenticateToken } from '../middleware/auth';
+import { calculateEnergyTarget } from '../utils/calculateEnergyTarget';
 
 const router = express.Router();
 const prisma = new PrismaClient();
+
+async function updateDailyGoal(userId: number, date: Date) {
+  // ดึง user profile
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) return;
+
+  const userData = {
+    weight: user.weight,
+    height: user.height,
+    birthday: user.birthday?.toISOString().split('T')[0],
+    sex: user.sex,
+    activityLevel: user.activityLevel,
+    goalRate: user.goalRate,
+  };
+
+  const target = calculateEnergyTarget(userData);
+
+  // ดึง exercise ของวันนั้น
+  const start = new Date(date);
+  start.setUTCHours(0, 0, 0, 0);
+
+  const end = new Date(date);
+  end.setUTCHours(23, 59, 59, 999);
+
+  const exerciseEntries = await prisma.exerciseEntry.findMany({
+    where: {
+      userId,
+      timestamp: { gte: start, lte: end },
+    },
+  });
+
+  // รวม calories จาก exercise
+  const exerciseCalories = exerciseEntries.reduce((sum, e) => sum + (e.calories || 0), 0);
+
+  const caloriesGoal = target.energyTarget + exerciseCalories;
+
+  const weight = user.weight || 0;
+  const proteinGoal = Math.round(weight * 2); // g
+  const fatGoal = Math.round((caloriesGoal * 0.25) / 9); // g
+  const carbsGoal = Math.round((caloriesGoal - (proteinGoal * 4 + fatGoal * 9)) / 4); // g
+
+  // upsert DailyGoal
+  await prisma.dailyGoal.upsert({
+    where: { userId_date: { userId, date: start } },
+    update: {
+      calories: caloriesGoal,
+      protein: proteinGoal,
+      fat: fatGoal,
+      carbs: carbsGoal,
+    },
+    create: {
+      userId,
+      date: start,
+      calories: caloriesGoal,
+      protein: proteinGoal,
+      fat: fatGoal,
+      carbs: carbsGoal,
+    },
+  });
+}
 
 // POST /api/exercise-entry
 router.post('/', authenticateToken, async (req: any, res) => {
@@ -30,6 +91,9 @@ router.post('/', authenticateToken, async (req: any, res) => {
         mealType,
       },
     });
+    const entryDate = new Date(timestamp);
+    entryDate.setUTCHours(0, 0, 0, 0);
+    await updateDailyGoal(userId, entryDate);
     res.json(entry);
   } catch (err) {
     console.error('Create ExerciseEntry error:', err); // <--- log ตรงนี้
@@ -72,7 +136,10 @@ router.delete('/:id', authenticateToken, async (req: any, res) => {
     return res.status(404).json({ error: 'Entry not found' });
   }
   await prisma.exerciseEntry.delete({ where: { id: entryId } });
-  res.json({ success: true });
+  const entryDate = entry.timestamp;
+  entryDate.setUTCHours(0, 0, 0, 0);
+  await updateDailyGoal(userId, entryDate);
+  res.json({ success: true });;
 });
 
 // GET /api/exercise-entry/energy-history?range=7d
@@ -90,12 +157,13 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
   startDate.setUTCHours(0, 0, 0, 0);
 
   try {
-     const user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         baseEnergyNeed: true,
         activityCalories: true,
         caloriesGoal: true,
+        dailyGoals: { select: { date: true, calories: true } }
       },
     });
 
@@ -120,7 +188,9 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
       burned,
       baseEnergyNeed: user?.baseEnergyNeed || 0,
       activityCalories: user?.activityCalories || 0,
-      caloriesGoal: user?.caloriesGoal || 0,
+      caloriesGoal: user?.dailyGoals.find(d =>
+        d.date.toISOString().split('T')[0] === date
+      )?.calories || 0,
     }));
 
     res.json({ history });
@@ -129,5 +199,5 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
     res.status(500).json({ error: 'Failed to fetch burned energy history' });
   }
 });
-                                
+
 export default router;

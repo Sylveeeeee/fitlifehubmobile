@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import RecommendationCard from "@/components/RecommendationCard";
 
 import {
   View,
@@ -9,6 +10,8 @@ import {
   ScrollView,
   FlatList,
   Dimensions,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getToken } from '@/utils/tokenStorage.native';
@@ -17,10 +20,19 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useEnergy } from '@/context/EnergyContext';
 import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่ม
 import { useRouter } from 'expo-router';
+import { registerForPushNotifications, scheduleDailyNotifications } from '../services/notificationService';
+import { ToastProvider, useToast } from '@/components/ToastProvider';
 
 const { width } = Dimensions.get('window');
 
 export default function DiaryScreen() {
+  useEffect(() => {
+    async function setupNotifications() {
+      await registerForPushNotifications();
+      await scheduleDailyNotifications();
+    }
+    setupNotifications();
+  }, []);
   const meals = ['Uncategorized', 'Breakfast', 'Lunch', 'Dinner', 'Snacks'];
   const router = useRouter();
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -28,6 +40,8 @@ export default function DiaryScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [exerciseEntries, setExerciseEntries] = useState<any[]>([]);
+  const { showToast } = useToast();
+  const [showRecommendation, setShowRecommendation] = useState(false);
 
   const {
     totals,
@@ -39,9 +53,36 @@ export default function DiaryScreen() {
     >;
   };
   const [targets, setTargets] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0, activityCalories: 0, baseEnergyNeed: 0 });
+  const [dailyGoal, setDailyGoal] = useState<{ calories: number; protein: number; fat: number; carbs: number } | null>(null);
 
-  useEffect(() => {
-  });
+  const fetchDailyGoal = async (dateObj = selectedDate) => {
+    try {
+      const token = await getToken();
+      const today = new Date(dateObj.getTime()).toISOString().slice(0, 10);
+      // ปรับ endpoint ถ้า backend ของคุณต่างออกไป (เช่น /api/profile/daily-goal หรือ /api/daily-goal)
+      const res = await fetch(`${API_URL}/api/daily-goal?date=${today}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) {
+        setDailyGoal(null);
+        console.log('fetchDailyGoal: no goal, status', res.status);
+
+        return;
+      }
+
+      const json = await res.json();
+      const goal = json.goal ?? json;
+      setDailyGoal({
+        calories: goal.calories ?? 0,
+        protein: goal.protein ?? 0,
+        fat: goal.fat ?? 0,
+        carbs: goal.carbs ?? 0,
+      });
+      console.log('fetchDailyGoal: from API', goal);
+    } catch (e) {
+      setDailyGoal(null);
+    }
+  };
 
   type MealType = 'Uncategorized' | 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
 
@@ -67,6 +108,8 @@ export default function DiaryScreen() {
     });
     const exerciseEntries = await resEx.json();
     setExerciseEntries(exerciseEntries);
+
+    await fetchDailyGoal(dateObj);
 
     entries.forEach((entry: any, index: number) => {
       console.log(`🔹 Entry ${index + 1}:`, {
@@ -130,6 +173,7 @@ export default function DiaryScreen() {
 
     const totalTarget = targets.calories + exerciseCalories;
 
+
   };
 
   const exerciseCalories = exerciseEntries.reduce((sum: number, e: any) =>
@@ -138,6 +182,8 @@ export default function DiaryScreen() {
 
   useEffect(() => {
     fetchEntries(selectedDate);
+    fetchDailyGoal(selectedDate);
+
   }, [selectedDate]);
 
   const handleDeleteEntry = async (entryId: number) => {
@@ -156,8 +202,9 @@ export default function DiaryScreen() {
         });
         return newData;
       });
+      showToast('Added to diary', 'success');
     } catch (e) {
-      // handle error
+      showToast('Failed to add to diary', 'error');
     }
   };
 
@@ -169,7 +216,7 @@ export default function DiaryScreen() {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchEntries(selectedDate); // รีเฟรชข้อมูลหลังลบ
-      // ลบออกจาก state ทันที (optional)
+      await fetchEntries(selectedDate);
       setMealData((prev) => {
         const newData = { ...prev };
         (Object.keys(newData) as MealType[]).forEach((meal) => {
@@ -200,10 +247,23 @@ export default function DiaryScreen() {
         baseEnergyNeed: user.baseEnergyNeed,
       });
     };
+
     fetchTargets();
   }, []);
 
-  const totalTarget = Math.max(targets.baseEnergyNeed + targets.activityCalories + exerciseCalories, 1);
+  const totalTarget = Math.max(
+    dailyGoal?.calories ?? (targets.baseEnergyNeed + targets.activityCalories + exerciseCalories),
+    1
+  );
+
+  const displayTargets = {
+    calories: dailyGoal?.calories ?? targets.calories,
+    protein: dailyGoal?.protein ?? targets.protein,
+    fat: dailyGoal?.fat ?? targets.fat,
+    carbs: dailyGoal?.carbs ?? targets.carbs,
+  };
+
+  const energyDenominator = Math.max(dailyGoal?.calories ?? totalTarget, 1);
 
   const summarySlides = [
     {
@@ -211,31 +271,33 @@ export default function DiaryScreen() {
       data: [
         { label: 'Consumed', value: totals.calories },
         { label: 'Expenditure', value: totalTarget },
-        { label: 'Remaining', value: targets.calories - totals.calories },
+        // Remaining เทียบกับ dailyGoal ถ้ามี ถ้าไม่มีก็เทียบกับ totalTarget
+        { label: 'Remaining', value: (dailyGoal?.calories ?? totalTarget) - totals.calories },
       ],
     },
+
     {
       type: 'targets',
       data: [
         {
           label: 'Energy',
-          value: `${totals.calories} / ${totalTarget}`,
-          percent: Math.min((totals.calories / totalTarget) * 100, 100),
+          value: `${totals.calories} / ${energyDenominator}`,
+          percent: Math.min((totals.calories / energyDenominator) * 100, 100),
         },
         {
           label: 'Protein',
-          value: `${totals.protein} / ${targets.protein} `,
-          percent: Math.min((totals.protein / targets.protein) * 100, 100),
+          value: `${totals.protein} / ${displayTargets.protein}`,
+          percent: displayTargets.protein ? Math.min((totals.protein / displayTargets.protein) * 100, 100) : 0,
         },
         {
           label: 'Net Carbs',
-          value: `${totals.carbs} / ${targets.carbs} `,
-          percent: Math.min((totals.carbs / targets.carbs) * 100, 100),
+          value: `${totals.carbs} / ${displayTargets.carbs}`,
+          percent: displayTargets.carbs ? Math.min((totals.carbs / displayTargets.carbs) * 100, 100) : 0,
         },
         {
           label: 'Fat',
-          value: `${totals.fat} / ${targets.fat} `,
-          percent: Math.min((totals.fat / targets.fat) * 100, 100),
+          value: `${totals.fat} / ${displayTargets.fat}`,
+          percent: displayTargets.fat ? Math.min((totals.fat / displayTargets.fat) * 100, 100) : 0,
         },
       ],
     },
@@ -260,13 +322,20 @@ export default function DiaryScreen() {
   const activityPercent = (activityCalories / totalTarget) * 100;
   const exercisePercent = (exerciseCalories / totalTarget) * 100;
 
+  const remainingCalories = (dailyGoal?.calories ?? targets.calories) - totals.calories;
+  const hasNotification = remainingCalories > 0 || remainingCalories < 0;
+
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView className="flex-1 bg-[#15161f]">
+
         {/* Header */}
         <View className="flex-row items-center justify-between px-6 pb-4">
-          <Text className="text-white text-base font-semibold">✔</Text>
-          <View className="flex justify-center items-center  ">
+          <Pressable onPress={() => router.back()}>
+            <Ionicons name="chevron-back" size={28} color="#fff" />
+          </Pressable>
+          <View className="flex justify-center items-center ">
             <DateTimePicker
               value={selectedDate}
               mode="date"
@@ -280,12 +349,64 @@ export default function DiaryScreen() {
           </View>
 
           <View className="flex-row items-center space-x-4">
-
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+            <TouchableOpacity onPress={() => setShowRecommendation(true)}>
+              <View style={{ position: 'relative' }}>
+                <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+                {hasNotification && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: -2,
+                      right: -2,
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                      backgroundColor: 'red',
+                    }}
+                  />
+                )}
+              </View>
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Modal แสดง RecommendationCard */}
+        <Modal
+          visible={showRecommendation}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowRecommendation(false)}
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              justifyContent: 'center',
+              padding: 20,
+            }}
+          >
+            <View style={{ backgroundColor: '#fff', borderRadius: 12 }}>
+              {totals && (dailyGoal || targets) && (
+                <RecommendationCard
+                  totals={{ calories: totals.calories, burned: exerciseCalories }}
+                  targets={{ calories: dailyGoal?.calories ?? targets.calories }}
+                />
+              )}
+              <TouchableOpacity
+                onPress={() => setShowRecommendation(false)}
+                style={{
+                  backgroundColor: '#ffb300',
+                  margin: 16,
+                  padding: 12,
+                  borderRadius: 8,
+                }}
+              >
+                <Text style={{ color: 'white', textAlign: 'center' }}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
 
         {/* Summary Carousel */}
         <View className="h-54">

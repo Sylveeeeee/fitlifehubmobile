@@ -4,6 +4,7 @@ import profileRouter from './routes/profile';
 import foodEntryRouter from './routes/foodEntry';
 import foodRouter from './routes/food';
 import exerciseEntryRouter from './routes/exerciseEntry';
+import dailyGoalRouter from './routes/dailyGoal';
 import 'dotenv/config';
 
 const app = express();
@@ -18,6 +19,8 @@ app.use('/api/food-entry', foodEntryRouter);
 app.use('/api/foods', foodRouter);
 
 app.use('/api/exercise-entry',  exerciseEntryRouter);
+
+app.use('/api/daily-goal', dailyGoalRouter);
 
 
 const PORT = process.env.PORT || 3333;

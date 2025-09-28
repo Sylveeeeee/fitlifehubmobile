@@ -3,18 +3,20 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import BottomNavbar from '@/components/BottomNavbar';
 import "@/global.css";
+import { ToastProvider } from '@/components/ToastProvider';
+import { View } from 'react-native';
 
 export default function RootLayout() {
   const pathname = usePathname();
-  // ซ่อน BottomNavbar เมื่ออยู่หน้า foods/[id]
   const showNavbar = !(pathname.startsWith('/foods/'));
 
   return (
-    <>
-      <Stack screenOptions={{ headerShown: false }} />
-      {showNavbar && <BottomNavbar />}
-      {/* แสดง StatusBar เสมอ */}
-      <StatusBar style="auto" />
-    </>
+    <ToastProvider>
+      <View style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }} />
+        {showNavbar && <BottomNavbar />}
+        <StatusBar style="auto" />
+      </View>
+    </ToastProvider>
   );
 }
