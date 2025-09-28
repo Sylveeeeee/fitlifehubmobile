@@ -107,6 +107,11 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
   endDate.setUTCHours(23, 59, 59, 999);
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { caloriesGoal: true },
+    });
+
     const entries = await prisma.foodEntry.findMany({
       where: {
         userId,
@@ -137,6 +142,7 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
     const history = Object.entries(dailyTotals).map(([date, values]) => ({
       date,
       ...values,
+      caloriesGoal: user?.caloriesGoal ?? 0,
     }));
 
     res.json({ history });

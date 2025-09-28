@@ -45,3 +45,6 @@ yarn-error.*
 
 /app/generated/prisma
 .env
+.env
+.gitignore
+backend/index.ts

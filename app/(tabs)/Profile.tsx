@@ -107,7 +107,7 @@ export default function ProfileScreen() {
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
-        <Text className="text-white text-lg font-bold">Profile</Text>
+        <Text className="text-[#ffffff] text-lg font-bold">Profile</Text>
         <TouchableOpacity onPress={() => setEditMode(!editMode)}>
           <Ionicons name={editMode ? 'checkmark' : 'create-outline'} size={24} color="#fff" />
         </TouchableOpacity>

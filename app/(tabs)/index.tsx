@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useEnergy } from '@/context/EnergyContext';
 import Charts from "@/components/Charts";
 import Report from "@/components/Report";
+import Snapshot from '@/components/Snapshot';
 
 type EnergyContextType = {
   totals: { calories: number; protein: number; carbs: number; fat: number };
@@ -36,23 +37,6 @@ export default function Index() {
             />
             <Text className="text-[#ffb300] text-[32px] font-extrabold">FITLIFE HUB</Text>
           </View>
-
-          <View className="flex-row items-center space-x-4">
-            <TouchableOpacity>
-              <Image
-                source={{ uri: 'https://img.icons8.com/ios-filled/50/232738/appointment-reminders--v1.png' }}
-                style={{ width: 28, height: 28, marginRight: 12, tintColor: '#ffb300' }}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={{ uri: 'https://img.icons8.com/ios-filled/50/232738/settings.png' }}
-                style={{ width: 28, height: 28, tintColor: '#ffb300' }}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
         </View>
 
         {/* Tab Navbar */}
@@ -82,10 +66,10 @@ export default function Index() {
 
       {/* Content */}
       <ScrollView className="flex-1 bg-[#15161f]" contentContainerStyle={{ paddingBottom: 80 }}>
-        <View className="items-center px-4 pt-4">
+        <View className="items-center px-4 pt-[20px]">
           {activeTab === 'Dashboard' && (
             <>
-              <EnergyHistory  />
+              <EnergyHistory />
               <WaterCount />
             </>
           )}
@@ -114,7 +98,9 @@ export default function Index() {
           )}
 
           {activeTab === 'Snapshot' && (
-            <Text className="text-white mt-10 text-lg">Snapshot content here...</Text>
+            <Text className="text-white mt-10 text-lg">
+              <Snapshot />
+            </Text>
           )}
         </View>
       </ScrollView>

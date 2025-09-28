@@ -90,6 +90,15 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
   startDate.setUTCHours(0, 0, 0, 0);
 
   try {
+     const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        baseEnergyNeed: true,
+        activityCalories: true,
+        caloriesGoal: true,
+      },
+    });
+
     const entries = await prisma.exerciseEntry.findMany({
       where: {
         userId,
@@ -103,11 +112,15 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
     entries.forEach((e) => {
       const dateKey = e.timestamp.toISOString().split('T')[0];
       historyMap[dateKey] = (historyMap[dateKey] || 0) + e.calories;
+
     });
 
     const history = Object.entries(historyMap).map(([date, burned]) => ({
       date,
       burned,
+      baseEnergyNeed: user?.baseEnergyNeed || 0,
+      activityCalories: user?.activityCalories || 0,
+      caloriesGoal: user?.caloriesGoal || 0,
     }));
 
     res.json({ history });
