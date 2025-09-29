@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,11 @@ export default function FoodSearchScreen() {
   const [foods, setFoods] = useState<FoodItem[]>([]);
 
   const fetchFoods = async () => {
+    if (query.length < 2 && query !== '') {
+      setFoods([]);
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/foods?search=${encodeURIComponent(query)}`);
@@ -31,40 +36,50 @@ export default function FoodSearchScreen() {
       setFoods(data);
     } catch (err) {
       console.error(err);
+      setFoods([]);
     } finally {
       setLoading(false);
     }
   };
 
+  // Debounce ref
+  const debounceTimeout = useRef<NodeJS.Timeout | number | null>(null);
+
   useEffect(() => {
-    if (query.length >= 2 || query === '') {
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current as number);
+
+    debounceTimeout.current = setTimeout(() => {
       fetchFoods();
-    } else {
-      setFoods([]);
-    }
+    }, 300);
+
+    return () => {
+      if (debounceTimeout.current) clearTimeout(debounceTimeout.current as number);
+    };
   }, [query]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#15161f]" edges={['top', 'left', 'right']}>
       <View className="flex-1 px-4 pt-4">
-        <TextInput
+        {/* <TextInput
           value={query}
           onChangeText={setQuery}
           placeholder="Search all foods..."
           placeholderTextColor="#999"
           className="bg-[#2a2c3d] text-white px-4 py-2 rounded-xl mb-4"
-        />
+        /> */}
 
         {loading ? (
           <ActivityIndicator size="large" color="#ff7a1a" />
-        ) : (
+        ) : foods.length > 0 ? (
           <FlatList
             data={foods}
             keyExtractor={(item) => `${item.id}`}
             renderItem={({ item }) => (
               <TouchableOpacity
                 className="bg-[#292b40] rounded-xl px-4 py-4 mb-2"
-                onPress={() => router.push({ pathname: '/foods/[id]', params: { id: `${item.id}` } })}
+                onPress={() =>
+                  router.push({ pathname: '/foods/[id]', params: { id: `${item.id}` } })
+                }
               >
                 <View className="flex-row justify-between items-center">
                   <View style={{ maxWidth: '75%' }}>
@@ -90,7 +105,9 @@ export default function FoodSearchScreen() {
             )}
             keyboardShouldPersistTaps="handled"
           />
-        )}
+        ) : query.length >= 2 ? (
+          <Text className="text-gray-400 text-center mt-4">No results found</Text>
+        ) : null}
       </View>
     </SafeAreaView>
   );

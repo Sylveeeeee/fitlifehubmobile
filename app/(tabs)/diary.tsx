@@ -370,8 +370,12 @@ export default function DiaryScreen() {
 
           {/* ปุ่มกระดิ่ง */}
           <View className="flex-row items-center space-x-4">
-            <TouchableOpacity onPress={() => setShowRecommendation(true)} >
-
+            <TouchableOpacity
+              onPress={() => {
+                setShowRecommendation(true);   // เปิด modal หรือทำ action
+                setHasNotification(false);     // ✅ จุดแดงหาย
+              }}
+            >
               <View style={{ position: 'relative' }}>
                 <Ionicons name="notifications-outline" size={28} color="#fff" />
                 {hasNotification && (

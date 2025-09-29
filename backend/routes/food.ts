@@ -9,18 +9,22 @@ router.get('/', async (req, res) => {
   const { search } = req.query;
 
   try {
-    const foods = await prisma.food.findMany({
-      where: search
-        ? {
-          foodName: {
-            contains: search,
-            mode: 'insensitive',
-          },
-        } as Prisma.FoodWhereInput // 👈 บอกชัด ๆ ไปเลย
-        : undefined,
-      take: 20,
-    });
+    let where: Prisma.FoodWhereInput | undefined = undefined;
 
+    if (search && typeof search === 'string') {
+      where = {
+        OR: [
+          { foodName: { contains: search, mode: 'insensitive' } } as Prisma.FoodWhereInput,
+          { category: { contains: search } } as Prisma.FoodWhereInput,
+        ],
+      };
+    }
+
+    const foods = await prisma.food.findMany({
+      where,
+      take: 20,
+      orderBy: { foodName: 'asc' },
+    });
 
     res.json(foods);
   } catch (error) {
