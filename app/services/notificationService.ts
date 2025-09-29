@@ -24,10 +24,10 @@ export async function scheduleDailyNotifications() {
 
     // ตัวอย่างเวลาตามวัน
     const times = [
-        { hour: 8, minute: 0, type: 'morning', title: 'เช้าแล้ว! 🌞' },
-        { hour: 12, minute: 0, type: 'lunch', title: 'ถึงเวลากลางวัน 🍽️' },
-        { hour: 18, minute: 0, type: 'dinner', title: 'เย็นแล้ว 🌇' },
-        { hour: 21, minute: 30, type: 'summary', title: 'สรุปประจำวัน 📊' },
+        { hour: 8, minute: 0, type: 'morning', title: 'Good morning! 🌞', body: "Time for breakfast! Don't forget to log your meal." },
+        { hour: 12, minute: 0, type: 'lunch', title: 'Lunch time! 🍽️', body: "Don't forget to log your lunch!" },
+        { hour: 18, minute: 0, type: 'dinner', title: 'Dinner time 🌇', body: "Remember to log your dinner." },
+        { hour: 21, minute: 30, type: 'summary', title: 'Daily Summary 📊', body: "Check your daily progress and goals before bed." },
     ];
 
     for (const t of times) {
@@ -35,8 +35,8 @@ export async function scheduleDailyNotifications() {
             content: {
                 title: t.title,
                 body: t.type === 'summary'
-                    ? 'เช็คสรุปวันนี้ตอน 21:30'
-                    : 'อย่าลืมบันทึกอาหารวันนี้นะ!',
+                    ? 'Check your daily summary at 21:30 📊'
+                    : "Don't forget to log your meals today! 🍽️",
                 sound: 'default',
             },
             trigger: {
