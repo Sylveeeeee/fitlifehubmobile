@@ -43,7 +43,7 @@ const router = useRouter();
   };
 
   return (
-    <View className="flex-1 bg-[#23243a]">
+    <View className="flex-1 bg-[#15161f]">
       {/* Header */}
       <View className="flex-row items-center pt-12 pb-4 px-6">
         <TouchableOpacity onPress={() => router.back()}>
@@ -75,7 +75,7 @@ const router = useRouter();
 
         {/* LOG OUT */}
         <View className="px-6 pb-8 pt-4">
-          <TouchableOpacity className="bg-[#ff7a1a] rounded-full py-4" onPress={handleLogout}>
+          <TouchableOpacity className="bg-[#ffb300] rounded-full py-4" onPress={handleLogout}>
             <Text className="text-center text-lg font-bold text-white">LOG OUT</Text>
           </TouchableOpacity>
         </View>

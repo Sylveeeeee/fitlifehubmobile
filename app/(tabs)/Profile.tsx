@@ -153,7 +153,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Editable Goal Weight */}
-        <View className="bg-[#1f2032] rounded-xl px-4 py-4 mb-3">
+        {/* <View className="bg-[#1f2032] rounded-xl px-4 py-4 mb-3">
           <View className="flex-row justify-between items-center">
             <Text className="text-white font-semibold">Goal Weight</Text>
             {editMode ? (
@@ -169,10 +169,10 @@ export default function ProfileScreen() {
               <Text className="text-white">{profile?.goalWeight ? `${profile.goalWeight} kg` : '-'}</Text>
             )}
           </View>
-        </View>
+        </View> */}
 
         {renderItem("Body Mass Index (BMI)", bmi())}
-        {renderItem("Body Fat", profile?.bodyFat ? `${profile.bodyFat}%` : '-', "Last Updated on Feb 25, 2025")}
+        {/* {renderItem("Body Fat", profile?.bodyFat ? `${profile.bodyFat}%` : '-', "Last Updated on Feb 25, 2025")} */}
 
         {/* Save Button */}
         {editMode && (

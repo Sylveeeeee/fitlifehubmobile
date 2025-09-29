@@ -1,25 +1,16 @@
 import { useEffect, useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  Dimensions,
-  ActivityIndicator,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-import { VictoryChart, VictoryAxis, VictoryBar, VictoryLine, VictoryStack } from 'victory-native';
+import { View, Text, Dimensions, ActivityIndicator, TouchableOpacity, Modal } from 'react-native';
+import { VictoryChart, VictoryAxis, VictoryStack, VictoryBar } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 
 const screenWidth = Dimensions.get('window').width;
 
-type EnergyEntry = {
+type BurnedEntry = {
   date: string;
-  protein: number;
-  carbs: number;
-  fat: number;
-  calories: number;
-  caloriesGoal: number;
+  baseEnergyNeed: number;
+  activityCalories: number;
+  burned: number;
 };
 
 const RANGE_OPTIONS = [
@@ -28,24 +19,24 @@ const RANGE_OPTIONS = [
   { label: '1 month', value: '1m' },
 ];
 
-export default function EnergySummaryCard() {
+export default function BurnedChart() {
   const [range, setRange] = useState('7d');
-  const [history, setHistory] = useState<EnergyEntry[]>([]);
+  const [history, setHistory] = useState<BurnedEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedData, setSelectedData] = useState<EnergyEntry | null>(null);
+  const [selectedData, setSelectedData] = useState<BurnedEntry | null>(null);
 
-  const fetchEnergyHistory = useCallback(async () => {
+  const fetchBurnedHistory = useCallback(async () => {
     setLoading(true);
     try {
       const token = await getToken();
-      const res = await fetch(`${API_URL}/api/food-entry/energy-history?range=${range}`, {
+      const res = await fetch(`${API_URL}/api/exercise-entry/energy-history?range=${range}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
       setHistory(json.history || []);
     } catch (err) {
-      console.error('🚨 Error fetching energy history:', err);
+      console.error('🚨 Error fetching burned history:', err);
       setHistory([]);
     } finally {
       setLoading(false);
@@ -53,50 +44,25 @@ export default function EnergySummaryCard() {
   }, [range]);
 
   useEffect(() => {
-    fetchEnergyHistory();
-  }, [fetchEnergyHistory]);
+    fetchBurnedHistory();
+  }, [fetchBurnedHistory]);
 
-  const chartData = history
+  const stackedData = history
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .map((d) => ({
       date: formatDate(d.date),
-      calories: d.calories,
-      caloriesGoal: d.caloriesGoal,
-      original: d,
-      protein: d.protein,
-      carbs: d.carbs,
-      fat: d.fat,
+      baseKcal: d.baseEnergyNeed || 0,
+      activityKcal: d.activityCalories || 0,
+      burnedKcal: d.burned || 0,
     }));
-
-  // stackedChartData
-  const stackedChartData = chartData.map(d => {
-    const totalMacroKcal = d.protein * 4 + d.carbs * 4 + d.fat * 9;
-    const proteinKcal = (d.protein * 4 / totalMacroKcal) * d.calories;
-    const carbsKcal = (d.carbs * 4 / totalMacroKcal) * d.calories;
-    const fatKcal = (d.fat * 9 / totalMacroKcal) * d.calories;
-
-    return {
-      date: d.date,
-      proteinKcal,
-      carbsKcal,
-      fatKcal,
-      caloriesGoal: d.caloriesGoal,
-      original: d.original,
-    };
-  });
 
   return (
     <>
-      <View className="bg-[#232433] rounded-2xl p-5 mb-5 shadow-lg shadow-black/40 w-[100%]">
-        {/* Header */}
-        <View className="flex-row justify-between items-center mb-3 border-b border-white/10 pb-2">
-          <Text className="text-white text-lg font-extrabold tracking-wide">
-            Retroactive Energy
-          </Text>
-        </View>
+      <View className="bg-[#232433] rounded-2xl p-5 mb-5 shadow-lg shadow-black/40 w-[100%] justify-center items-center">
+        <Text className="text-white text-lg font-extrabold mb-3">Burned Energy</Text>
 
         {/* Range Selector */}
-        <View className="flex-row gap-x-2 mb-2 justify-center">
+        <View className="flex-row gap-x-2 mb-2">
           {RANGE_OPTIONS.map((opt) => (
             <TouchableOpacity
               key={opt.value}
@@ -109,26 +75,24 @@ export default function EnergySummaryCard() {
           ))}
         </View>
 
-        {/* Chart */}
         {loading ? (
-          <View className="py-[2px] items-center">
-            <ActivityIndicator size="small" color="#ffb300" />
-            <Text className="text-white/70 text-xs mt-2">Loading data...</Text>
+          <View className="py-6 items-center">
+            <ActivityIndicator size="large" color="#ffb300" />
           </View>
         ) : history.length === 0 ? (
           <View className="py-6 items-center">
-            <Text className="text-white/60 text-sm italic">No data available</Text>
+            <Text className="text-white/60 italic">No data available</Text>
           </View>
         ) : (
-          <View className="items-center">
+          <>
             <VictoryChart
               domainPadding={{ x: 25, y: 5 }}
-              height={180}
-              width={screenWidth * 0.9}
+              height={200}
+              width={screenWidth * 0.92}
               padding={{ top: 20, bottom: 30, left: 40, right: 20 }}
             >
               <VictoryAxis
-                tickValues={chartData.map((d) => d.date)}
+                tickValues={stackedData.map((d) => d.date)}
                 tickFormat={(t) => t}
                 style={{
                   tickLabels: { fill: 'white', fontSize: 10, fontWeight: 'bold' },
@@ -144,81 +108,85 @@ export default function EnergySummaryCard() {
                   grid: { stroke: '#444', strokeDasharray: '4,4' },
                 }}
               />
-
-
-
-              {/* Bar = total calories */}
-              <VictoryStack colorScale={['#22c55e', '#f97316', '#3b82f6']}>
-                {['proteinKcal', 'carbsKcal', 'fatKcal'].map((key) => (
+              <VictoryStack colorScale={['#ef4444', '#a855f7', '#facc15']}>
+                {['baseKcal', 'activityKcal', 'burnedKcal'].map((key) => (
                   <VictoryBar
                     key={key}
-                    data={stackedChartData}
+                    cornerRadius={2}
+                    data={stackedData}
                     x="date"
                     y={key}
-                    events={[{
-                      target: 'data',
-                      eventHandlers: {
-                        onPressIn: (evt, props) => {
-                          setSelectedData(stackedChartData[props.index].original);
-                          setModalVisible(true);
-                        }
-                      }
-                    }]}
+                    events={[
+                      {
+                        target: 'data',
+                        eventHandlers: {
+                          onPressIn: (evt, clickedProps) => {
+                            setSelectedData(history[clickedProps.index]);
+                            setModalVisible(true);
+                          },
+                        },
+                      },
+                    ]}
                   />
                 ))}
               </VictoryStack>
-
-              {/* Goal Line */}
-              <VictoryLine
-                data={chartData.map((d) => ({ date: d.date, y: d.caloriesGoal || 0 }))}
-                x="date"
-                y="y"
-                style={{
-                  data: { stroke: '#fff', strokeDasharray: '4,4', strokeWidth: 1 },
-                }}
-              />
-
             </VictoryChart>
-          </View>
-        )}
 
-        {/* Legend */}
-        <View className="flex-row justify-center mt-2 space-x-4">
-          <View className="flex-row items-center mr-2">
-            <View className="w-3 h-3 bg-[#22c55e] rounded-sm" />
-            <Text className="text-white text-xs">Protein</Text>
-          </View>
-          <View className="flex-row items-center mr-2">
-            <View className="w-3 h-3 bg-[#f97316] rounded-sm" />
-            <Text className="text-white text-xs">Carbs</Text>
-          </View>
-          <View className="flex-row items-center space-x-1">
-            <View className="w-3 h-3 bg-[#3b82f6] rounded-sm" />
-            <Text className="text-white text-xs">Fat</Text>
-          </View>
-        </View>
-
-        {/* Modal */}
-        {modalVisible && selectedData && (
-          <Modal transparent animationType="fade" visible={modalVisible}>
-            <View className="flex-1 justify-center items-center bg-black/50">
-              <View className="bg-[#232433] p-4 rounded-xl w-[80%]">
-                <Text className="text-white font-bold text-lg mb-2">{formatDate(selectedData.date)}</Text>
-                <Text className="text-white text-sm">Protein: {Math.round(selectedData.protein)} g</Text>
-                <Text className="text-white text-sm">Carbs: {Math.round(selectedData.carbs)} g</Text>
-                <Text className="text-white text-sm">Fat: {Math.round(selectedData.fat)} g</Text>
-                <Text className="text-white text-sm mt-2 font-semibold">
-                  Total Calories: {Math.round(selectedData.calories)} kcal
-                </Text>
-                <TouchableOpacity
-                  className="mt-3 bg-[#ffb300] p-2 rounded"
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text className="text-black text-center font-semibold">Close</Text>
-                </TouchableOpacity>
+            {/* Legend */}
+            <View className="flex-row justify-center mt-2 space-x-4 ">
+              <View className="flex-row items-center mr-2">
+                <View className="w-3 h-3 bg-[#ef4444] rounded-sm" />
+                <Text className="text-white text-xs">BMR</Text>
+              </View>
+              <View className="flex-row items-center mr-2">
+                <View className="w-3 h-3 bg-[#facc15] rounded-sm" />
+                <Text className="text-white text-xs">Exercise</Text>
+              </View>
+              <View className="flex-row items-center">
+                <View className="w-3 h-3 bg-[#a855f7] rounded-sm" />
+                <Text className="text-white text-xs">Activity</Text>
               </View>
             </View>
-          </Modal>
+
+            {/* Modal */}
+            {modalVisible && selectedData && (
+              <Modal
+                transparent
+                animationType="fade"
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <View className="flex-1 justify-center items-center bg-black/50">
+                  <View className="bg-[#232433] p-4 rounded-xl w-[80%]">
+                    <Text className="text-white font-bold text-lg mb-2">
+                      {formatDate(selectedData.date)}
+                    </Text>
+                    <Text className="text-white text-sm">
+                      BMR: {selectedData.baseEnergyNeed} kcal
+                    </Text>
+                    <Text className="text-white text-sm">
+                      Activity: {selectedData.activityCalories} kcal
+                    </Text>
+                    <Text className="text-white text-sm">
+                      Exercise: {selectedData.burned} kcal
+                    </Text>
+                    <Text className="text-white text-sm mt-2 font-semibold">
+                      Total: {selectedData.baseEnergyNeed +
+                        selectedData.activityCalories +
+                        selectedData.burned}{' '}
+                      kcal
+                    </Text>
+                    <TouchableOpacity
+                      className="mt-3 bg-[#ffb300] p-2 rounded"
+                      onPress={() => setModalVisible(false)}
+                    >
+                      <Text className="text-black text-center font-semibold">Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            )}
+          </>
         )}
       </View>
     </>
