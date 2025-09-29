@@ -84,12 +84,6 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity>
-          <Text className="text-center text-teal-500 font-medium mt-[10px]">
-            Forgot your password?
-          </Text>
-        </TouchableOpacity>
-
         <View className="flex-row justify-center mt-6">
           <Text className="text-gray-300">Don't have an account? </Text>
           <Link href="/register" className="text-teal-500 font-semibold">

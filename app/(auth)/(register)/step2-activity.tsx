@@ -42,11 +42,11 @@ export default function RegisterStep2({ navigation }: { navigation: any }) {
 
   const handleNext = () => {
     setRegisterData({ ...registerData, activityLevel: activityLevels[selected].value });
-    navigation.navigate('step3-weight-goal'); // ชื่อ route ต้องตรงกับ RegisterStack
+    navigation.navigate('step5-goal-overview'); // ชื่อ route ต้องตรงกับ RegisterStack
   };
   const handleSkip = () => {
     setRegisterData({ ...registerData, activityLevel: 'no_activity' });
-    navigation.navigate('step3-weight-goal');
+    navigation.navigate('step5-goal-overview');
   };
 
   return (

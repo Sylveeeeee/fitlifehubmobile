@@ -625,12 +625,7 @@ export default function DiaryScreen() {
           </View>
         </View>
 
-        {/* Water & Meals */}
-        <TouchableOpacity className="bg-[#292b40] rounded-xl px-4 py-4 flex-row justify-between items-center my-4 mx-4">
-          <Text className="text-white font-semibold">Water 0 / 64 fl oz</Text>
-        </TouchableOpacity>
-
-        <ScrollView className="flex-1 px-4 pb-6">
+        <ScrollView className="flex-1 px-4 pb-6 mt-5">
           {meals.map((meal) => {
             const typedMeal = meal as MealType;
             return (
