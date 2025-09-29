@@ -25,7 +25,7 @@ export default function PlusMenu({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <View className="bg-[#232433] rounded-[12px] pb-8 pt-6 px-4 w-full  shadow-lg">
+      <View className="bg-[#1d1e27] rounded-[12px] pb-8 pt-6 px-4 w-full  shadow-lg">
         <View className="flex-row flex-wrap justify-center">
           {menuItems.map((item) => (
             <Pressable

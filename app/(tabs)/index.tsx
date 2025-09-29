@@ -36,9 +36,9 @@ export default function Index() {
       <StatusBar barStyle="light-content" backgroundColor="#232433" />
 
       {/* Header */}
-      <View className="w-full pb-2 px-4 bg-[#232433] rounded-b-[20px] pt-[50px]">
+      <View className="w-full pb-2 px-4 bg-[#1d1e27] rounded-b-[20px] pt-[50px] border">
         <View className="flex-row items-center justify-between mt-2 ">
-          <View className="flex-row items-center ">
+          <View className="flex-row items-center">
             <Image
               source={require('../../assets/logo.png')}
               style={{ width: 60, height: 60, marginRight: 8 }}
