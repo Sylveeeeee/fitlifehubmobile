@@ -37,8 +37,8 @@ export default function Index() {
 
       {/* Header */}
       <View className="w-full pb-2 px-4 bg-[#232433] rounded-b-[20px] pt-[50px]">
-        <View className="flex-row items-center justify-between mt-2">
-          <View className="flex-row items-center">
+        <View className="flex-row items-center justify-between mt-2 ">
+          <View className="flex-row items-center ">
             <Image
               source={require('../../assets/logo.png')}
               style={{ width: 60, height: 60, marginRight: 8 }}
@@ -49,27 +49,7 @@ export default function Index() {
         </View>
 
         {/* Tab Navbar */}
-        <View className="w-full h-[38px] flex-row items-center px-1 py-1 mt-2 bg-white rounded-[16px]">
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['Dashboard'].map((tab, index) => (
-              <View key={tab} className="flex-row items-center">
-                <TouchableOpacity
-                  className={`px-3 py-1 rounded-full mr-1 ${activeTab === tab ? 'bg-[#ffb300]' : ''}`}
-                  activeOpacity={0.8}
-                  onPress={() => setActiveTab(tab)}
-                >
-                  <Text
-                    className={`text-base ${activeTab === tab ? 'text-white font-semibold' : 'text-[#232738] font-medium'
-                      }`}
-                  >
-                    {tab}
-                  </Text>
-                </TouchableOpacity>
-                {index < 3 && <View className="w-[1px] h-5 bg-gray-300 mx-1 self-center opacity-40" />}
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+      
       </View>
 
       {/* Content */}
@@ -80,7 +60,6 @@ export default function Index() {
               <NetEnergyChart />
               <EnergyHistory />
               <BurnedChart />
-              <WaterCount />
             </>
           )}
 

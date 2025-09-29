@@ -56,12 +56,12 @@ export default function BottomNavbar() {
 
   return (
     <>
-      <View className="pt-[20px] rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50">
-        <NavButton label="Discover" icon="barschart" path="/" />
+      <View className="rounded-t-[16px] absolute bottom-0 left-0 right-0 h-28 bg-[#232433] flex-row justify-around items-start z-50 pt-5">
+        <NavButton label="Discover" icon="bar-chart-2" iconSet="Feather" path="/" />
         <NavButton label="Diary" icon="notebook-outline" iconSet="MaterialCommunityIcons" path="/diary" />
 
-        <Pressable className="flex items-center" onPress={() => setModalVisible(true)}>
-          <AntDesign name="pluscircle" size={40} color={activeColor} />
+        <Pressable className="flex items-center bg-[#ffb300] rounded-full p-2" onPress={() => setModalVisible(true)}>
+          <AntDesign name="plus" size={40} color="#ffff" />
         </Pressable>
 
         <NavButton label="Foods" icon="apple-alt" iconSet="FontAwesome5" path="/foods" />
