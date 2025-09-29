@@ -22,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'; // เพิ่�
 import { useRouter } from 'expo-router';
 import { registerForPushNotifications, scheduleDailyNotifications } from '../services/notificationService';
 import { ToastProvider, useToast } from '@/components/ToastProvider';
+import RecommendationNotification from '@/components/RecommendationCard';
 
 const { width } = Dimensions.get('window');
 
@@ -323,8 +324,27 @@ export default function DiaryScreen() {
   const exercisePercent = (exerciseCalories / totalTarget) * 100;
 
   const remainingCalories = (dailyGoal?.calories ?? targets.calories) - totals.calories;
-  const hasNotification = remainingCalories > 0 || remainingCalories < 0;
+  const [showNotification, setShowNotification] = useState(false);
+  const [hasNotification, setHasNotification] = useState(remainingCalories !== 0);
 
+  // คำนวณข้อความแจ้งเตือน
+  const remaining = remainingCalories;
+
+  let message = "";
+  let type: "success" | "error";
+
+  if (remaining > 100) {
+    message = `You still need ${remaining} kcal to reach your daily goal. Keep going! 💪`;
+    type = "success";
+  } else if (remaining >= -100 && remaining <= 100) {
+    message = "Congrats! You've reached your daily goal 🎉";
+    type = "success";
+  } else {
+    message = `You exceeded your daily goal by ${Math.abs(
+      remaining
+    )} kcal. Try to balance next meal! ⚖️`;
+    type = "error";
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -348,10 +368,12 @@ export default function DiaryScreen() {
             />
           </View>
 
+          {/* ปุ่มกระดิ่ง */}
           <View className="flex-row items-center space-x-4">
-            <TouchableOpacity onPress={() => setShowRecommendation(true)}>
+            <TouchableOpacity onPress={() => setShowRecommendation(true)} >
+
               <View style={{ position: 'relative' }}>
-                <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
+                <Ionicons name="notifications-outline" size={28} color="#fff" />
                 {hasNotification && (
                   <View
                     style={{
@@ -368,45 +390,50 @@ export default function DiaryScreen() {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Modal แสดง RecommendationCard */}
-        <Modal
-          visible={showRecommendation}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setShowRecommendation(false)}
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.5)',
-              justifyContent: 'center',
-              padding: 20,
-            }}
-          >
-            <View style={{ backgroundColor: '#fff', borderRadius: 12 }}>
-              {totals && (dailyGoal || targets) && (
-                <RecommendationCard
-                  totals={{ calories: totals.calories, burned: exerciseCalories }}
-                  targets={{ calories: dailyGoal?.calories ?? targets.calories }}
-                />
-              )}
-              <TouchableOpacity
-                onPress={() => setShowRecommendation(false)}
+          {/* Overlay แสดงข้อความ */}
+          {showRecommendation && (
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => setShowRecommendation(false)}
+              style={{
+                position: 'absolute',
+                top: 50,
+                left: 0,
+                right: 0,
+                bottom: -50,
+                justifyContent: 'center',
+                alignItems: 'center',
+                zIndex: 999,
+              }}
+            >
+              <View
                 style={{
-                  backgroundColor: '#ffb300',
-                  margin: 16,
-                  padding: 12,
-                  borderRadius: 8,
+                  backgroundColor: '#fff',
+                  borderRadius: 12,
+                  padding: 10,
+                  width: '90%',
+                  height: 70,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Text style={{ color: 'white', textAlign: 'center' }}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-
+                {/* ข้อความจาก remaining */}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: type === 'error' ? 'red' : 'green',
+                    textAlign: 'center',
+                    marginBottom: 8,
+                  }}
+                >
+                  {message}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
 
         {/* Summary Carousel */}
         <View className="h-54">

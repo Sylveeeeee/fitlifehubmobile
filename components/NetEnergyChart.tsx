@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { VictoryChart, VictoryAxis, VictoryLine, VictoryBar } from 'victory-native';
+import { View, Text, Dimensions, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
+import { VictoryChart, VictoryAxis, VictoryBar } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
 
@@ -24,15 +24,17 @@ function formatDate(dateStr: string) {
 }
 
 const RANGE_OPTIONS = [
-    { label: '7 วัน', value: '7d' },
-    { label: '14 วัน', value: '14d' },
-    { label: '1 เดือน', value: '1m' },
+    { label: '7 day', value: '7d' },
+    { label: '14 day', value: '14d' },
+    { label: '1 month', value: '1m' },
 ];
 
 export default function NetEnergyChart() {
     const [range, setRange] = useState('7d');
     const [history, setHistory] = useState<NetEnergyEntry[]>([]);
     const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedData, setSelectedData] = useState<any>(null);
 
     useEffect(() => {
         const fetchEnergyHistory = async () => {
@@ -50,9 +52,6 @@ export default function NetEnergyChart() {
 
                 const foodJson = await foodRes.json();
                 const exerciseJson = await exerciseRes.json();
-
-                console.log('foodJson:', foodJson);
-                console.log('exerciseJson:', exerciseJson);
 
                 // รวมข้อมูลตามวันที่
                 const merged: { [date: string]: NetEnergyEntry } = {};
@@ -81,50 +80,68 @@ export default function NetEnergyChart() {
         fetchEnergyHistory();
     }, [range]);
 
+    const getRangeDays = (range: string) => {
+        if (range.endsWith('d')) return parseInt(range);
+        if (range.endsWith('m')) return 30;
+        return 7; // default
+    };
+
     const sortedHistory = [...history]
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .slice(-range);
+        .slice(-getRangeDays(range));
 
     const netEnergyData = sortedHistory.map((d) => {
-        console.log('Calculating net for:', d);
-        const consumed = d.calories
-            ?? ((d.protein || 0) * 4) + ((d.carbs || 0) * 4) + ((d.fat || 0) * 9);
-
-
-        console.log('Consumed for', d.date, 'is', consumed);
-        const burned =
-            (d.baseEnergyNeed || 0) +
-            (d.activityCalories || 0) +
-            (d.burned || 0);
+        const consumed =
+            d.calories ??
+            ((d.protein || 0) * 4 + (d.carbs || 0) * 4 + (d.fat || 0) * 9);
+        const burned = (d.baseEnergyNeed || 0) + (d.activityCalories || 0) + (d.burned || 0);
         const caloriesGoal = d.caloriesGoal || 0;
         const net = consumed - caloriesGoal;
-        console.log('Net for', d.date, 'is', net);
         return {
             date: formatDate(d.date),
             net,
             caloriesGoal,
-            netDiff: net - caloriesGoal, // ส่วนต่างจาก goal
+            netDiff: net - caloriesGoal,
             consumed,
             burned,
+            original: d, // เก็บ object ดั้งเดิมเพื่อแสดงใน modal
         };
     });
 
     if (loading) {
         return (
-            <View className="w-[92%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg items-center">
+            <View className="w-[100%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg  ">
+                <Text className="text-[#ffb300] text-lg font-bold mb-2">Net Energy Chart (kcal)</Text>
+
+                {/* Range Selector */}
+                <View className="flex-row gap-x-2 mb-2">
+                    {RANGE_OPTIONS.map((opt) => (
+                        <TouchableOpacity
+                            key={opt.value}
+                            onPress={() => setRange(opt.value)}
+                            className={`px-3 py-1 rounded-full ${range === opt.value ? 'bg-[#ffb300]' : 'bg-[#3a3b4d]'
+                                }`}
+                        >
+                            <Text className="text-white text-xs">{opt.label}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
                 <ActivityIndicator size="large" color="#ffb300" />
             </View>
         );
     }
 
+    const tickValues =
+        range === "1m"
+            ? history.filter((_, i) => i % 3 === 0).map(d => formatDate(d.date))
+            : history.map(d => formatDate(d.date));
+
     return (
-        <View className="w-[92%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg">
-            <Text className="text-[#ffb300] text-lg font-bold mb-2">
-                Net Energy Chart (kcal)
-            </Text>
+        <View className="w-[100%] self-center my-4 bg-[#232433] rounded-2xl p-4 shadow-lg">
+            <Text className="text-[#ffb300] text-lg font-bold mb-2">Net Energy Chart (kcal)</Text>
 
             {/* Range Selector */}
-            <View className="flex-row gap-x-2">
+            <View className="flex-row gap-x-2 mb-2">
                 {RANGE_OPTIONS.map((opt) => (
                     <TouchableOpacity
                         key={opt.value}
@@ -137,11 +154,7 @@ export default function NetEnergyChart() {
                 ))}
             </View>
 
-            <VictoryChart
-                domainPadding={{ x: 20, y: 10 }}
-                height={250}
-                width={screenWidth * 0.92}
-            >
+            <VictoryChart domainPadding={{ x: 20, y: 10 }} height={250} width={screenWidth * 0.92}>
                 <VictoryAxis
                     tickFormat={(t: any) => t}
                     style={{
@@ -149,6 +162,7 @@ export default function NetEnergyChart() {
                         axis: { stroke: 'white' },
                     }}
                 />
+
                 <VictoryAxis
                     dependentAxis
                     tickCount={5}
@@ -160,36 +174,66 @@ export default function NetEnergyChart() {
                     }}
                 />
 
-                {/* Net Energy Bar (ส่วนต่างจาก goal) */}
+                {/* Net Energy Bar */}
                 <VictoryBar
                     data={netEnergyData}
                     x="date"
                     y="net"
                     style={{
-                        data: { fill: '#ffb300', opacity: 0.7, width: 15 },
+                        data: { fill: '#ffb300', opacity: 0.7, width: range === '1m' ? 6 : range === '14d' ? 12 : 15, },
                         labels: { fill: 'white', fontSize: 10 },
                     }}
+                    events={[
+                        {
+                            target: 'data',
+                            eventHandlers: {
+                                onPressIn: (evt, clickedProps) => {
+                                    setSelectedData(netEnergyData[clickedProps.index]);
+                                    setModalVisible(true);
+                                },
+                            },
+                        },
+                    ]}
                 />
             </VictoryChart>
+
+            {/* Legend */}
             <View className="flex-row justify-center mt-3 gap-x-4">
                 <View className="flex-row items-center">
-                    <View
-                        className="w-3 h-3 rounded"
-                        style={{ backgroundColor: '#ffb300', marginRight: 4 }}
-                    />
+                    <View className="w-3 h-3 rounded bg-[#ffb300] mr-1" />
                     <Text className="text-white text-xs">Net Energy</Text>
                 </View>
-                <View className="flex-row items-center">
-                    <View
-                        className="w-3 h-1.5 rounded"
-                        style={{
-                            backgroundColor: '#22c55e',
-                            marginRight: 4,
-                            borderStyle: 'dashed',
-                        }}
-                    />
-                </View>
             </View>
+
+            {/* Modal */}
+            {modalVisible && selectedData && (
+                <Modal
+                    transparent
+                    animationType="fade"
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View className="flex-1 justify-center items-center bg-black/50">
+                        <View className="bg-[#232433] p-4 rounded-xl w-[80%]">
+                            <Text className="text-white font-bold text-lg mb-2">
+                                {selectedData.date}
+                            </Text>
+                            <Text className="text-white text-sm">Consumed: {selectedData.consumed} kcal</Text>
+                            <Text className="text-white text-sm">Burned: {selectedData.burned} kcal</Text>
+                            <Text className="text-white text-sm">Goal: {selectedData.caloriesGoal} kcal</Text>
+                            <Text className="text-white text-sm mt-2 font-bold">
+                                Net: {selectedData.net} kcal
+                            </Text>
+                            <TouchableOpacity
+                                className="mt-3 bg-[#ffb300] p-2 rounded"
+                                onPress={() => setModalVisible(false)}
+                            >
+                                <Text className="text-black text-center font-semibold">Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            )}
         </View>
     );
 }

@@ -1,4 +1,3 @@
-// RecommendationNotification.tsx
 import React, { useEffect, useState } from "react";
 import {
   Animated,
@@ -18,9 +17,10 @@ interface Props {
   targets: {
     calories: number;
   };
+  active?: boolean; // ✅ ทำงานเฉพาะตอน modal เปิด
 }
 
-export default function RecommendationNotification({ totals, targets }: Props) {
+export default function RecommendationNotification({ totals, targets, active }: Props) {
   const { showToast } = useToast();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentMessage, setCurrentMessage] = useState("");
@@ -28,7 +28,11 @@ export default function RecommendationNotification({ totals, targets }: Props) {
   const fadeAnim = new Animated.Value(0);
 
   useEffect(() => {
-    const remaining = Math.round(targets.calories - (totals.calories - totals.burned));
+    if (!active) return; // ✅ ถ้า modal ยังไม่เปิด ไม่ต้องทำงาน
+
+    const remaining = Math.round(
+      targets.calories - (totals.calories - totals.burned)
+    );
 
     let message = "";
     let type: "success" | "error" = "success";
@@ -40,7 +44,9 @@ export default function RecommendationNotification({ totals, targets }: Props) {
       message = "Congrats! You've reached your daily goal 🎉";
       type = "success";
     } else {
-      message = `You exceeded your daily goal by ${Math.abs(remaining)} kcal. Try to balance next meal! ⚖️`;
+      message = `You exceeded your daily goal by ${Math.abs(
+        remaining
+      )} kcal. Try to balance next meal! ⚖️`;
       type = "error";
     }
 
@@ -54,32 +60,27 @@ export default function RecommendationNotification({ totals, targets }: Props) {
       useNativeDriver: true,
     }).start();
 
-    // Hide Toast หลัง 3 วินาที
+    // Hide Toast หลัง 8 วินาที
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: 400,
         useNativeDriver: true,
       }).start(() => setToastVisible(false));
-    }, 5000);
+    }, 8000);
 
     // แสดงผ่าน ToastProvider ด้วย
     showToast(message, type);
 
     return () => clearTimeout(timer);
-  }, [totals, targets]);
+  }, [totals, targets, active]);
 
   if (!toastVisible) return null;
 
   return (
     <>
       {/* Toast เลื่อนลงมา และ Touchable */}
-      <Animated.View
-        style={[
-          styles.toast,
-          { opacity: fadeAnim },
-        ]}
-      >
+      <Animated.View style={[styles.toast, { opacity: fadeAnim }]}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text style={styles.text}>{currentMessage}</Text>
         </TouchableOpacity>

@@ -251,9 +251,9 @@ const burnedData = sortedHistory.map((d) => ({
               ) : (
                 <View className="flex-row justify-center mt-3 flex-wrap gap-x-4 gap-y-2">
                   {[
-                    { color: '#ef4444', label: 'Exercise' },
-                    { color: '#facc15', label: 'Activity' },
-                    { color: '#a855f7', label: 'BMR' },
+                    { color: '#ef4444', label: 'BMR' },
+                    { color: '#facc15', label: 'Exercise' },
+                    { color: '#a855f7', label: 'Activity' },
                   ].map((item) => (
                     <View key={item.label} className="flex-row items-center">
                       <View

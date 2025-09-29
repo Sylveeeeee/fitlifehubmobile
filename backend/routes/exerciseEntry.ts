@@ -180,18 +180,28 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
     entries.forEach((e) => {
       const dateKey = e.timestamp.toISOString().split('T')[0];
       historyMap[dateKey] = (historyMap[dateKey] || 0) + e.calories;
-
     });
 
-    const history = Object.entries(historyMap).map(([date, burned]) => ({
-      date,
-      burned,
-      baseEnergyNeed: user?.baseEnergyNeed || 0,
-      activityCalories: user?.activityCalories || 0,
-      caloriesGoal: user?.dailyGoals.find(d =>
-        d.date.toISOString().split('T')[0] === date
-      )?.calories || 0,
-    }));
+    const dateSet = new Set<string>();
+
+    // เก็บวันที่จาก exerciseEntry
+    entries.forEach(e => dateSet.add(e.timestamp.toISOString().split('T')[0]));
+
+    // เก็บวันที่จาก dailyGoals
+    user?.dailyGoals.forEach(d => dateSet.add(d.date.toISOString().split('T')[0]));
+
+    const history = Array.from(dateSet)
+      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+      .map(dateKey => ({
+        date: dateKey,
+        burned: historyMap[dateKey] || 0,
+        baseEnergyNeed: user?.baseEnergyNeed || 0,
+        activityCalories: user?.activityCalories || 0,
+        caloriesGoal:
+          user?.dailyGoals.find(d =>
+            d.date.toISOString().split('T')[0] === dateKey
+          )?.calories || 0,
+      }));
 
     res.json({ history });
   } catch (err) {
