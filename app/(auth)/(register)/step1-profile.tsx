@@ -34,8 +34,31 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
   const [tempSex, setTempSex] = useState(profile.sex || 'male');
   // ฟังก์ชันส่งข้อมูลไป backend
   const handleNext = () => {
-    setRegisterData({ ...registerData, ...profile }); // รวมข้อมูลกับ context
-    navigation.navigate('step2-activity'); // ไปหน้า step2
+    // แปลงค่าเป็น number
+    const heightNum = parseFloat(profile.height);
+    const weightNum = parseFloat(profile.weight);
+
+    // Validation
+    if (!profile.sex) {
+      alert('Please select your sex.');
+      return;
+    }
+    if (!profile.birthday) {
+      alert('Please select your birthday.');
+      return;
+    }
+    if (!profile.height || isNaN(heightNum) || heightNum < 50 || heightNum > 250) {
+      alert('Please enter a valid height between 50 cm and 250 cm.');
+      return;
+    }
+    if (!profile.weight || isNaN(weightNum) || weightNum < 20 || weightNum > 300) {
+      alert('Please enter a valid weight between 20 kg and 300 kg.');
+      return;
+    }
+
+    // ถ้าผ่านทุกอย่าง
+    setRegisterData({ ...registerData, ...profile });
+    navigation.navigate('step2-activity');
   };
 
   return (
@@ -117,10 +140,10 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
           <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
             <Text className="text-white text-xl font-bold mb-4 text-center">Birthday</Text>
             <View className="flex-row justify-center ">
-              <Picker 
+              <Picker
                 selectedValue={birthMonth}
                 onValueChange={setBirthMonth}
-                style={{ width: 140,  color: 'white', backgroundColor: '#232433' }}
+                style={{ width: 140, color: 'white', backgroundColor: '#232433' }}
                 itemStyle={{ fontSize: 16, color: 'white' }}
               >
                 {months.map((m, i) => <Picker.Item key={i} label={m} value={i + 1} />)}
@@ -128,7 +151,7 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
               <Picker
                 selectedValue={birthDay}
                 onValueChange={setBirthDay}
-                style={{ width: 79, fontSize: 10 , color: 'white', backgroundColor: '#232433' }}
+                style={{ width: 79, fontSize: 10, color: 'white', backgroundColor: '#232433' }}
                 itemStyle={{ fontSize: 16, color: 'white' }}
               >
                 {Array.from({ length: 31 }, (_, i) => (
@@ -138,7 +161,7 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
               <Picker
                 selectedValue={birthYear}
                 onValueChange={setBirthYear}
-                style={{ width: 109,fontSize: 16 , color: 'white', backgroundColor: '#232433' }}
+                style={{ width: 109, fontSize: 16, color: 'white', backgroundColor: '#232433' }}
                 itemStyle={{ fontSize: 16, color: 'white' }}
               >
                 {Array.from({ length: 100 }, (_, i) => (
@@ -188,7 +211,6 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
                 style={{ width: 100, color: 'white', backgroundColor: '#232433' }}
               >
                 <Picker.Item label="cm" value="cm" />
-                <Picker.Item label="in" value="in" />
               </Picker>
             </View>
             <View className="flex-row justify-between mt-6">
@@ -219,9 +241,9 @@ export default function RegisterStep1({ navigation }: { navigation: any }) {
 
       {/* // Modal: Weight */}
       <Modal visible={modal === 'weight'} transparent animationType="slide">
-        <TouchableWithoutFeedback onPress={() =>{ setModal(null);}}>
+        <TouchableWithoutFeedback onPress={() => { setModal(null); }}>
           <View className="flex-1 justify-center items-center bg-black/50">
-            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() }}>
               <View className="bg-[#2d2e3a] rounded-xl p-6 w-11/12">
                 <Text className="text-white text-xl font-bold mb-4 text-center">Weight</Text>
                 <View className="flex-row justify-center items-center">
