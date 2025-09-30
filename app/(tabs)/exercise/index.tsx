@@ -6,13 +6,6 @@ import { useRouter } from 'expo-router';
 const categories = [
   { label: 'Cardio', icon: 'fitness', path: '/exercise/cardio' },
   { label: 'Gym', icon: 'barbell', path: '/exercise/gym' },
-  { label: 'Household Activity', icon: 'home', path: '/exercise/household-activity' },
-  { label: 'Individual Sport', icon: 'walk', path: '/exercise/individual-sport' },
-  { label: 'Occupational Activity', icon: 'briefcase', path: '/exercise/occupational-activity' },
-  { label: 'Outdoor Activity', icon: 'trail-sign', path: '/exercise/outdoor-activity' },
-  { label: 'Strength And Mobility', icon: 'body', path: '/exercise/strength-and-mobility' },
-  { label: 'Team Sport', icon: 'football', path: '/exercise/team-sport' },
-  { label: 'Transportation', icon: 'car', path: '/exercise/transportation' },
 ];
 
 export default function AddExerciseScreen() {
@@ -30,11 +23,11 @@ export default function AddExerciseScreen() {
 
       {/* Categories */}
       <ScrollView contentContainerStyle={{ padding: 16 }}>
-        <View className="flex-row flex-wrap justify-between">
+        <View className="flex-row flex-wrap ">
           {categories.map((item, index) => (
             <TouchableOpacity
               key={index}
-              className="w-[30%] bg-[#2B2C3C] rounded-xl p-4 mb-4 items-center"
+              className="w-[30%] bg-[#2B2C3C] rounded-xl p-4 mb-4 items-center mr-5"
               onPress={() => router.push(item.path as any)} // ใช้ as any ป้องกัน ts error
             >
               <Ionicons name={item.icon as any} size={42} color="#9CA3AF" />

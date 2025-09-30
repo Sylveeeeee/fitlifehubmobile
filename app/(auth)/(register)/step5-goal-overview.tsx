@@ -70,7 +70,7 @@ export default function RegisterStep5({ navigation }: { navigation: any }) {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-[#181929]">
+    <SafeAreaView className="flex-1 bg-gray-950">
       <Text className="text-3xl font-extrabold text-white text-center mb-2">Goal Overview</Text>
       <Text className="text-center text-gray-300 mb-6 px-8">
         Here is your plan and goal forecast based on the information provided.

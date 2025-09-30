@@ -10,29 +10,66 @@ const cardioTypes = {
   walking: {
     label: 'Walking',
     effortLevels: [
-      { label: 'Light', desc: 'เดินช้า/เดินเล่น', factor: 2.8 },
-      { label: 'Moderate', desc: 'เดินเร็ว', factor: 3.8 },
-      { label: 'Vigorous', desc: 'เดินขึ้นเนิน/เดินเร็วมาก', factor: 5.0 },
+      { 
+        label: 'Light', 
+        desc: 'Leisurely walking at a slow pace, casual stroll, usually less than 3 km/h (e.g., window shopping).', 
+        factor: 2.8 
+      },
+      { 
+        label: 'Moderate', 
+        desc: 'Brisk walking that increases breathing and heart rate, about 4–5 km/h. Conversation is still possible.', 
+        factor: 3.8 
+      },
+      { 
+        label: 'Vigorous', 
+        desc: 'Fast-paced walking or uphill walking, 6+ km/h. Talking becomes difficult, breathing noticeably heavier.', 
+        factor: 5.0 
+      },
     ],
   },
   running: {
     label: 'Running',
     effortLevels: [
-      { label: 'Light', desc: 'วิ่งช้า (jogging)', factor: 7.0 },
-      { label: 'Moderate', desc: 'วิ่งปานกลาง', factor: 9.8 },
-      { label: 'Vigorous', desc: 'วิ่งเร็ว/interval', factor: 11.0 },
+      { 
+        label: 'Light', 
+        desc: 'Easy jogging at a comfortable pace, around 7–8 km/h. Breathing is steady, conversation possible.', 
+        factor: 7.0 
+      },
+      { 
+        label: 'Moderate', 
+        desc: 'Steady running at a moderate pace, 9–11 km/h. Breathing heavier, conversation more challenging.', 
+        factor: 9.8 
+      },
+      { 
+        label: 'Vigorous', 
+        desc: 'Fast running, intervals, or sprints above 12 km/h. Very heavy breathing, conversation nearly impossible.', 
+        factor: 11.0 
+      },
     ],
   },
   swimming: {
     label: 'Swimming',
     effortLevels: [
-      { label: 'Light', desc: 'ว่ายน้ำช้า', factor: 6.0 },
-      { label: 'Moderate', desc: 'ว่ายน้ำออกกำลัง', factor: 8.0 },
-      { label: 'Vigorous', desc: 'ว่ายน้ำเร็ว/แข่ง', factor: 10.0 },
+      { 
+        label: 'Light', 
+        desc: 'Slow swimming for leisure, gentle strokes, minimal effort, usually in shallow or calm water.', 
+        factor: 6.0 
+      },
+      { 
+        label: 'Moderate', 
+        desc: 'Steady swimming for exercise with consistent strokes. Heart rate elevated but sustainable.', 
+        factor: 8.0 
+      },
+      { 
+        label: 'Vigorous', 
+        desc: 'Fast swimming, competitive pace, or interval sets. Very high effort, maximum endurance required.', 
+        factor: 10.0 
+      },
     ],
   },
-  // เพิ่มประเภทอื่นๆ ได้ที่นี่
+  // More cardio types can be added here
 };
+
 
 const durationOptions = [
   { label: '15 min', value: 15 },

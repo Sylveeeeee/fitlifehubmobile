@@ -8,6 +8,24 @@ import { calculateEnergyTarget } from '../utils/calculateEnergyTarget';
 
 const router = Router();
 
+// ฟังก์ชันตรวจสอบ email format
+function isValidEmail(email: string): boolean {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // regex ง่ายๆ
+  return re.test(email.toLowerCase());
+}
+
+// ฟังก์ชันตรวจสอบ password strength
+function isStrongPassword(password: string): boolean {
+  const minLength = 8;
+  return (
+    password.length >= minLength &&
+    /[a-z]/.test(password) &&   // มีตัวพิมพ์เล็ก
+    /[A-Z]/.test(password) &&   // มีตัวพิมพ์ใหญ่
+    /[0-9]/.test(password) &&   // มีตัวเลข
+    /[^A-Za-z0-9]/.test(password) // มีอักษรพิเศษ
+  );
+}
+
 // GET /api/profile
 router.get('/', async (req, res) => {
   try {
@@ -24,18 +42,38 @@ router.get('/', async (req, res) => {
 
 // POST /api/profile/login
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
+
+  email = email.trim().toLowerCase();
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
   try {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
+
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '7d' });
-    res.json({ message: 'Login successful', user, token });
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, {
+      expiresIn: '7d',
+    });
+
+    res.json({
+      message: 'Login successful',
+      user: { id: user.id, email: user.email, name: user.name },
+      token,
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -44,24 +82,45 @@ router.post('/login', async (req, res) => {
 
 // POST /api/profile/register
 router.post('/register', async (req, res) => {
-  const { email, password, name } = req.body;
-  console.log('register req.body', req.body); // log ข้อมูลที่รับมา
+  let { email, password, name } = req.body;
+
   if (!email || !password || !name) {
-    console.log('Missing:', { email, password, name }); // log field ที่ขาด
     return res.status(400).json({ error: 'Missing required fields' });
   }
+
+  email = email.trim().toLowerCase();
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format' });
+  }
+
+  if (!isStrongPassword(password)) {
+    return res.status(400).json({
+      error:
+        'Password must be at least 8 characters and include uppercase, lowercase, number, and special character',
+    });
+  }
+
   try {
     const exist = await prisma.user.findUnique({ where: { email } });
-    console.log('exist:', exist);
     if (exist) {
       return res.status(400).json({ error: 'Email already exists' });
     }
+
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: { email, passwordHash, name },
     });
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: '7d' });
-    res.json({ message: 'Register successful', user, token });
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, {
+      expiresIn: '7d',
+    });
+
+    res.json({
+      message: 'Register successful',
+      user: { id: user.id, email: user.email, name: user.name },
+      token,
+    });
   } catch (error) {
     console.error('Register error:', error);
     res.status(500).json({ error: 'Internal server error' });

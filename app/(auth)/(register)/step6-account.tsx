@@ -27,7 +27,7 @@ export default function RegisterStep6({ navigation }: { navigation: any }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#181929]">
+    <SafeAreaView className="flex-1 bg-gray-950">
       <Text className="text-3xl font-extrabold text-white text-center mb-2">Account Details</Text>
       <Text className="text-center text-gray-300 mb-6 px-8">
         Enter your email and create a password for your Cronometer account.

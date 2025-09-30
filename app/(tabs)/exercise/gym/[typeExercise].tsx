@@ -13,9 +13,21 @@ const durationOptions = [
 ];
 
 const effortLevels = [
-  { label: 'Beginner', desc: 'น้ำหนักเบา/ท่าพื้นฐาน', factor: 3.5 },
-  { label: 'Intermediate', desc: 'น้ำหนักปานกลาง/ท่าผสม', factor: 5.0 },
-  { label: 'Advanced', desc: 'น้ำหนักมาก/ท่ายาก', factor: 6.0 },
+  { 
+    label: 'Beginner', 
+    desc: 'Light weights with basic movements. Focus on form and technique, usually higher repetitions with low resistance.', 
+    factor: 3.5 
+  },
+  { 
+    label: 'Intermediate', 
+    desc: 'Moderate weights with a mix of compound and isolation exercises. Balanced workload, moderate intensity and volume.', 
+    factor: 5.0 
+  },
+  { 
+    label: 'Advanced', 
+    desc: 'Heavy weights or complex movements (supersets, drop sets, explosive lifts). High intensity, challenging endurance and strength.', 
+    factor: 6.0 
+  },
 ];
 
 const mealOptions = [
