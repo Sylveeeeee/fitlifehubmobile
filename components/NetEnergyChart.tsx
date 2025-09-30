@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, ActivityIndicator, Modal, ScrollView } from 'react-native';
 import { VictoryChart, VictoryAxis, VictoryBar } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
 import { API_URL } from '@/config';
@@ -154,48 +154,55 @@ export default function NetEnergyChart() {
                 ))}
             </View>
 
-            <VictoryChart domainPadding={{ x: 20, y: 10 }} height={250} width={screenWidth * 0.92}>
-                <VictoryAxis
-                    tickFormat={(t: any) => t}
-                    style={{
-                        tickLabels: { fill: 'white', fontSize: 10 },
-                        axis: { stroke: 'white' },
-                    }}
-                />
-
-                <VictoryAxis
-                    dependentAxis
-                    tickCount={5}
-                    tickFormat={(t: any) => `${t}`}
-                    style={{
-                        tickLabels: { fill: 'white', fontSize: 10 },
-                        axis: { stroke: 'white' },
-                        grid: { stroke: '#444' },
-                    }}
-                />
-
-                {/* Net Energy Bar */}
-                <VictoryBar
-                    data={netEnergyData}
-                    x="date"
-                    y="net"
-                    style={{
-                        data: { fill: '#ffb300', opacity: 0.7, width: range === '1m' ? 6 : range === '14d' ? 12 : 15, },
-                        labels: { fill: 'white', fontSize: 10 },
-                    }}
-                    events={[
-                        {
-                            target: 'data',
-                            eventHandlers: {
-                                onPressIn: (evt, clickedProps) => {
-                                    setSelectedData(netEnergyData[clickedProps.index]);
-                                    setModalVisible(true);
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <VictoryChart
+                    domainPadding={{ x: 20, y: 10 }}
+                    height={250}
+                    width={range === '1m' ? screenWidth * 1.5 : screenWidth * 0.92} // เพิ่มความกว้างเมื่อ 1 เดือน
+                >
+                    <VictoryAxis
+                        tickFormat={(t: any) => t}
+                        style={{
+                            tickLabels: { fill: 'white', fontSize: 10 },
+                            axis: { stroke: 'white' },
+                        }}
+                    />
+                    <VictoryAxis
+                        dependentAxis
+                        tickCount={5}
+                        tickFormat={(t: any) => `${t}`}
+                        style={{
+                            tickLabels: { fill: 'white', fontSize: 10 },
+                            axis: { stroke: 'white' },
+                            grid: { stroke: '#444' },
+                        }}
+                    />
+                    <VictoryBar
+                        data={netEnergyData}
+                        x="date"
+                        y="net"
+                        style={{
+                            data: {
+                                fill: '#ffb300',
+                                opacity: 0.7,
+                                width: range === '1m' ? 12 : range === '14d' ? 12 : 10, // กว้างขึ้นเมื่อ 1 เดือน
+                            },
+                            labels: { fill: 'white', fontSize: 10 },
+                        }}
+                        events={[
+                            {
+                                target: 'data',
+                                eventHandlers: {
+                                    onPressIn: (evt, clickedProps) => {
+                                        setSelectedData(netEnergyData[clickedProps.index]);
+                                        setModalVisible(true);
+                                    },
                                 },
                             },
-                        },
-                    ]}
-                />
-            </VictoryChart>
+                        ]}
+                    />
+                </VictoryChart>
+            </ScrollView>
 
             {/* Legend */}
             <View className="flex-row justify-center mt-3 gap-x-4">

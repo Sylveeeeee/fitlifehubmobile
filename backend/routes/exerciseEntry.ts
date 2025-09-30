@@ -182,26 +182,25 @@ router.get('/energy-history', authenticateToken, async (req: any, res) => {
       historyMap[dateKey] = (historyMap[dateKey] || 0) + e.calories;
     });
 
-    const dateSet = new Set<string>();
+    // สร้าง array ของวันที่ทั้งหมดในช่วงเวลา
+    const dateArray: string[] = [];
+    const tmpDate = new Date(startDate);
+    while (tmpDate <= now) {
+      dateArray.push(tmpDate.toISOString().split('T')[0]);
+      tmpDate.setDate(tmpDate.getDate() + 1);
+    }
 
-    // เก็บวันที่จาก exerciseEntry
-    entries.forEach(e => dateSet.add(e.timestamp.toISOString().split('T')[0]));
-
-    // เก็บวันที่จาก dailyGoals
-    user?.dailyGoals.forEach(d => dateSet.add(d.date.toISOString().split('T')[0]));
-
-    const history = Array.from(dateSet)
-      .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
-      .map(dateKey => ({
-        date: dateKey,
-        burned: historyMap[dateKey] || 0,
-        baseEnergyNeed: user?.baseEnergyNeed || 0,
-        activityCalories: user?.activityCalories || 0,
-        caloriesGoal:
-          user?.dailyGoals.find(d =>
-            d.date.toISOString().split('T')[0] === dateKey
-          )?.calories || 0,
-      }));
+    // สร้าง history สำหรับทุกวันในช่วงเวลา
+    const history = dateArray.map(dateKey => ({
+      date: dateKey,
+      burned: historyMap[dateKey] || 0,
+      baseEnergyNeed: user?.baseEnergyNeed || 0,
+      activityCalories: user?.activityCalories || 0,
+      caloriesGoal:
+        user?.dailyGoals.find(d =>
+          d.date.toISOString().split('T')[0] === dateKey
+        )?.calories || 0,
+    }));
 
     res.json({ history });
   } catch (err) {

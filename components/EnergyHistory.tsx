@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Modal,
+  ScrollView,
 } from 'react-native';
 import { VictoryChart, VictoryAxis, VictoryBar, VictoryLine, VictoryStack } from 'victory-native';
 import { getToken } from '@/utils/tokenStorage.native';
@@ -110,21 +111,12 @@ export default function EnergySummaryCard() {
         </View>
 
         {/* Chart */}
-        {loading ? (
-          <View className="py-[2px] items-center">
-            <ActivityIndicator size="small" color="#ffb300" />
-            <Text className="text-white/70 text-xs mt-2">Loading data...</Text>
-          </View>
-        ) : history.length === 0 ? (
-          <View className="py-6 items-center">
-            <Text className="text-white/60 text-sm italic">No data available</Text>
-          </View>
-        ) : (
-          <View className="items-center">
+        {!loading && history.length > 0 && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <VictoryChart
               domainPadding={{ x: 25, y: 5 }}
               height={180}
-              width={screenWidth * 0.9}
+              width={range === '1m' ? screenWidth * 2  : screenWidth * 0.9} // เพิ่มความกว้างเมื่อ 1 เดือน
               padding={{ top: 20, bottom: 30, left: 40, right: 20 }}
             >
               <VictoryAxis
@@ -145,9 +137,6 @@ export default function EnergySummaryCard() {
                 }}
               />
 
-
-
-              {/* Bar = total calories */}
               <VictoryStack colorScale={['#22c55e', '#f97316', '#3b82f6']}>
                 {['proteinKcal', 'carbsKcal', 'fatKcal'].map((key) => (
                   <VictoryBar
@@ -155,6 +144,9 @@ export default function EnergySummaryCard() {
                     data={stackedChartData}
                     x="date"
                     y={key}
+                    style={{
+                      data: { width: range === '1m' ? 20 : 15 }, // กว้างขึ้นเมื่อ 1 เดือน
+                    }}
                     events={[{
                       target: 'data',
                       eventHandlers: {
@@ -177,9 +169,8 @@ export default function EnergySummaryCard() {
                   data: { stroke: '#fff', strokeDasharray: '4,4', strokeWidth: 1 },
                 }}
               />
-
             </VictoryChart>
-          </View>
+          </ScrollView>
         )}
 
         {/* Legend */}
